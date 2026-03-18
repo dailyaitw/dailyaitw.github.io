@@ -76,6 +76,12 @@ title: Daily AI Taiwan
     if (type !== 'daily' && !isLoggedIn) isFree = false;
 
     var fullContent = marked.parse(post.content);
+    // Show 今日 only when viewing today's post
+    var todayStr = new Date().toISOString().split('T')[0];
+    if (type === 'daily' && date === todayStr) {
+      var dateFmt = date.replace(/-/g, '/');
+      fullContent = fullContent.replace(/##\s*🧠\s*\d{4}\/\d{2}\/\d{2}\s*AI\s*重點/, '## 🧠 今日 (' + dateFmt + ') AI 重點');
+    }
 
     var html = '<div style="margin-bottom:12px;">' +
       '<a href="/" style="color:#2a7ae2;text-decoration:none;font-size:0.9em;">← 回首頁</a>' +
