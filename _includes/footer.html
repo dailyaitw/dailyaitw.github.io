@@ -17,7 +17,7 @@
           </li>
           <li>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-            <a href="https://github.com/dailyaitw" target="_blank">GitHub</a>
+            <a href="https://github.com/dailyaitw/dailyaitw.github.io/issues" target="_blank">GitHub Issues</a>
           </li>
         </ul>
       </div>
@@ -25,7 +25,7 @@
       <div class="footer-col footer-col-3">
         <h3 class="footer-col-title">商業合作</h3>
         <p>歡迎洽談 AI 顧問、內容合作、廣告投放等商業機會。</p>
-        <p><a href="mailto:ai@dailyai.tw" class="footer-cta">聯繫我們 →</a></p>
+        <p><a href="javascript:void(0)" onclick="openContactForm()" class="footer-cta">聯繫我們 →</a></p>
       </div>
     </div>
 
@@ -33,6 +33,89 @@
       <p>&copy; {{ site.time | date: '%Y' }} Daily AI Taiwan — 每日 AI 資訊整理 | 技術驅動 by Claude Code &times; GitHub Pages</p>
     </div>
   </div>
+<!-- Contact Form Modal -->
+<div id="contact-modal" style="display:none;">
+  <div class="contact-overlay" onclick="closeContactForm()"></div>
+  <div class="contact-form-container">
+    <button onclick="closeContactForm()" class="contact-close">&times;</button>
+    <h3>📬 聯繫我們</h3>
+    <p class="contact-desc">歡迎洽談 AI 顧問、內容合作、廣告投放等商業機會。</p>
+    <form id="contact-form" onsubmit="submitContact(event)">
+      <div class="form-group">
+        <label for="contact-name">姓名</label>
+        <input type="text" id="contact-name" placeholder="您的姓名" required>
+      </div>
+      <div class="form-group">
+        <label for="contact-email">Email *</label>
+        <input type="email" id="contact-email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="contact-message">訊息 *</label>
+        <textarea id="contact-message" rows="5" placeholder="請描述您的需求或合作想法..." required></textarea>
+      </div>
+      <button type="submit" class="contact-submit" id="contact-submit-btn">送出訊息</button>
+    </form>
+    <div id="contact-success" style="display:none;">
+      <div class="contact-success-icon">✅</div>
+      <h4>訊息已送出！</h4>
+      <p>感謝您的來信，我們會盡快回覆至您的信箱。</p>
+      <button onclick="closeContactForm()" class="contact-submit">關閉</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openContactForm() {
+  document.getElementById('contact-modal').style.display = 'flex';
+  document.getElementById('contact-form').style.display = 'block';
+  document.getElementById('contact-success').style.display = 'none';
+  document.getElementById('contact-form').reset();
+  document.body.style.overflow = 'hidden';
+}
+
+function closeContactForm() {
+  document.getElementById('contact-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function submitContact(e) {
+  e.preventDefault();
+  const btn = document.getElementById('contact-submit-btn');
+  btn.textContent = '送出中...';
+  btn.disabled = true;
+
+  const data = {
+    name: document.getElementById('contact-name').value,
+    email: document.getElementById('contact-email').value,
+    message: document.getElementById('contact-message').value
+  };
+
+  try {
+    const res = await fetch('https://kszbdgfbihnawjgmwjlk.supabase.co/rest/v1/contacts', {
+      method: 'POST',
+      headers: {
+        'apikey': 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f',
+        'Authorization': 'Bearer sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f',
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('contact-success').style.display = 'block';
+    } else {
+      alert('送出失敗，請稍後再試或直接寄信至 ai@dailyai.tw');
+    }
+  } catch (err) {
+    alert('網路錯誤，請稍後再試或直接寄信至 ai@dailyai.tw');
+  }
+
+  btn.textContent = '送出訊息';
+  btn.disabled = false;
+}
+</script>
 </footer>
 
 <style>
@@ -100,6 +183,94 @@
 .footer-cta:hover {
   background: #1a5fb4;
 }
+#contact-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+.contact-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2001;
+}
+.contact-form-container {
+  position: relative;
+  z-index: 2002;
+  background: #fff;
+  border-radius: 12px;
+  max-width: 480px;
+  width: 92%;
+  padding: 2em;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+.contact-form-container h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #333;
+}
+.contact-desc {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+.contact-close {
+  position: absolute;
+  top: 12px; right: 16px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+}
+.contact-close:hover { color: #333; }
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 4px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #2a7ae2;
+  box-shadow: 0 0 0 2px rgba(42,122,226,0.15);
+}
+.contact-submit {
+  width: 100%;
+  padding: 12px;
+  background: #2a7ae2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.contact-submit:hover { background: #1a5fb4; }
+.contact-submit:disabled { background: #999; cursor: not-allowed; }
+.contact-success-icon { font-size: 48px; text-align: center; margin-bottom: 12px; }
+#contact-success { text-align: center; }
+#contact-success h4 { font-size: 18px; margin-bottom: 8px; }
+#contact-success p { color: #666; margin-bottom: 20px; }
 .footer-bottom {
   margin-top: 25px;
   padding-top: 15px;
