@@ -1,0 +1,90 @@
+---
+layout: home
+title: Daily AI Taiwan
+---
+
+# 🤖 Daily AI 資訊整理 — 2026/03/18
+
+---
+
+## 🧠 今日 AI 重點
+
+1. **NVIDIA GTC 大會進行中（3/16-19，San Jose）**：Jensen Huang 主持開放前沿模型論壇，邀請 Ai2、Cursor、LangChain、Mistral 等業界領袖，討論開源前沿模型的未來走向。同時發表 **NemoClaw** — 開放式自主代理運行平台，支援本地 RTX GPU 與雲端模型切換，內建隱私路由機制。
+
+2. **Mistral Small 4 發布**：119B 參數的 Mixture of Experts 多模態模型，整合文字與圖像處理，支援可調推理力度（configurable reasoning effort），已上線 vLLM 和 llama.cpp。
+
+3. **Anthropic Claude 1M Context Window 全面開放**：Claude Opus 4.6 與 Sonnet 4.6 的 1M context window 以標準定價提供，無額外倍率，大幅提升長對話與大型專案的處理能力。
+
+4. **Moonshot AI 提出 Attention Residuals 架構**：讓 Transformer 各層可選擇性引用前層輸出，而非盲目聚合，在相同訓練損失下減少 1.25 倍運算量，對推理效率有重大影響。
+
+5. **Apple 全新 Siri 預計隨 iOS 26.4 推出**：採用 Google Gemini 1.2 兆參數模型驅動，具備螢幕感知與跨 App 整合能力，透過 Apple Private Cloud Compute 維持隱私標準。
+
+---
+
+## 💰 投資動向
+
+| 公司 | 輪次 | 金額 | 估值 | 重點 |
+|------|------|------|------|------|
+| **AMI Labs**（Yann LeCun 創辦） | Seed | $10.3 億 | — | 歐洲史上最大種子輪，押注 JEPA 架構的世界模型將超越 LLM |
+| **Legora** | Series D | $5.5 億 | $55.5 億 | 法律 AI 協作平台，Accel 領投 |
+| **Nebius** | 戰略投資 | $20 億 | — | AI 雲端基礎設施，由 Nvidia 直接注資 |
+| **Sunday Robotics** | Series B | $1.65 億 | 10 億+ | 機器人技術從實驗室走向商業部署 |
+| **Wonderful**（以色列） | Series B | $1.5 億 | $20 億 | 企業 AI 新創 |
+
+**大背景**：2026 年 2 月全球 VC 投資額達 $1,890 億歷史新高，由 OpenAI（$1,100 億，估值 $8,400 億）、Anthropic（$300 億 Series G，估值 $3,800 億）、Waymo 三巨頭主導。三月僅過半已出現超越歷史同期的 $1 億+ 融資輪數量。
+
+---
+
+## ⚙️ 技術突破
+
+- **NVIDIA NemoClaw**：開源自主代理 runtime，單一指令安裝即可在 RTX/DGX 上運行代理，具備隱私感知路由（本地 vs 雲端推理自動切換），是 AI Agent 基礎設施的重要進展。
+
+- **Mistral Small 4 MoE 架構**：119B 參數多模態模型展示了 MoE 在效率與能力間的平衡，可調推理力度功能讓開發者按需控制推算深度。
+
+- **Moonshot Attention Residuals**：對 Transformer 架構的根本性改進 — 選擇性跨層注意力引用，1.25x 計算效率提升，可能影響下一代模型訓練範式。
+
+- **中國 AI 五模型齊發**：騰訊、阿里巴巴、百度、字節跳動密集發布，其中 MiniMax M2.5 在性能上挑戰 Claude Opus 4.6，但成本顯著更低，模型價格戰持續白熱化。
+
+- **MIT 蛋白質藥物設計 AI**：生成式 AI 預測合成蛋白質摺疊與生物靶點交互，減少實驗室反覆試錯，加速藥物開發流程。
+
+---
+
+## 🌍 社會影響
+
+- **EU AI Act 高風險系統規範將於 2026 年 8 月全面生效**：涵蓋醫療、就業、教育、執法等關鍵領域，企業需完成合規部署。
+
+- **韓國 AI 基本法（2026/01 生效）**：具域外效力，要求透明度、風險評估、人工監督與文件紀錄，影響所有服務韓國用戶的 AI 系統。
+
+- **美國各州 AI 法規密集上路**：加州 AI 透明法案、科羅拉多 AI 法案、德州負責任 AI 治理法案陸續施行，聯邦層級 2024 年已出台 59 項 AI 相關法規（年增超過一倍）。
+
+- **AI 安全與濫用疑慮升溫**：生物武器、AI 詐騙等議題推動更嚴格的測試要求；監控與演算法歧視引發倫理爭論與高風險應用禁令。
+
+- **Donald Knuth 發表 "Claude's Cycles" 論文**：詳述 Anthropic Claude Opus 4.6 解決了他研究數週的複雜圖論問題，標誌 AI 在純數學研究領域的里程碑。
+
+---
+
+## 📊 我的觀點
+
+1. **Agent 基礎設施戰開打**：NVIDIA NemoClaw 的發布意味著 AI Agent 正式從「Demo 階段」進入「Runtime 階段」。隱私路由的設計暗示未來 Agent 架構會是 local-first + cloud-fallback 的混合模式，這對企業部署至關重要。
+
+2. **MoE + 可調推理 = 新標配**：Mistral Small 4 的 configurable reasoning effort 代表一個重要趨勢 — 未來模型不再是固定算力消耗，而是按任務複雜度動態調節。這會根本性改變 API 定價模型和使用者的成本結構。
+
+3. **中國模型的價格壓力是雙面刃**：MiniMax M2.5 挑戰 Claude Opus 級能力但更便宜，短期利好開發者，但長期可能壓縮研究投入。值得觀察的是品質能否持續跟上。
+
+4. **Yann LeCun 的 $10 億種子輪是對 LLM 路線的最大賭注**：AMI Labs 押注 JEPA（Joint Embedding Predictive Architecture）世界模型，認為純語言模型無法達到真正的世界理解。如果成功，將開啟 AI 架構的第二條路線之爭。
+
+5. **法規「多頭馬車」的挑戰浮現**：EU、韓國、美國各州各自立法，企業面臨碎片化合規負擔。2026 年下半年可能是合規成本激增的轉捩點，特別對中小型 AI 新創影響最大。
+
+---
+
+> Sources:
+> - [NVIDIA GTC 2026](https://www.nvidia.com/gtc/)
+> - [Radical Data Science AI News March 2026](https://radicaldatascience.wordpress.com/2026/03/17/ai-news-briefs-bulletin-board-for-march-2026/)
+> - [Yann LeCun AMI Labs $1B Seed - Bloomberg](https://www.bloomberg.com/news/articles/2026-03-10/yann-lecun-s-new-ai-startup-raises-1-billion-in-seed-funding)
+> - [February $189B VC Record - Crunchbase](https://news.crunchbase.com/venture/record-setting-global-funding-february-2026-openai-anthropic/)
+> - [OpenAI Anthropic Waymo VC - TechCrunch](https://techcrunch.com/2026/03/03/openai-anthropic-waymo-dominated-189-billion-vc-investments-february-crunchbase-report/)
+> - [MIT Technology Review - Mechanistic Interpretability](https://www.technologyreview.com/2026/01/12/1130003/mechanistic-interpretability-ai-research-models-2026-breakthrough-technologies/)
+> - [AI Regulation 2026 - OneTrust](https://www.onetrust.com/blog/where-ai-regulation-is-heading-in-2026-a-global-outlook/)
+> - [CFR - How 2026 Could Decide AI's Future](https://www.cfr.org/articles/how-2026-could-decide-future-artificial-intelligence)
+> - [Crescendo AI News](https://www.crescendo.ai/news/latest-ai-news-and-updates)
+> - [LLM Stats - AI News March 2026](https://llm-stats.com/ai-news)

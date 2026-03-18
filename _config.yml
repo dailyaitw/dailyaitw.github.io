@@ -1,0 +1,10 @@
+title: Daily AI Taiwan
+description: "每日 AI 資訊整理 — dailyai.tw"
+baseurl: ""
+url: "https://dailyai.tw"
+theme: minima
+markdown: kramdown
+encoding: utf-8
+
+header_pages:
+  - index.md
