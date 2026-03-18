@@ -9,6 +9,10 @@
   line-height: 56px;
 }
 
+.site-nav .trigger {
+  padding-top: 12px;
+}
+
 /* Auth Nav Styles */
 .auth-nav-container {
   display: flex;
