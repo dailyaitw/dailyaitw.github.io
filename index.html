@@ -11,6 +11,13 @@ title: Daily AI Taiwan
 
   <hr>
 
+  <!-- Feature Articles -->
+  <div id="feature-section" style="display:none;">
+    <h2>🔥 精選專題</h2>
+    <div id="feature-list"></div>
+    <hr>
+  </div>
+
   <div id="today-post">
     <h2>📰 載入今日日報中...</h2>
   </div>
@@ -245,8 +252,30 @@ title: Daily AI Taiwan
     el.innerHTML = posts.length ? buildList(posts, fmtYear) : '<p>尚無年度回顧</p>';
   }
 
+  async function loadFeatures() {
+    var posts = await apiFetch('type=eq.feature&select=date,title,summary,content&order=date.desc');
+    if (posts.length === 0) return;
+    document.getElementById('feature-section').style.display = 'block';
+    var html = '<div class="feature-grid">';
+    posts.forEach(function(p) {
+      var key = p.date + '_feature';
+      postsCache[key] = p.content;
+      // Extract first line as subtitle
+      var subtitle = p.summary || '';
+      html += '<div class="feature-card" onclick="window._showPost(\'' + key + '\')">' +
+        '<div class="feature-tag">專題</div>' +
+        '<h3 class="feature-title">' + p.title + '</h3>' +
+        '<p class="feature-summary">' + subtitle + '</p>' +
+        '<span class="feature-date">' + fmt(p.date) + '</span>' +
+        '<a href="/post/feature/' + p.date + '" class="feature-link">閱讀全文 →</a>' +
+        '</div>';
+    });
+    html += '</div>';
+    document.getElementById('feature-list').innerHTML = html;
+  }
+
   // Load all sections
-  Promise.all([loadToday(), loadDaily(), loadMonthly(), loadYearly()])
+  Promise.all([loadFeatures(), loadToday(), loadDaily(), loadMonthly(), loadYearly()])
     .catch(function(e) { console.error('Load error:', e); });
 })();
 </script>
@@ -264,6 +293,25 @@ title: Daily AI Taiwan
 .month-group summary:hover { color: #2a7ae2; }
 .month-count { color: #999; font-weight: normal; font-size: 13px; }
 .month-group[open] summary { color: #2a7ae2; }
+
+/* Feature articles */
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.feature-card {
+  border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;
+  background: #fff; cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column;
+}
+.feature-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-color: #2a7ae2; transform: translateY(-2px); }
+.feature-tag {
+  display: inline-block; background: #ef4444; color: #fff;
+  font-size: 0.7em; padding: 2px 10px; border-radius: 12px;
+  font-weight: 600; width: fit-content; margin-bottom: 10px;
+}
+.feature-title { font-size: 1.1em; margin: 0 0 8px; color: #333; line-height: 1.4; }
+.feature-summary { font-size: 0.85em; color: #666; line-height: 1.5; flex: 1; margin-bottom: 10px; }
+.feature-date { font-size: 0.75em; color: #999; }
+.feature-link { font-size: 0.85em; color: #2a7ae2; text-decoration: none; margin-top: 8px; }
+.feature-link:hover { text-decoration: underline; }
 
 #post-modal {
   display: none; position: fixed;

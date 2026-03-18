@@ -41,6 +41,11 @@ permalink: /post/
     date = path + '-12-31';
     type = 'yearly';
     query = 'type=eq.yearly&date=eq.' + date + '&select=*';
+  } else if (/^feature\/\d{4}-\d{2}-\d{2}$/.test(path)) {
+    // Feature: /post/feature/2026-03-18
+    date = path.replace('feature/', '');
+    type = 'feature';
+    query = 'type=eq.feature&date=eq.' + date + '&select=*';
   } else {
     document.getElementById('post-loading').style.display = 'none';
     document.getElementById('post-not-found').style.display = 'block';
