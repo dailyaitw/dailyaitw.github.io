@@ -1,0 +1,226 @@
+---
+layout: default
+title: Daily AI Taiwan
+---
+
+<div id="app">
+  <h1>🤖 Daily AI Taiwan — 每日 AI 資訊整理</h1>
+  <blockquote>
+    <p>每天追蹤全球 AI 產業最重要的動態：重點新聞、投資動向、技術突破、社會影響，加上獨立觀點分析。</p>
+  </blockquote>
+
+  <hr>
+
+  <!-- Today's post -->
+  <div id="today-post">
+    <h2>📰 載入今日日報中...</h2>
+  </div>
+
+  <hr>
+
+  <!-- Daily archive -->
+  <h2>📅 日報列表</h2>
+  <div id="daily-list"><p>載入中...</p></div>
+
+  <hr>
+
+  <!-- Monthly reviews -->
+  <h2>📊 月度回顧</h2>
+  <div id="monthly-list"><p>載入中...</p></div>
+
+  <hr>
+
+  <!-- Yearly reviews -->
+  <h2>📚 年度回顧</h2>
+  <div id="yearly-list"><p>載入中...</p></div>
+</div>
+
+<div id="post-modal" style="display:none;">
+  <div id="post-modal-overlay" onclick="closeModal()"></div>
+  <div id="post-modal-content">
+    <button onclick="closeModal()" class="modal-close">&times;</button>
+    <div id="post-modal-body"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
+const SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+
+async function fetchPosts(type, order) {
+  const res = await fetch(
+    `${SB_URL}/rest/v1/posts?type=eq.${type}&select=date,title,summary,content&order=date.${order || 'desc'}`,
+    { headers: { 'apikey': SB_KEY } }
+  );
+  return res.json();
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function formatMonth(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return `${d.getFullYear()} 年 ${d.getMonth()+1} 月`;
+}
+
+function formatYear(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return `${d.getFullYear()} 年`;
+}
+
+function showPost(content) {
+  document.getElementById('post-modal-body').innerHTML = marked.parse(content);
+  document.getElementById('post-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('post-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+async function loadToday() {
+  const today = new Date().toISOString().split('T')[0];
+  const res = await fetch(
+    `${SB_URL}/rest/v1/posts?type=eq.daily&date=eq.${today}&select=*`,
+    { headers: { 'apikey': SB_KEY } }
+  );
+  const data = await res.json();
+  const el = document.getElementById('today-post');
+
+  if (data.length > 0) {
+    const post = data[0];
+    el.innerHTML = marked.parse(post.content);
+  } else {
+    // Show latest post if no today
+    const latest = await fetch(
+      `${SB_URL}/rest/v1/posts?type=eq.daily&select=*&order=date.desc&limit=1`,
+      { headers: { 'apikey': SB_KEY } }
+    );
+    const latestData = await latest.json();
+    if (latestData.length > 0) {
+      el.innerHTML = `<p style="color:#888;font-style:italic;">今日日報尚未發布，以下為最新日報（${formatDate(latestData[0].date)}）：</p>` + marked.parse(latestData[0].content);
+    } else {
+      el.innerHTML = '<p>尚無日報</p>';
+    }
+  }
+}
+
+async function loadDaily() {
+  const posts = await fetchPosts('daily');
+  const el = document.getElementById('daily-list');
+  if (posts.length === 0) {
+    el.innerHTML = '<p>尚無日報</p>';
+    return;
+  }
+  el.innerHTML = '<ul>' + posts.map(p =>
+    `<li><a href="javascript:void(0)" onclick='showPost(${JSON.stringify(JSON.stringify(p.content))})'>
+      <strong>${formatDate(p.date)}</strong></a> — ${p.summary || p.title}
+    </li>`
+  ).join('') + '</ul>';
+}
+
+async function loadMonthly() {
+  const posts = await fetchPosts('monthly');
+  const el = document.getElementById('monthly-list');
+  if (posts.length === 0) {
+    el.innerHTML = '<p>尚無月度回顧</p>';
+    return;
+  }
+  el.innerHTML = '<ul>' + posts.map(p =>
+    `<li><a href="javascript:void(0)" onclick='showPost(${JSON.stringify(JSON.stringify(p.content))})'>
+      <strong>${formatMonth(p.date)}</strong></a> — ${p.summary || p.title}
+    </li>`
+  ).join('') + '</ul>';
+}
+
+async function loadYearly() {
+  const posts = await fetchPosts('yearly');
+  const el = document.getElementById('yearly-list');
+  if (posts.length === 0) {
+    el.innerHTML = '<p>尚無年度回顧</p>';
+    return;
+  }
+  el.innerHTML = '<ul>' + posts.map(p =>
+    `<li><a href="javascript:void(0)" onclick='showPost(${JSON.stringify(JSON.stringify(p.content))})'>
+      <strong>${formatYear(p.date)}</strong></a> — ${p.summary || p.title}
+    </li>`
+  ).join('') + '</ul>';
+}
+
+// Load all
+loadToday();
+loadDaily();
+loadMonthly();
+loadYearly();
+</script>
+
+<style>
+#app h1 { margin-bottom: 0.3em; }
+#app blockquote { color: #666; border-left: 3px solid #2a7ae2; padding-left: 1em; margin: 0.5em 0 1em; }
+#app ul { list-style: none; padding: 0; }
+#app ul li { padding: 8px 0; border-bottom: 1px solid #eee; }
+#app ul li:last-child { border-bottom: none; }
+#app ul li a { color: #2a7ae2; text-decoration: none; }
+#app ul li a:hover { text-decoration: underline; }
+
+#post-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+#post-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1001;
+}
+#post-modal-content {
+  position: relative;
+  z-index: 1002;
+  background: #fff;
+  border-radius: 8px;
+  max-width: 900px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2em;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.modal-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  font-size: 28px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 0 8px;
+  border-radius: 4px;
+  z-index: 1003;
+}
+.modal-close:hover { color: #333; background: #f0f0f0; }
+#post-modal-body { line-height: 1.8; }
+#post-modal-body h1 { font-size: 1.5em; }
+#post-modal-body h2 { font-size: 1.3em; margin-top: 1.5em; }
+#post-modal-body table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; }
+#post-modal-body th, #post-modal-body td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+#post-modal-body th { background: #f5f5f5; }
+#post-modal-body blockquote { border-left: 3px solid #2a7ae2; padding-left: 1em; color: #555; }
+#post-modal-body a { color: #2a7ae2; }
+
+@media (max-width: 600px) {
+  #post-modal-content { padding: 1em; width: 98%; }
+}
+</style>
