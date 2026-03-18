@@ -70,11 +70,28 @@
 
 <script>
 function openContactForm() {
+  // Check if user is logged in
+  var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+  var session = stored ? JSON.parse(stored) : null;
+  if (!session || !session.user) {
+    if (confirm('需要先登入才能聯繫我們。\n是否前往登入頁面？')) {
+      window.location.href = '/login';
+    }
+    return;
+  }
+
   document.getElementById('contact-modal').style.display = 'flex';
   document.getElementById('contact-form').style.display = 'block';
   document.getElementById('contact-success').style.display = 'none';
   document.getElementById('contact-form').reset();
   document.body.style.overflow = 'hidden';
+
+  // Auto-fill email and name from session
+  var user = session.user;
+  var meta = user.user_metadata || {};
+  document.getElementById('contact-email').value = user.email || '';
+  document.getElementById('contact-email').readOnly = true;
+  document.getElementById('contact-name').value = meta.full_name || meta.name || meta.user_name || '';
 }
 
 function closeContactForm() {
