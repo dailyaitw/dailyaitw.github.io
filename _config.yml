@@ -10,3 +10,4 @@ header_pages: []
 
 include:
   - _redirects
+  - _headers
