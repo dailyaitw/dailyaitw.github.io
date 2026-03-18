@@ -1,27 +1,11 @@
 ---
-layout: none
+layout: default
 permalink: /404.html
+title: 404
 ---
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Daily AI Taiwan</title>
-<script>
-  // Route /post/* to post.html
-  var path = window.location.pathname;
-  if (path.match(/^\/post\//)) {
-    // Store the path and redirect to post.html
-    sessionStorage.setItem('post_path', path);
-    window.location.replace('/post/');
-  } else {
-    // Real 404
-    document.write('<div style="text-align:center;padding:60px;font-family:sans-serif;">' +
-      '<h1 style="font-size:48px;color:#ddd;">404</h1>' +
-      '<p style="color:#888;font-size:18px;">找不到這個頁面</p>' +
-      '<a href="/" style="color:#2a7ae2;text-decoration:none;">← 回首頁</a></div>');
-  }
-</script>
-</head>
-<body></body>
-</html>
+
+<div style="text-align:center; padding:60px;">
+  <h1 style="font-size:48px; color:#ddd;">404</h1>
+  <p style="color:#888; font-size:18px;">找不到這個頁面</p>
+  <a href="/" style="color:#2a7ae2; text-decoration:none;">← 回首頁</a>
+</div>

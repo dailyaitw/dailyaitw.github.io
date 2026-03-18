@@ -21,9 +21,7 @@ permalink: /post/
   var SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
 
   // Parse URL: /post/2026-03-18 or /post/2026-01 or /post/2025
-  var rawPath = sessionStorage.getItem('post_path') || window.location.pathname;
-  sessionStorage.removeItem('post_path');
-  var path = rawPath.replace(/\/$/, '').replace('/post/', '').replace('/post', '');
+  var path = window.location.pathname.replace(/\/$/, '').replace('/post/', '').replace('/post', '');
   if (!path) { window.location.href = '/'; return; }
 
   var date, type, query;
