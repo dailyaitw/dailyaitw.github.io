@@ -4,7 +4,8 @@
   <div class="wrapper">
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
-        <h2 class="footer-heading">{{ site.title | escape }}</h2>
+        <h2 class="footer-heading">Daily AI Taiwan</h2>
+        <p class="footer-tagline">立足台灣，讀懂 AI</p>
         <p class="footer-desc">每日追蹤全球 AI 產業動態，提供重點新聞、投資分析、技術突破與獨立觀點。</p>
       </div>
 
@@ -34,7 +35,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; {{ site.time | date: '%Y' }} Daily AI Taiwan — 每日 AI 資訊整理 | 技術驅動 by Claude Code &times; GitHub Pages</p>
+      <p>&copy; {{ site.time | date: '%Y' }} Daily AI Taiwan — 每日 AI 資訊整理 | 技術驅動 by Claude Code × Supabase × Cloudflare × GitHub</p>
     </div>
   </div>
 <!-- Contact Form Modal -->
@@ -144,6 +145,12 @@ async function submitContact(e) {
   border-top: 2px solid #e8e8e8;
   padding: 30px 0;
   background: #f8f9fa;
+}
+.footer-tagline {
+  font-size: 14px;
+  color: #888;
+  margin: -4px 0 8px;
+  letter-spacing: 0.3px;
 }
 .footer-heading {
   font-size: 18px;
