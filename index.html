@@ -240,7 +240,15 @@ title: Daily AI Taiwan
 #post-modal-body blockquote p,
 #today-post blockquote p { margin: 0.2em 0; }
 #post-modal-body blockquote a,
-#today-post blockquote a { color: #888; font-size: inherit; }
+#today-post blockquote a { color: #999; font-size: inherit; text-decoration: none; }
+#post-modal-body blockquote a:hover,
+#today-post blockquote a:hover { text-decoration: underline; }
+#post-modal-body blockquote ul,
+#today-post blockquote ul { list-style: none; padding: 0; margin: 0.3em 0; }
+#post-modal-body blockquote li,
+#today-post blockquote li { padding: 1px 0; border: none !important; font-size: 0.95em; }
+#post-modal-body blockquote li::before,
+#today-post blockquote li::before { content: "· "; color: #bbb; }
 #post-modal-body a { color: #2a7ae2; }
 #post-modal-body hr,
 #today-post hr { border: none; border-top: 1px solid #eee; margin: 1.5em 0; }
