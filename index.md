@@ -42,6 +42,7 @@ title: Daily AI Taiwan
 - **[2025 年](/posts/2025-review)** — 推理模型元年 / DeepSeek 震撼 / AI Agent 崛起 / 開源逆襲 / 基建兆元時代
 - **[2024 年](/posts/2024-review)** — 多模態競賽 / AI 走入主流 / 歐盟 AI Act / 投資白熱化 / 安全隱憂浮現
 - **[2023 年](/posts/2023-review)** — ChatGPT 狂潮 / 生成式 AI 元年 / 科技七巨頭 / OpenAI 宮鬥 / 全球監管啟動
+- **[2022 年](/posts/2022-review)** — ChatGPT 橫空出世 / AI 繪圖爆發 / Stable Diffusion 開源 / DALL-E 2 / 生成式 AI 序幕
 
 ---
 
