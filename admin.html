@@ -77,35 +77,14 @@ async function apiFetch(table, query) {
   return res.json();
 }
 
-async function checkAdmin() {
-  // Check if user is logged in via Supabase auth
-  const sb = window.supabase ? window.supabase.createClient(SB_URL, 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f') : null;
-
-  // Simple approach: check URL hash for admin token or use hardcoded check
-  const urlParams = new URLSearchParams(window.location.search);
-  const adminKey = urlParams.get('key');
-
-  // Allow access with secret key in URL or if GitHub dailyaitw is logged in
-  if (adminKey === 'dailyaitw2026') {
-    return true;
-  }
-
-  // Check Supabase auth
-  if (sb) {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session && session.user) {
-      const meta = session.user.user_metadata || {};
-      if (meta.user_name === ADMIN_GITHUB || meta.preferred_username === ADMIN_GITHUB) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+function checkAdmin() {
+  var urlParams = new URLSearchParams(window.location.search);
+  var adminKey = urlParams.get('key');
+  return adminKey === 'dailyaitw2026';
 }
 
 async function loadDashboard() {
-  const isAdmin = await checkAdmin();
+  const isAdmin = checkAdmin();
 
   if (!isAdmin) {
     // Show login or denied
