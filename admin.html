@@ -156,11 +156,31 @@ async function loadDashboard() {
   document.getElementById('stat-auth').textContent = authVisits.length;
 
   // Build auth users data
+  // Also fetch users from Supabase auth
+  var authUsers = [];
+  try {
+    var usersRes = await fetch(SB_URL + '/auth/v1/admin/users?per_page=500', {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    if (usersRes.ok) {
+      var usersData = await usersRes.json();
+      authUsers = usersData.users || [];
+    }
+  } catch(e) {}
+
+  // Build provider lookup from auth users
+  var providerMap = {};
+  authUsers.forEach(function(u) {
+    var provider = 'email';
+    if (u.app_metadata && u.app_metadata.provider) provider = u.app_metadata.provider;
+    providerMap[u.email] = provider;
+  });
+
   var userMap = {};
   authVisits.forEach(function(v) {
     var key = v.user_email || v.user_id || 'unknown';
     if (!userMap[key]) {
-      userMap[key] = { email: key, first: v.created_at, last: v.created_at, count: 0 };
+      userMap[key] = { email: key, first: v.created_at, last: v.created_at, count: 0, provider: providerMap[key] || '—' };
     }
     userMap[key].count++;
     if (v.created_at < userMap[key].first) userMap[key].first = v.created_at;
@@ -238,13 +258,19 @@ function renderAuthUsers(page) {
   var start = (page - 1) * _authPerPage;
   var slice = users.slice(start, start + _authPerPage);
 
+  var providerBadge = function(p) {
+    var colors = { email: '#6b7280', google: '#ea4335', github: '#333', discord: '#5865f2' };
+    var c = colors[p] || '#999';
+    return '<span style="background:' + c + ';color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">' + p + '</span>';
+  };
+
   var html = '<table class="auth-users-table"><thead><tr>' +
-    '<th>#</th><th>Email</th><th>訪問次數</th><th>首次訪問</th><th>最近訪問</th></tr></thead><tbody>';
+    '<th>#</th><th>Email</th><th>登入方式</th><th>訪問次數</th><th>首次訪問</th><th>最近訪問</th></tr></thead><tbody>';
   slice.forEach(function(u, i) {
     var first = u.first ? new Date(u.first).toLocaleString('zh-TW') : '-';
     var last = u.last ? new Date(u.last).toLocaleString('zh-TW') : '-';
     html += '<tr><td>' + (start + i + 1) + '</td><td>' + u.email +
-      '</td><td><strong>' + u.count + '</strong></td><td>' + first + '</td><td>' + last + '</td></tr>';
+      '</td><td>' + providerBadge(u.provider) + '</td><td><strong>' + u.count + '</strong></td><td>' + first + '</td><td>' + last + '</td></tr>';
   });
   html += '</tbody></table>';
   document.getElementById('auth-users-list').innerHTML = html;
