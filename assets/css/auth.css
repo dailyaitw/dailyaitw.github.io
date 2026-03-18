@@ -1,53 +1,50 @@
 /* Header */
 .site-header {
-  min-height: 60px !important;
+  min-height: 56px !important;
   padding: 0 !important;
   border-bottom: 1px solid #eee !important;
   background: #fff !important;
 }
 
-.site-header .wrapper {
+.header-wrapper {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  height: 60px !important;
+  height: 56px !important;
 }
 
 .site-header .site-title {
   font-size: 20px !important;
   font-weight: 700 !important;
   color: #333 !important;
-  line-height: 60px !important;
+  line-height: 56px !important;
   letter-spacing: -0.3px;
+  float: none !important;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  height: 56px;
+}
+
+/* Hide minima's default nav (hamburger) */
 .site-header .site-nav {
-  line-height: 60px !important;
-}
-
-.site-header .site-nav .trigger {
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  height: 60px !important;
+  display: none !important;
 }
 
 /* Auth Nav */
 .auth-nav-container {
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
   gap: 0.6rem;
-  height: 60px !important;
-  line-height: normal !important;
 }
 
 .auth-user-info {
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
   gap: 0.6rem;
   font-size: 0.85rem;
-  line-height: normal !important;
 }
 
 .auth-user-email {
@@ -64,7 +61,7 @@
   color: #888;
   text-decoration: none;
   border: 1px solid #ddd;
-  padding: 0.3rem 0.8rem;
+  padding: 4px 14px;
   border-radius: 20px;
   transition: all 0.2s;
   background: transparent;
@@ -95,17 +92,23 @@
 
 /* Mobile header */
 @media screen and (max-width: 600px) {
-  .site-header .wrapper {
-    height: auto !important;
-    min-height: 50px !important;
-    flex-wrap: wrap;
+  .header-wrapper {
+    height: 50px !important;
   }
-  .site-header .site-nav .trigger {
-    height: auto !important;
-    padding: 8px 0 !important;
+  .site-header .site-title {
+    font-size: 16px !important;
+    line-height: 50px !important;
   }
-  .auth-nav-container {
-    height: auto !important;
+  .header-right {
+    height: 50px;
+  }
+  .auth-user-email {
+    max-width: 100px;
+    font-size: 0.75rem;
+  }
+  .auth-login-link {
+    font-size: 0.78rem;
+    padding: 4px 12px;
   }
 }
 
