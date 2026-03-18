@@ -68,7 +68,7 @@ title: Daily AI Taiwan — 精選專題
       html += '<div class="paywall-box">';
       html += '<h3>🔒 註冊免費閱讀完整專題</h3>';
       html += '<p>精選專題需要登入才能閱讀完整內容。<br>免費註冊即可解鎖！</p>';
-      html += '<a href="/login" class="paywall-btn">免費註冊 / 登入</a>';
+      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.href) + '" class="paywall-btn">免費註冊 / 登入</a>';
       html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p>';
       html += '</div>';
     } else {

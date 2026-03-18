@@ -99,7 +99,7 @@ title: Daily AI Taiwan
       } else {
         html += '<p>月度回顧和年度回顧需要登入才能閱讀。<br>免費註冊即可解鎖！</p>';
       }
-      html += '<a href="/login" class="paywall-btn">免費註冊 / 登入</a>';
+      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.href) + '" class="paywall-btn">免費註冊 / 登入</a>';
       html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p>';
       html += '</div>';
     } else {

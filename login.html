@@ -83,6 +83,8 @@ permalink: /login/
 </div>
 
 <script>
+  var _redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
+
   function switchTab(tab) {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
@@ -125,7 +127,7 @@ permalink: /login/
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
       showMessage('登入成功！正在跳轉...', 'success');
-      setTimeout(() => { window.location.href = '/'; }, 1000);
+      setTimeout(() => { window.location.href = _redirectUrl; }, 1000);
     } catch (err) {
       showMessage(translateError(err.message), 'error');
       btn.disabled = false;
@@ -168,7 +170,7 @@ permalink: /login/
       const { data, error } = await sb.auth.signInWithOAuth({
         provider: provider,
         options: {
-          redirectTo: window.location.origin
+          redirectTo: window.location.origin + _redirectUrl
         }
       });
       if (error) throw error;
@@ -213,7 +215,12 @@ permalink: /login/
     const sb = getSupabase();
     const { data: { user } } = await sb.auth.getUser();
     if (user) {
-      showMessage('您已登入（' + (user.user_metadata?.full_name || user.email) + '）', 'success');
+      if (_redirectUrl !== '/') {
+        showMessage('已登入！正在跳轉...', 'success');
+        setTimeout(function() { window.location.href = _redirectUrl; }, 500);
+      } else {
+        showMessage('您已登入（' + (user.user_metadata?.full_name || user.email) + '）', 'success');
+      }
     }
   })();
 </script>
