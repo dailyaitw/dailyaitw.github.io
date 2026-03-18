@@ -159,25 +159,25 @@ title: Daily AI Taiwan
   }
 
   async function loadDaily() {
-    var posts = await apiFetch('type=eq.daily&select=date,title,summary&order=date.desc');
+    var posts = await apiFetch('type=eq.daily&select=date,type,title,summary&order=date.desc');
     var el = document.getElementById('daily-list');
     el.innerHTML = posts.length ? buildGroupedList(posts) : '<p>尚無日報</p>';
   }
 
   async function loadMonthly() {
-    var posts = await apiFetch('type=eq.monthly&select=date,title,summary&order=date.desc');
+    var posts = await apiFetch('type=eq.monthly&select=date,type,title,summary&order=date.desc');
     var el = document.getElementById('monthly-list');
     el.innerHTML = posts.length ? buildList(posts, fmtMonth) : '<p>尚無月度回顧</p>';
   }
 
   async function loadYearly() {
-    var posts = await apiFetch('type=eq.yearly&select=date,title,summary&order=date.desc');
+    var posts = await apiFetch('type=eq.yearly&select=date,type,title,summary&order=date.desc');
     var el = document.getElementById('yearly-list');
     el.innerHTML = posts.length ? buildList(posts, fmtYear) : '<p>尚無年度回顧</p>';
   }
 
   async function loadFeatures() {
-    var posts = await apiFetch('type=eq.feature&select=date,title,summary,slug&order=date.desc');
+    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug&order=date.desc');
     if (posts.length === 0) return;
     document.getElementById('feature-section').style.display = 'block';
     var html = '<div class="feature-grid">';
