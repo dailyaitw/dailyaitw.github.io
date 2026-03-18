@@ -1,6 +1,9 @@
 <header class="site-header" role="banner">
   <div class="wrapper header-wrapper">
-    <a class="site-title" rel="author" href="{{ "/" | relative_url }}">Daily AI Taiwan</a>
+    <div class="header-left">
+      <a class="site-title" rel="author" href="{{ "/" | relative_url }}">Daily AI Taiwan</a>
+      <span class="site-tagline">立足台灣，讀懂 AI</span>
+    </div>
 
     <div class="header-right">
       <span class="auth-nav-container" id="auth-nav">
@@ -9,3 +12,11 @@
     </div>
   </div>
 </header>
+
+<style>
+.header-left { display: flex; align-items: baseline; gap: 12px; }
+.site-tagline { font-size: 0.8em; color: #888; letter-spacing: 0.3px; white-space: nowrap; }
+@media (max-width: 480px) {
+  .site-tagline { display: none; }
+}
+</style>
