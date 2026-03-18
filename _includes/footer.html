@@ -314,3 +314,99 @@ async function submitContact(e) {
   color: #999;
 }
 </style>
+
+<!-- External Link Confirmation -->
+<div id="ext-link-modal" style="display:none;">
+  <div class="ext-overlay" onclick="closeExtModal()"></div>
+  <div class="ext-dialog">
+    <div class="ext-icon">🔗</div>
+    <h3>即將離開 Daily AI Taiwan</h3>
+    <p>你即將前往外部網站：</p>
+    <p class="ext-url" id="ext-url-display"></p>
+    <p class="ext-note">此連結為資料來源，內容由第三方網站提供。</p>
+    <div class="ext-actions">
+      <button onclick="closeExtModal()" class="ext-btn ext-cancel">取消</button>
+      <a id="ext-link-go" href="#" target="_blank" rel="noopener noreferrer" class="ext-btn ext-go" onclick="closeExtModal()">前往網站 →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var extModal = document.getElementById('ext-link-modal');
+  var extUrlDisplay = document.getElementById('ext-url-display');
+  var extLinkGo = document.getElementById('ext-link-go');
+
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('a[href]');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href.startsWith('/') || href.startsWith('#') || href.startsWith('javascript:')) return;
+    try {
+      var url = new URL(href, window.location.origin);
+      if (url.hostname === window.location.hostname) return;
+      // Internal service URLs - skip
+      if (url.hostname.includes('supabase.co')) return;
+      if (url.hostname.includes('discord.gg')) return;
+      // Show modal for external links
+      e.preventDefault();
+      var displayUrl = url.hostname + url.pathname;
+      if (displayUrl.length > 60) displayUrl = displayUrl.substring(0, 57) + '...';
+      extUrlDisplay.textContent = displayUrl;
+      extLinkGo.href = href;
+      extModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    } catch(err) {}
+  });
+
+  window.closeExtModal = function() {
+    extModal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && extModal.style.display === 'flex') closeExtModal();
+  });
+})();
+</script>
+
+<style>
+#ext-link-modal {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 3000; align-items: center; justify-content: center;
+}
+.ext-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 3001; cursor: pointer;
+}
+.ext-dialog {
+  position: relative; z-index: 3002; background: #fff;
+  border-radius: 16px; max-width: 420px; width: 90%;
+  padding: 2em; text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  animation: extSlideUp 0.2s ease-out;
+}
+@keyframes extSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ext-icon { font-size: 36px; margin-bottom: 8px; }
+.ext-dialog h3 { font-size: 1.15em; margin: 0 0 8px; color: #333; }
+.ext-dialog p { color: #666; font-size: 0.9em; margin: 4px 0; }
+.ext-url {
+  background: #f3f4f6; padding: 8px 14px; border-radius: 8px;
+  font-family: monospace; font-size: 0.8em; color: #2a7ae2;
+  word-break: break-all; margin: 12px 0 !important;
+}
+.ext-note { font-size: 0.78em !important; color: #999 !important; margin-top: 8px !important; }
+.ext-actions { display: flex; gap: 10px; margin-top: 18px; justify-content: center; }
+.ext-btn {
+  padding: 10px 24px; border-radius: 8px; font-size: 0.9em;
+  font-weight: 600; cursor: pointer; text-decoration: none; border: none;
+  transition: all 0.15s;
+}
+.ext-cancel { background: #f3f4f6; color: #666; }
+.ext-cancel:hover { background: #e5e7eb; }
+.ext-go { background: #2a7ae2; color: #fff !important; }
+.ext-go:hover { background: #1a5fb4; }
+</style>
