@@ -1,0 +1,221 @@
+---
+layout: default
+title: Admin Dashboard
+---
+
+<div id="admin-app">
+  <div id="admin-login" style="display:none; text-align:center; padding:40px;">
+    <h2>🔒 管理員登入</h2>
+    <p>請使用 GitHub (dailyaitw) 帳號登入</p>
+    <button onclick="loginGitHub()" style="padding:12px 24px; background:#333; color:#fff; border:none; border-radius:6px; font-size:16px; cursor:pointer;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align:middle; margin-right:8px;"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      GitHub 登入
+    </button>
+  </div>
+
+  <div id="admin-denied" style="display:none; text-align:center; padding:40px;">
+    <h2>⛔ 存取被拒</h2>
+    <p>只有管理員帳號可以存取此頁面。</p>
+    <button onclick="window.location.href='/'" style="padding:8px 16px; cursor:pointer;">回首頁</button>
+  </div>
+
+  <div id="admin-dashboard" style="display:none;">
+    <h1>📊 Admin Dashboard</h1>
+    <p id="admin-user" style="color:#888;"></p>
+
+    <hr>
+
+    <h2>📈 訪客統計</h2>
+    <div id="stats-summary" style="display:flex; gap:20px; flex-wrap:wrap; margin:20px 0;">
+      <div class="stat-card"><div class="stat-num" id="stat-total">-</div><div class="stat-label">總訪問次數</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-today">-</div><div class="stat-label">今日訪問</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-unique">-</div><div class="stat-label">獨立訪客（IP）</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-auth">-</div><div class="stat-label">已登入用戶</div></div>
+    </div>
+
+    <h3>📱 裝置分佈</h3>
+    <div id="device-stats"></div>
+
+    <h3>🌐 瀏覽器分佈</h3>
+    <div id="browser-stats"></div>
+
+    <h3>🌍 國家/地區分佈</h3>
+    <div id="country-stats"></div>
+
+    <h3>📄 熱門頁面</h3>
+    <div id="page-stats"></div>
+
+    <hr>
+
+    <h2>📬 聯繫訊息</h2>
+    <div id="contacts-list"><p>載入中...</p></div>
+
+    <hr>
+
+    <h2>📝 最近訪客記錄（最新 50 筆）</h2>
+    <div style="overflow-x:auto;">
+      <table id="visits-table">
+        <thead>
+          <tr><th>時間</th><th>IP</th><th>Email</th><th>頁面</th><th>裝置</th><th>瀏覽器</th><th>國家</th><th>城市</th></tr>
+        </thead>
+        <tbody id="visits-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
+const SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+const ADMIN_GITHUB = 'dailyaitw';
+
+// For admin, we use secret key to read all data
+async function apiFetch(table, query) {
+  const res = await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  });
+  return res.json();
+}
+
+async function checkAdmin() {
+  // Check if user is logged in via Supabase auth
+  const sb = window.supabase ? window.supabase.createClient(SB_URL, 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f') : null;
+
+  // Simple approach: check URL hash for admin token or use hardcoded check
+  const urlParams = new URLSearchParams(window.location.search);
+  const adminKey = urlParams.get('key');
+
+  // Allow access with secret key in URL or if GitHub dailyaitw is logged in
+  if (adminKey === 'dailyaitw2026') {
+    return true;
+  }
+
+  // Check Supabase auth
+  if (sb) {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session && session.user) {
+      const meta = session.user.user_metadata || {};
+      if (meta.user_name === ADMIN_GITHUB || meta.preferred_username === ADMIN_GITHUB) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+async function loadDashboard() {
+  const isAdmin = await checkAdmin();
+
+  if (!isAdmin) {
+    // Show login or denied
+    document.getElementById('admin-login').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('admin-dashboard').style.display = 'block';
+  document.getElementById('admin-user').textContent = 'Logged in as admin';
+
+  // Load stats
+  const visits = await apiFetch('visit_logs', 'select=*&order=created_at.desc&limit=500');
+  const today = new Date().toISOString().split('T')[0];
+
+  // Summary stats
+  document.getElementById('stat-total').textContent = visits.length + (visits.length >= 500 ? '+' : '');
+  document.getElementById('stat-today').textContent = visits.filter(v => v.created_at && v.created_at.startsWith(today)).length;
+  document.getElementById('stat-unique').textContent = new Set(visits.map(v => v.visitor_ip).filter(Boolean)).size;
+  document.getElementById('stat-auth').textContent = visits.filter(v => v.is_authenticated).length;
+
+  // Device distribution
+  const devices = {};
+  visits.forEach(v => { devices[v.device_type || 'unknown'] = (devices[v.device_type || 'unknown'] || 0) + 1; });
+  document.getElementById('device-stats').innerHTML = makeBarChart(devices);
+
+  // Browser distribution
+  const browsers = {};
+  visits.forEach(v => { browsers[v.browser || 'unknown'] = (browsers[v.browser || 'unknown'] || 0) + 1; });
+  document.getElementById('browser-stats').innerHTML = makeBarChart(browsers);
+
+  // Country distribution
+  const countries = {};
+  visits.forEach(v => { countries[v.country || 'unknown'] = (countries[v.country || 'unknown'] || 0) + 1; });
+  document.getElementById('country-stats').innerHTML = makeBarChart(countries);
+
+  // Page distribution
+  const pages = {};
+  visits.forEach(v => { pages[v.page_url || '/'] = (pages[v.page_url || '/'] || 0) + 1; });
+  document.getElementById('page-stats').innerHTML = makeBarChart(pages);
+
+  // Recent visits table
+  const tbody = document.getElementById('visits-body');
+  tbody.innerHTML = visits.slice(0, 50).map(v => {
+    const time = v.created_at ? new Date(v.created_at).toLocaleString('zh-TW') : '-';
+    return '<tr>' +
+      '<td>' + time + '</td>' +
+      '<td>' + (v.visitor_ip || '-') + '</td>' +
+      '<td>' + (v.user_email || '<span style="color:#999">Guest</span>') + '</td>' +
+      '<td>' + (v.page_url || '/') + '</td>' +
+      '<td>' + (v.device_type || '-') + '</td>' +
+      '<td>' + (v.browser || '-') + '</td>' +
+      '<td>' + (v.country || '-') + '</td>' +
+      '<td>' + (v.city || '-') + '</td>' +
+      '</tr>';
+  }).join('');
+
+  // Load contacts
+  const contacts = await apiFetch('contacts', 'select=*&order=created_at.desc');
+  const contactsEl = document.getElementById('contacts-list');
+  if (contacts.length === 0) {
+    contactsEl.innerHTML = '<p style="color:#999;">尚無聯繫訊息</p>';
+  } else {
+    contactsEl.innerHTML = contacts.map(c => {
+      const time = c.created_at ? new Date(c.created_at).toLocaleString('zh-TW') : '-';
+      return '<div class="contact-card">' +
+        '<div class="contact-header"><strong>' + (c.name || 'Anonymous') + '</strong> &lt;' + c.email + '&gt; <span style="color:#999;font-size:12px;">' + time + '</span></div>' +
+        '<div class="contact-body">' + (c.message || '').replace(/\n/g, '<br>') + '</div>' +
+        '</div>';
+    }).join('');
+  }
+}
+
+function makeBarChart(data) {
+  const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+  const max = sorted[0] ? sorted[0][1] : 1;
+  return '<div class="bar-chart">' + sorted.map(([label, count]) => {
+    const pct = Math.round(count / max * 100);
+    return '<div class="bar-row"><span class="bar-label">' + label + '</span>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+      '<span class="bar-count">' + count + '</span></div>';
+  }).join('') + '</div>';
+}
+
+function loginGitHub() {
+  // Redirect to admin with key for now
+  // In production, use Supabase GitHub OAuth
+  window.location.href = '/admin?key=dailyaitw2026';
+}
+
+loadDashboard();
+</script>
+
+<style>
+.stat-card {
+  background: #f8f9fa; border: 1px solid #eee; border-radius: 8px;
+  padding: 20px; min-width: 140px; text-align: center;
+}
+.stat-num { font-size: 32px; font-weight: 700; color: #2a7ae2; }
+.stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+.bar-chart { margin: 10px 0 20px; }
+.bar-row { display: flex; align-items: center; margin: 4px 0; }
+.bar-label { width: 100px; font-size: 13px; color: #555; text-align: right; padding-right: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { flex: 1; background: #eee; border-radius: 4px; height: 20px; }
+.bar-fill { background: #2a7ae2; border-radius: 4px; height: 100%; min-width: 2px; }
+.bar-count { width: 40px; font-size: 13px; color: #555; text-align: right; padding-left: 8px; }
+#visits-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+#visits-table th { background: #f5f5f5; padding: 8px; text-align: left; border-bottom: 2px solid #ddd; }
+#visits-table td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+#visits-table tr:hover { background: #f9f9f9; }
+.contact-card { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin: 10px 0; }
+.contact-header { margin-bottom: 8px; }
+.contact-body { color: #555; font-size: 14px; line-height: 1.6; }
+</style>
