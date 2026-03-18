@@ -102,6 +102,36 @@ title: Daily AI Taiwan
     }).join('') + '</ul>';
   }
 
+  function buildGroupedList(posts) {
+    // Group by year-month
+    var groups = {};
+    posts.forEach(function(p) {
+      var ym = p.date.substring(0, 7);
+      if (!groups[ym]) groups[ym] = [];
+      groups[ym].push(p);
+    });
+
+    var keys = Object.keys(groups).sort().reverse();
+    var html = '';
+    keys.forEach(function(ym, idx) {
+      var d = new Date(ym + '-01T00:00:00');
+      var label = d.getFullYear() + ' 年 ' + (d.getMonth()+1) + ' 月';
+      var count = groups[ym].length;
+      var open = idx === 0 ? 'open' : '';
+      html += '<details ' + open + ' class="month-group">';
+      html += '<summary><strong>' + label + '</strong> <span class="month-count">(' + count + ' 篇)</span></summary>';
+      html += '<ul>';
+      groups[ym].forEach(function(p) {
+        var key = p.date + '_' + p.type;
+        postsCache[key] = p.content;
+        html += '<li><a href="javascript:void(0)" onclick="window._showPost(\'' + key + '\')">' +
+          '<strong>' + fmt(p.date) + '</strong></a> — ' + (p.summary || p.title) + '</li>';
+      });
+      html += '</ul></details>';
+    });
+    return html;
+  }
+
   async function loadToday() {
     var today = new Date().toISOString().split('T')[0];
     var data = await apiFetch('type=eq.daily&date=eq.' + today + '&select=*');
@@ -122,7 +152,7 @@ title: Daily AI Taiwan
   async function loadDaily() {
     var posts = await apiFetch('type=eq.daily&select=date,title,summary,content&order=date.desc');
     var el = document.getElementById('daily-list');
-    el.innerHTML = posts.length ? buildList(posts, fmt) : '<p>尚無日報</p>';
+    el.innerHTML = posts.length ? buildGroupedList(posts) : '<p>尚無日報</p>';
   }
 
   async function loadMonthly() {
@@ -151,6 +181,11 @@ title: Daily AI Taiwan
 #app ul li:last-child { border-bottom: none; }
 #app ul li a { color: #2a7ae2; text-decoration: none; }
 #app ul li a:hover { text-decoration: underline; }
+.month-group { margin: 8px 0; }
+.month-group summary { cursor: pointer; padding: 8px 0; font-size: 15px; border-bottom: 1px solid #eee; }
+.month-group summary:hover { color: #2a7ae2; }
+.month-count { color: #999; font-weight: normal; font-size: 13px; }
+.month-group[open] summary { color: #2a7ae2; }
 
 #post-modal {
   display: none; position: fixed;
