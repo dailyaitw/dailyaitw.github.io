@@ -6,16 +6,20 @@ title: Admin Dashboard
 <div id="admin-app">
   <div id="admin-login" style="display:none; text-align:center; padding:40px;">
     <h2>🔒 管理員登入</h2>
-    <p>請使用 GitHub (dailyaitw) 帳號登入</p>
-    <button onclick="loginGitHub()" style="padding:12px 24px; background:#333; color:#fff; border:none; border-radius:6px; font-size:16px; cursor:pointer;">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align:middle; margin-right:8px;"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-      GitHub 登入
-    </button>
+    <p>請使用 GitHub (dailyaitw) 或管理員帳號登入</p>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:280px; margin:20px auto;">
+      <button onclick="adminLogin('github')" style="padding:12px 24px; background:#333; color:#fff; border:none; border-radius:6px; font-size:15px; cursor:pointer;">
+        GitHub 登入
+      </button>
+      <button onclick="adminLogin('google')" style="padding:12px 24px; background:#4285F4; color:#fff; border:none; border-radius:6px; font-size:15px; cursor:pointer;">
+        Google 登入
+      </button>
+    </div>
   </div>
 
   <div id="admin-denied" style="display:none; text-align:center; padding:40px;">
     <h2>⛔ 存取被拒</h2>
-    <p>只有管理員帳號可以存取此頁面。</p>
+    <p id="denied-msg">只有管理員帳號可以存取此頁面。</p>
     <button onclick="window.location.href='/'" style="padding:8px 16px; cursor:pointer;">回首頁</button>
   </div>
 
@@ -68,8 +72,14 @@ title: Admin Dashboard
 const SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
 const SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
 const ADMIN_GITHUB = 'dailyaitw';
+const ADMIN_EMAILS = ['ai@dailyai.tw', 'markluceai@gmail.com'];
 
-// For admin, we use secret key to read all data
+var _sb;
+function getSB() {
+  if (!_sb && window.supabase) _sb = window.supabase.createClient(SB_URL, SB_KEY);
+  return _sb;
+}
+
 async function apiFetch(table, query) {
   const res = await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
@@ -77,24 +87,22 @@ async function apiFetch(table, query) {
   return res.json();
 }
 
-const ADMIN_EMAILS = ['ai@dailyai.tw', 'markluceai@gmail.com'];
-
 async function checkAdmin() {
   try {
-    var sb = window.supabase.createClient(SB_URL, SB_KEY);
+    var sb = getSB();
+    if (!sb) return false;
     var { data } = await sb.auth.getSession();
     if (data && data.session && data.session.user) {
       var user = data.session.user;
       var meta = user.user_metadata || {};
       var ghUser = meta.user_name || meta.preferred_username || '';
       var email = user.email || meta.email || '';
+      var name = meta.full_name || meta.name || ghUser || email;
 
-      // Allow GitHub dailyaitw or admin emails
       if (ghUser === ADMIN_GITHUB || ADMIN_EMAILS.includes(email)) {
-        return { user: ghUser || email };
+        return { user: name, email: email };
       }
-      // Logged in but not admin
-      return { denied: true, user: email || ghUser };
+      return { denied: true, user: name, email: email };
     }
   } catch(e) {
     console.error('Auth check error:', e);
@@ -102,123 +110,98 @@ async function checkAdmin() {
   return false;
 }
 
-async function loginGitHub() {
+async function adminLogin(provider) {
   try {
-    var sb = window.supabase.createClient(SB_URL, SB_KEY);
+    var sb = getSB();
     await sb.auth.signInWithOAuth({
-      provider: 'github',
+      provider: provider,
       options: { redirectTo: window.location.origin + '/admin' }
     });
   } catch(e) {
-    alert('GitHub 登入失敗，請稍後再試');
+    alert('登入失敗，請稍後再試');
   }
 }
 
 async function loadDashboard() {
-  const result = await checkAdmin();
+  var result = await checkAdmin();
 
   if (!result) {
-    // Not logged in
     document.getElementById('admin-login').style.display = 'block';
     return;
   }
 
   if (result.denied) {
-    // Logged in but not admin
     document.getElementById('admin-denied').style.display = 'block';
+    document.getElementById('denied-msg').textContent = result.email + ' 不是管理員帳號。';
     return;
   }
 
   document.getElementById('admin-dashboard').style.display = 'block';
-  document.getElementById('admin-user').textContent = 'Logged in as ' + result.user;
+  document.getElementById('admin-user').textContent = '已登入：' + result.user + ' (' + result.email + ')';
 
   // Load stats
-  const visits = await apiFetch('visit_logs', 'select=*&order=created_at.desc&limit=500');
-  const today = new Date().toISOString().split('T')[0];
+  var visits = await apiFetch('visit_logs', 'select=*&order=created_at.desc&limit=500');
+  var today = new Date().toISOString().split('T')[0];
 
-  // Summary stats
   document.getElementById('stat-total').textContent = visits.length + (visits.length >= 500 ? '+' : '');
-  document.getElementById('stat-today').textContent = visits.filter(v => v.created_at && v.created_at.startsWith(today)).length;
-  document.getElementById('stat-unique').textContent = new Set(visits.map(v => v.visitor_ip).filter(Boolean)).size;
-  document.getElementById('stat-auth').textContent = visits.filter(v => v.is_authenticated).length;
+  document.getElementById('stat-today').textContent = visits.filter(function(v) { return v.created_at && v.created_at.startsWith(today); }).length;
+  document.getElementById('stat-unique').textContent = new Set(visits.map(function(v) { return v.visitor_ip; }).filter(Boolean)).size;
+  document.getElementById('stat-auth').textContent = visits.filter(function(v) { return v.is_authenticated; }).length;
 
-  // Device distribution
-  const devices = {};
-  visits.forEach(v => { devices[v.device_type || 'unknown'] = (devices[v.device_type || 'unknown'] || 0) + 1; });
+  var devices = {}, browsers = {}, countries = {}, pages = {};
+  visits.forEach(function(v) {
+    devices[v.device_type || 'unknown'] = (devices[v.device_type || 'unknown'] || 0) + 1;
+    browsers[v.browser || 'unknown'] = (browsers[v.browser || 'unknown'] || 0) + 1;
+    countries[v.country || 'unknown'] = (countries[v.country || 'unknown'] || 0) + 1;
+    pages[v.page_url || '/'] = (pages[v.page_url || '/'] || 0) + 1;
+  });
   document.getElementById('device-stats').innerHTML = makeBarChart(devices);
-
-  // Browser distribution
-  const browsers = {};
-  visits.forEach(v => { browsers[v.browser || 'unknown'] = (browsers[v.browser || 'unknown'] || 0) + 1; });
   document.getElementById('browser-stats').innerHTML = makeBarChart(browsers);
-
-  // Country distribution
-  const countries = {};
-  visits.forEach(v => { countries[v.country || 'unknown'] = (countries[v.country || 'unknown'] || 0) + 1; });
   document.getElementById('country-stats').innerHTML = makeBarChart(countries);
-
-  // Page distribution
-  const pages = {};
-  visits.forEach(v => { pages[v.page_url || '/'] = (pages[v.page_url || '/'] || 0) + 1; });
   document.getElementById('page-stats').innerHTML = makeBarChart(pages);
 
-  // Recent visits table
-  const tbody = document.getElementById('visits-body');
-  tbody.innerHTML = visits.slice(0, 50).map(v => {
-    const time = v.created_at ? new Date(v.created_at).toLocaleString('zh-TW') : '-';
-    return '<tr>' +
-      '<td>' + time + '</td>' +
-      '<td>' + (v.visitor_ip || '-') + '</td>' +
-      '<td>' + (v.user_email || '<span style="color:#999">Guest</span>') + '</td>' +
-      '<td>' + (v.page_url || '/') + '</td>' +
-      '<td>' + (v.device_type || '-') + '</td>' +
-      '<td>' + (v.browser || '-') + '</td>' +
-      '<td>' + (v.country || '-') + '</td>' +
-      '<td>' + (v.city || '-') + '</td>' +
-      '</tr>';
+  // Visits table
+  document.getElementById('visits-body').innerHTML = visits.slice(0, 50).map(function(v) {
+    var time = v.created_at ? new Date(v.created_at).toLocaleString('zh-TW') : '-';
+    return '<tr><td>' + time + '</td><td>' + (v.visitor_ip || '-') + '</td><td>' +
+      (v.user_email || '<span style="color:#999">Guest</span>') + '</td><td>' +
+      (v.page_url || '/') + '</td><td>' + (v.device_type || '-') + '</td><td>' +
+      (v.browser || '-') + '</td><td>' + (v.country || '-') + '</td><td>' +
+      (v.city || '-') + '</td></tr>';
   }).join('');
 
-  // Load contacts
-  const contacts = await apiFetch('contacts', 'select=*&order=created_at.desc');
-  const contactsEl = document.getElementById('contacts-list');
+  // Contacts
+  var contacts = await apiFetch('contacts', 'select=*&order=created_at.desc');
+  var contactsEl = document.getElementById('contacts-list');
   if (contacts.length === 0) {
     contactsEl.innerHTML = '<p style="color:#999;">尚無聯繫訊息</p>';
   } else {
-    contactsEl.innerHTML = contacts.map(c => {
-      const time = c.created_at ? new Date(c.created_at).toLocaleString('zh-TW') : '-';
-      return '<div class="contact-card">' +
-        '<div class="contact-header"><strong>' + (c.name || 'Anonymous') + '</strong> &lt;' + c.email + '&gt; <span style="color:#999;font-size:12px;">' + time + '</span></div>' +
-        '<div class="contact-body">' + (c.message || '').replace(/\n/g, '<br>') + '</div>' +
-        '</div>';
+    contactsEl.innerHTML = contacts.map(function(c) {
+      var time = c.created_at ? new Date(c.created_at).toLocaleString('zh-TW') : '-';
+      return '<div class="contact-card"><div class="contact-header"><strong>' +
+        (c.name || 'Anonymous') + '</strong> &lt;' + c.email + '&gt; <span style="color:#999;font-size:12px;">' +
+        time + '</span></div><div class="contact-body">' +
+        (c.message || '').replace(/\n/g, '<br>') + '</div></div>';
     }).join('');
   }
 }
 
 function makeBarChart(data) {
-  const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
-  const max = sorted[0] ? sorted[0][1] : 1;
-  return '<div class="bar-chart">' + sorted.map(([label, count]) => {
-    const pct = Math.round(count / max * 100);
-    return '<div class="bar-row"><span class="bar-label">' + label + '</span>' +
+  var sorted = Object.entries(data).sort(function(a, b) { return b[1] - a[1]; });
+  var max = sorted[0] ? sorted[0][1] : 1;
+  return '<div class="bar-chart">' + sorted.map(function(item) {
+    var pct = Math.round(item[1] / max * 100);
+    return '<div class="bar-row"><span class="bar-label">' + item[0] + '</span>' +
       '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
-      '<span class="bar-count">' + count + '</span></div>';
+      '<span class="bar-count">' + item[1] + '</span></div>';
   }).join('') + '</div>';
-}
-
-function loginGitHub() {
-  // Redirect to admin with key for now
-  // In production, use Supabase GitHub OAuth
-  window.location.href = '/admin?key=dailyaitw2026';
 }
 
 loadDashboard();
 </script>
 
 <style>
-.stat-card {
-  background: #f8f9fa; border: 1px solid #eee; border-radius: 8px;
-  padding: 20px; min-width: 140px; text-align: center;
-}
+.stat-card { background: #f8f9fa; border: 1px solid #eee; border-radius: 8px; padding: 20px; min-width: 140px; text-align: center; }
 .stat-num { font-size: 32px; font-weight: 700; color: #2a7ae2; }
 .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
 .bar-chart { margin: 10px 0 20px; }
@@ -234,4 +217,8 @@ loadDashboard();
 .contact-card { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin: 10px 0; }
 .contact-header { margin-bottom: 8px; }
 .contact-body { color: #555; font-size: 14px; line-height: 1.6; }
+@media (max-width: 600px) {
+  #stats-summary { flex-direction: column; }
+  .stat-card { min-width: auto; }
+}
 </style>
