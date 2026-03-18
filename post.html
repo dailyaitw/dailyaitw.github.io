@@ -64,10 +64,52 @@ permalink: /post/
     var post = data[0];
     document.title = post.title + ' — Daily AI Taiwan';
 
+    // Check if user is logged in
+    var isLoggedIn = false;
+    try {
+      var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+      if (stored) { var sess = JSON.parse(stored); if (sess && sess.user) isLoggedIn = true; }
+    } catch(e) {}
+
+    // Check if content is within free window (today + 7 days)
+    var postDate = new Date(date + 'T00:00:00');
+    var now = new Date();
+    var diffDays = Math.floor((now - postDate) / (1000 * 60 * 60 * 24));
+    var isFree = (type === 'daily' && diffDays <= 7) || isLoggedIn;
+    // Monthly and yearly always require login
+    if (type !== 'daily' && !isLoggedIn) isFree = false;
+
+    var fullContent = marked.parse(post.content);
+
     var html = '<div style="margin-bottom:12px;">' +
       '<a href="/" style="color:#2a7ae2;text-decoration:none;font-size:0.9em;">← 回首頁</a>' +
       '</div>';
-    html += marked.parse(post.content);
+
+    if (!isFree) {
+      // Show preview (first 30% of content) + registration wall
+      var previewDiv = document.createElement('div');
+      previewDiv.innerHTML = fullContent;
+      var allElements = previewDiv.querySelectorAll('h1,h2,h3,p,ul,ol,table,blockquote,hr');
+      var showCount = Math.max(3, Math.floor(allElements.length * 0.3));
+      var previewHtml = '';
+      for (var i = 0; i < Math.min(showCount, allElements.length); i++) {
+        previewHtml += allElements[i].outerHTML;
+      }
+      html += previewHtml;
+      html += '<div class="paywall-overlay"></div>';
+      html += '<div class="paywall-box">';
+      html += '<h3>🔒 註冊免費閱讀完整內容</h3>';
+      if (type === 'daily') {
+        html += '<p>超過 7 天的日報需要登入才能閱讀。<br>免費註冊即可解鎖所有歷史日報！</p>';
+      } else {
+        html += '<p>月度回顧和年度回顧需要登入才能閱讀。<br>免費註冊即可解鎖！</p>';
+      }
+      html += '<a href="/login" class="paywall-btn">免費註冊 / 登入</a>';
+      html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p>';
+      html += '</div>';
+    } else {
+      html += fullContent;
+    }
 
     // Share buttons
     var shareUrl = encodeURIComponent(window.location.href);
@@ -131,4 +173,43 @@ permalink: /post/
 #post-content blockquote li::before { content: "· "; color: #bbb; }
 #post-content a { color: #2a7ae2; }
 #post-content hr { border: none; border-top: 1px solid #eee; margin: 1.5em 0; }
+
+/* Paywall */
+.paywall-overlay {
+  height: 120px;
+  margin-top: -120px;
+  position: relative;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+  pointer-events: none;
+}
+.paywall-box {
+  text-align: center;
+  padding: 30px 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+  margin-top: 10px;
+}
+.paywall-box h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+.paywall-box p {
+  color: #666;
+  font-size: 0.95em;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.paywall-btn {
+  display: inline-block;
+  padding: 10px 28px;
+  background: #2a7ae2;
+  color: #fff !important;
+  text-decoration: none !important;
+  border-radius: 24px;
+  font-size: 1em;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.paywall-btn:hover { background: #1a5fb4; }
 </style>

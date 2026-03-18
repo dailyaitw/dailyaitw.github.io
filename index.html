@@ -102,17 +102,51 @@ title: Daily AI Taiwan
     }).catch(function(){});
   }
 
+  function isLoggedIn() {
+    try {
+      var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+      if (stored) { var s = JSON.parse(stored); return s && s.user; }
+    } catch(e) {}
+    return false;
+  }
+
   function showPost(key) {
     const content = postsCache[key];
     if (!content) return;
+    var parts = key.split('_');
+    var date = parts[0], type = parts[1];
     var body = document.getElementById('post-modal-body');
-    body.innerHTML = marked.parse(content);
-    addTableLabels(body);
+
+    // Check free access
+    var loggedIn = isLoggedIn();
+    var postDate = new Date(date + 'T00:00:00');
+    var diffDays = Math.floor((new Date() - postDate) / (1000*60*60*24));
+    var isFree = (type === 'daily' && diffDays <= 7) || loggedIn;
+    if (type !== 'daily' && !loggedIn) isFree = false;
+
+    if (!isFree) {
+      // Preview
+      var tmp = document.createElement('div');
+      tmp.innerHTML = marked.parse(content);
+      var els = tmp.querySelectorAll('h1,h2,h3,p,ul,ol,table,blockquote,hr');
+      var show = Math.max(3, Math.floor(els.length * 0.3));
+      var preview = '';
+      for (var i = 0; i < Math.min(show, els.length); i++) preview += els[i].outerHTML;
+      body.innerHTML = preview +
+        '<div style="height:120px;margin-top:-120px;background:linear-gradient(to bottom,rgba(255,255,255,0),#fff);pointer-events:none;"></div>' +
+        '<div style="text-align:center;padding:30px 20px;border:2px solid #e5e7eb;border-radius:12px;background:#f9fafb;margin-top:10px;">' +
+        '<h3>🔒 註冊免費閱讀完整內容</h3>' +
+        '<p style="color:#666;line-height:1.6;">' + (type === 'daily' ? '超過 7 天的日報需要登入才能閱讀。' : '月度/年度回顧需要登入才能閱讀。') + '<br>免費註冊即可解鎖！</p>' +
+        '<a href="/login" style="display:inline-block;padding:10px 28px;background:#2a7ae2;color:#fff;text-decoration:none;border-radius:24px;font-weight:600;">免費註冊 / 登入</a>' +
+        '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p></div>';
+    } else {
+      body.innerHTML = marked.parse(content);
+      addTableLabels(body);
+    }
+
     document.getElementById('post-modal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
-    // Track view
-    var parts = key.split('_');
-    if (parts.length === 2) trackPostView(parts[0], parts[1]);
+    if (parts.length === 2) trackPostView(date, type);
   }
 
   function closeModal() {
