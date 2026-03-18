@@ -20,31 +20,21 @@ permalink: /post/
   var SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
   var SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
 
-  // Parse URL: /post/2026-03-18 or /post/2026-01 or /post/2025
-  var path = window.location.pathname.replace(/\/$/, '').replace('/post/', '').replace('/post', '');
-  if (!path) { window.location.href = '/'; return; }
+  // Read from URL params: /post/?date=2026-03-18&type=daily
+  var params = new URLSearchParams(window.location.search);
+  var date = params.get('date');
+  var type = params.get('type') || 'daily';
 
-  var date, type, query;
+  if (!date) { window.location.href = '/'; return; }
 
-  if (/^\d{4}-\d{2}-\d{2}$/.test(path)) {
-    // Daily: /post/2026-03-18
-    date = path;
-    type = 'daily';
+  var query;
+  if (type === 'daily') {
     query = 'type=eq.daily&date=eq.' + date + '&select=*';
-  } else if (/^\d{4}-\d{2}$/.test(path)) {
-    // Monthly: /post/2026-01
-    date = path + '-01';
-    type = 'monthly';
+  } else if (type === 'monthly') {
     query = 'type=eq.monthly&date=eq.' + date + '&select=*';
-  } else if (/^\d{4}$/.test(path)) {
-    // Yearly: /post/2025
-    date = path + '-12-31';
-    type = 'yearly';
+  } else if (type === 'yearly') {
     query = 'type=eq.yearly&date=eq.' + date + '&select=*';
-  } else if (/^feature\/\d{4}-\d{2}-\d{2}$/.test(path)) {
-    // Feature: /post/feature/2026-03-18
-    date = path.replace('feature/', '');
-    type = 'feature';
+  } else if (type === 'feature') {
     query = 'type=eq.feature&date=eq.' + date + '&select=*';
   } else {
     document.getElementById('post-loading').style.display = 'none';
@@ -67,19 +57,16 @@ permalink: /post/
     var post = data[0];
     document.title = post.title + ' — Daily AI Taiwan';
 
-    // Check if user is logged in
     var isLoggedIn = false;
     try {
       var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
       if (stored) { var sess = JSON.parse(stored); if (sess && sess.user) isLoggedIn = true; }
     } catch(e) {}
 
-    // Check if content is within free window (today + 7 days)
     var postDate = new Date(date + 'T00:00:00');
     var now = new Date();
     var diffDays = Math.floor((now - postDate) / (1000 * 60 * 60 * 24));
     var isFree = (type === 'daily' && diffDays <= 7) || isLoggedIn;
-    // Monthly and yearly always require login
     if (type !== 'daily' && !isLoggedIn) isFree = false;
 
     var fullContent = marked.parse(post.content);
@@ -89,7 +76,6 @@ permalink: /post/
       '</div>';
 
     if (!isFree) {
-      // Show preview (first 30% of content) + registration wall
       var previewDiv = document.createElement('div');
       previewDiv.innerHTML = fullContent;
       var allElements = previewDiv.querySelectorAll('h1,h2,h3,p,ul,ol,table,blockquote,hr');
@@ -122,7 +108,6 @@ permalink: /post/
       '<a href="https://twitter.com/intent/tweet?url=' + shareUrl + '&text=' + shareTitle + '" target="_blank" style="color:#1da1f2;margin:0 8px;text-decoration:none;">𝕏</a>' +
       '<a href="https://www.facebook.com/sharer/sharer.php?u=' + shareUrl + '" target="_blank" style="color:#1877f2;margin:0 8px;text-decoration:none;">Facebook</a>' +
       '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + shareUrl + '" target="_blank" style="color:#0a66c2;margin:0 8px;text-decoration:none;">LinkedIn</a>' +
-      '<button onclick="navigator.clipboard.writeText(window.location.href).then(function(){alert(\'已複製連結！\')})" style="border:1px solid #ddd;background:#fff;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:0.85em;margin-left:8px;">複製連結</button>' +
       '</div>';
 
     var el = document.getElementById('post-content');
@@ -173,46 +158,13 @@ permalink: /post/
 #post-content blockquote a { color: #999; text-decoration: none; }
 #post-content blockquote ul { list-style: none; padding: 0; margin: 0.3em 0; }
 #post-content blockquote li { padding: 1px 0; border: none !important; font-size: 0.95em; }
-#post-content blockquote li::before { content: "· "; color: #bbb; }
+#post-content blockquote li::before { content: "\00B7 "; color: #bbb; }
 #post-content a { color: #2a7ae2; }
 #post-content hr { border: none; border-top: 1px solid #eee; margin: 1.5em 0; }
-
-/* Paywall */
-.paywall-overlay {
-  height: 120px;
-  margin-top: -120px;
-  position: relative;
-  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
-  pointer-events: none;
-}
-.paywall-box {
-  text-align: center;
-  padding: 30px 20px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  background: #f9fafb;
-  margin-top: 10px;
-}
-.paywall-box h3 {
-  font-size: 1.2em;
-  margin-bottom: 10px;
-}
-.paywall-box p {
-  color: #666;
-  font-size: 0.95em;
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-.paywall-btn {
-  display: inline-block;
-  padding: 10px 28px;
-  background: #2a7ae2;
-  color: #fff !important;
-  text-decoration: none !important;
-  border-radius: 24px;
-  font-size: 1em;
-  font-weight: 600;
-  transition: background 0.2s;
-}
+.paywall-overlay { height: 120px; margin-top: -120px; position: relative; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1)); pointer-events: none; }
+.paywall-box { text-align: center; padding: 30px 20px; border: 2px solid #e5e7eb; border-radius: 12px; background: #f9fafb; margin-top: 10px; }
+.paywall-box h3 { font-size: 1.2em; margin-bottom: 10px; }
+.paywall-box p { color: #666; font-size: 0.95em; line-height: 1.6; margin-bottom: 16px; }
+.paywall-btn { display: inline-block; padding: 10px 28px; background: #2a7ae2; color: #fff !important; text-decoration: none !important; border-radius: 24px; font-size: 1em; font-weight: 600; transition: background 0.2s; }
 .paywall-btn:hover { background: #1a5fb4; }
 </style>

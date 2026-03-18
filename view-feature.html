@@ -19,12 +19,13 @@ title: Daily AI Taiwan — 精選專題
   var SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
   var SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
 
-  // Parse URL: /feature/2026-03/ai-transforming-social-media
-  var path = window.location.pathname.replace(/\/$/, '').replace('/feature/', '');
-  if (!path) { window.location.href = '/'; return; }
+  // Read from URL params: /view-feature?slug=2026-03/ai-transforming-social-media
+  var params = new URLSearchParams(window.location.search);
+  var slug = params.get('slug');
 
-  // Fetch by slug
-  var query = 'type=eq.feature&slug=eq.' + encodeURIComponent(path) + '&select=*';
+  if (!slug) { window.location.href = '/'; return; }
+
+  var query = 'type=eq.feature&slug=eq.' + encodeURIComponent(slug) + '&select=*';
 
   fetch(SB_URL + '/rest/v1/posts?' + query, {
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
@@ -41,7 +42,6 @@ title: Daily AI Taiwan — 精選專題
     var post = data[0];
     document.title = post.title + ' — Daily AI Taiwan';
 
-    // Check login for paywall
     var isLoggedIn = false;
     try {
       var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
@@ -57,7 +57,6 @@ title: Daily AI Taiwan — 精選專題
       '</div>';
 
     if (!isLoggedIn) {
-      // Preview
       var tmp = document.createElement('div');
       tmp.innerHTML = fullContent;
       var els = tmp.querySelectorAll('h1,h2,h3,p,ul,ol,table,blockquote,hr');
@@ -75,7 +74,6 @@ title: Daily AI Taiwan — 精選專題
     } else {
       html += fullContent;
 
-      // Share buttons
       var shareUrl = encodeURIComponent(window.location.href);
       var shareTitle = encodeURIComponent(post.title);
       html += '<div style="margin-top:2em;padding-top:1em;border-top:1px solid #eee;">' +
@@ -83,7 +81,6 @@ title: Daily AI Taiwan — 精選專題
         '<a href="https://twitter.com/intent/tweet?url=' + shareUrl + '&text=' + shareTitle + '" target="_blank" style="color:#1da1f2;margin:0 8px;text-decoration:none;">𝕏</a>' +
         '<a href="https://www.facebook.com/sharer/sharer.php?u=' + shareUrl + '" target="_blank" style="color:#1877f2;margin:0 8px;text-decoration:none;">Facebook</a>' +
         '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + shareUrl + '" target="_blank" style="color:#0a66c2;margin:0 8px;text-decoration:none;">LinkedIn</a>' +
-        '<button onclick="navigator.clipboard.writeText(window.location.href).then(function(){alert(\'已複製連結！\')})" style="border:1px solid #ddd;background:#fff;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:0.85em;margin-left:8px;">複製連結</button>' +
         '</div>';
     }
 
@@ -91,7 +88,6 @@ title: Daily AI Taiwan — 精選專題
     el.innerHTML = html;
     el.style.display = 'block';
 
-    // Table labels
     el.querySelectorAll('table').forEach(function(table) {
       var headers = [];
       table.querySelectorAll('thead th').forEach(function(th) { headers.push(th.textContent.trim()); });
@@ -103,7 +99,6 @@ title: Daily AI Taiwan — 精選專題
       });
     });
 
-    // Track view
     fetch(SB_URL + '/rest/v1/post_views', {
       method: 'POST',
       headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -137,7 +132,7 @@ title: Daily AI Taiwan — 精選專題
 #feature-content blockquote a { color: #999; text-decoration: none; }
 #feature-content blockquote ul { list-style: none; padding: 0; margin: 0.3em 0; }
 #feature-content blockquote li { padding: 1px 0; border: none !important; font-size: 0.95em; }
-#feature-content blockquote li::before { content: "· "; color: #bbb; }
+#feature-content blockquote li::before { content: "\00B7 "; color: #bbb; }
 #feature-content a { color: #2a7ae2; }
 #feature-content hr { border: none; border-top: 1px solid #eee; margin: 2em 0; }
 .paywall-overlay { height: 120px; margin-top: -120px; position: relative; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1)); pointer-events: none; }
