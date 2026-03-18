@@ -77,14 +77,15 @@
 }
 
 .auth-login-link {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: #fff;
   text-decoration: none;
   background: #2a7ae2;
   border: none;
-  padding: 0.4rem 1.2rem;
+  padding: 5px 16px;
   border-radius: 20px;
   transition: all 0.2s;
+  line-height: 1.4;
 }
 
 .auth-login-link:hover {
