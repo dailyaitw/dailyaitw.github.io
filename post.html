@@ -106,16 +106,6 @@ title: Daily AI Taiwan
       html += fullContent;
     }
 
-    // Share buttons
-    var shareUrl = encodeURIComponent(window.location.href);
-    var shareTitle = encodeURIComponent(post.title);
-    html += '<div style="margin-top:2em;padding-top:1em;border-top:1px solid #eee;">' +
-      '<span style="color:#888;font-size:0.9em;">分享：</span> ' +
-      '<a href="https://twitter.com/intent/tweet?url=' + shareUrl + '&text=' + shareTitle + '" target="_blank" style="color:#1da1f2;margin:0 8px;text-decoration:none;">𝕏</a>' +
-      '<a href="https://www.facebook.com/sharer/sharer.php?u=' + shareUrl + '" target="_blank" style="color:#1877f2;margin:0 8px;text-decoration:none;">Facebook</a>' +
-      '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + shareUrl + '" target="_blank" style="color:#0a66c2;margin:0 8px;text-decoration:none;">LinkedIn</a>' +
-      '</div>';
-
     var el = document.getElementById('post-content');
     el.innerHTML = html;
     el.style.display = 'block';
