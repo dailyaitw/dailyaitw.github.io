@@ -77,22 +77,28 @@ async function apiFetch(table, query) {
   return res.json();
 }
 
-async function checkAdmin() {
-  // Check URL key
-  var urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('key') === 'dailyaitw2026') return true;
+const ADMIN_EMAILS = ['ai@dailyai.tw', 'markluceai@gmail.com'];
 
-  // Check Supabase GitHub auth
+async function checkAdmin() {
   try {
     var sb = window.supabase.createClient(SB_URL, SB_KEY);
     var { data } = await sb.auth.getSession();
     if (data && data.session && data.session.user) {
-      var meta = data.session.user.user_metadata || {};
+      var user = data.session.user;
+      var meta = user.user_metadata || {};
       var ghUser = meta.user_name || meta.preferred_username || '';
-      if (ghUser === ADMIN_GITHUB) return { user: ghUser };
-    }
-  } catch(e) {}
+      var email = user.email || meta.email || '';
 
+      // Allow GitHub dailyaitw or admin emails
+      if (ghUser === ADMIN_GITHUB || ADMIN_EMAILS.includes(email)) {
+        return { user: ghUser || email };
+      }
+      // Logged in but not admin
+      return { denied: true, user: email || ghUser };
+    }
+  } catch(e) {
+    console.error('Auth check error:', e);
+  }
   return false;
 }
 
@@ -109,16 +115,22 @@ async function loginGitHub() {
 }
 
 async function loadDashboard() {
-  const isAdmin = await checkAdmin();
+  const result = await checkAdmin();
 
-  if (!isAdmin) {
+  if (!result) {
+    // Not logged in
     document.getElementById('admin-login').style.display = 'block';
     return;
   }
 
+  if (result.denied) {
+    // Logged in but not admin
+    document.getElementById('admin-denied').style.display = 'block';
+    return;
+  }
+
   document.getElementById('admin-dashboard').style.display = 'block';
-  var userName = (typeof isAdmin === 'object' && isAdmin.user) ? isAdmin.user : 'admin';
-  document.getElementById('admin-user').textContent = 'Logged in as ' + userName;
+  document.getElementById('admin-user').textContent = 'Logged in as ' + result.user;
 
   // Load stats
   const visits = await apiFetch('visit_logs', 'select=*&order=created_at.desc&limit=500');
