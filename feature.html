@@ -1,0 +1,150 @@
+---
+layout: default
+title: Daily AI Taiwan — 精選專題
+permalink: /feature/
+---
+
+<div id="feature-app">
+  <div id="feature-loading" style="text-align:center; padding:40px; color:#888;">載入中...</div>
+  <div id="feature-content" style="display:none;"></div>
+  <div id="feature-not-found" style="display:none; text-align:center; padding:40px;">
+    <h2>找不到這篇文章</h2>
+    <p style="color:#888;">請確認網址是否正確。</p>
+    <a href="/" style="color:#2a7ae2;">← 回首頁</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+  var SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
+  var SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+
+  // Parse URL: /feature/2026-03/ai-transforming-social-media
+  var path = window.location.pathname.replace(/\/$/, '').replace('/feature/', '');
+  if (!path) { window.location.href = '/'; return; }
+
+  // Fetch by slug
+  var query = 'type=eq.feature&slug=eq.' + encodeURIComponent(path) + '&select=*';
+
+  fetch(SB_URL + '/rest/v1/posts?' + query, {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
+    document.getElementById('feature-loading').style.display = 'none';
+
+    if (data.length === 0) {
+      document.getElementById('feature-not-found').style.display = 'block';
+      return;
+    }
+
+    var post = data[0];
+    document.title = post.title + ' — Daily AI Taiwan';
+
+    // Check login for paywall
+    var isLoggedIn = false;
+    try {
+      var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+      if (stored) { var sess = JSON.parse(stored); if (sess && sess.user) isLoggedIn = true; }
+    } catch(e) {}
+
+    var fullContent = marked.parse(post.content);
+
+    var html = '<div style="margin-bottom:16px;">' +
+      '<a href="/" style="color:#2a7ae2;text-decoration:none;font-size:0.9em;">← 回首頁</a>' +
+      ' <span style="color:#ddd;margin:0 8px;">|</span> ' +
+      '<span style="display:inline-block;background:#ef4444;color:#fff;font-size:0.7em;padding:2px 10px;border-radius:12px;font-weight:600;vertical-align:middle;">專題</span>' +
+      '</div>';
+
+    if (!isLoggedIn) {
+      // Preview
+      var tmp = document.createElement('div');
+      tmp.innerHTML = fullContent;
+      var els = tmp.querySelectorAll('h1,h2,h3,p,ul,ol,table,blockquote,hr');
+      var show = Math.max(5, Math.floor(els.length * 0.25));
+      var preview = '';
+      for (var i = 0; i < Math.min(show, els.length); i++) preview += els[i].outerHTML;
+      html += preview;
+      html += '<div class="paywall-overlay"></div>';
+      html += '<div class="paywall-box">';
+      html += '<h3>🔒 註冊免費閱讀完整專題</h3>';
+      html += '<p>精選專題需要登入才能閱讀完整內容。<br>免費註冊即可解鎖！</p>';
+      html += '<a href="/login" class="paywall-btn">免費註冊 / 登入</a>';
+      html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p>';
+      html += '</div>';
+    } else {
+      html += fullContent;
+
+      // Share buttons
+      var shareUrl = encodeURIComponent(window.location.href);
+      var shareTitle = encodeURIComponent(post.title);
+      html += '<div style="margin-top:2em;padding-top:1em;border-top:1px solid #eee;">' +
+        '<span style="color:#888;font-size:0.9em;">分享：</span> ' +
+        '<a href="https://twitter.com/intent/tweet?url=' + shareUrl + '&text=' + shareTitle + '" target="_blank" style="color:#1da1f2;margin:0 8px;text-decoration:none;">𝕏</a>' +
+        '<a href="https://www.facebook.com/sharer/sharer.php?u=' + shareUrl + '" target="_blank" style="color:#1877f2;margin:0 8px;text-decoration:none;">Facebook</a>' +
+        '<a href="https://www.linkedin.com/sharing/share-offsite/?url=' + shareUrl + '" target="_blank" style="color:#0a66c2;margin:0 8px;text-decoration:none;">LinkedIn</a>' +
+        '<button onclick="navigator.clipboard.writeText(window.location.href).then(function(){alert(\'已複製連結！\')})" style="border:1px solid #ddd;background:#fff;padding:3px 10px;border-radius:4px;cursor:pointer;font-size:0.85em;margin-left:8px;">複製連結</button>' +
+        '</div>';
+    }
+
+    var el = document.getElementById('feature-content');
+    el.innerHTML = html;
+    el.style.display = 'block';
+
+    // Table labels
+    el.querySelectorAll('table').forEach(function(table) {
+      var headers = [];
+      table.querySelectorAll('thead th').forEach(function(th) { headers.push(th.textContent.trim()); });
+      if (headers.length === 0) return;
+      table.querySelectorAll('tbody tr').forEach(function(tr) {
+        tr.querySelectorAll('td').forEach(function(td, i) {
+          if (headers[i]) td.setAttribute('data-label', headers[i]);
+        });
+      });
+    });
+
+    // Track view
+    fetch(SB_URL + '/rest/v1/post_views', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ post_date: post.date, post_type: 'feature' })
+    }).catch(function(){});
+  })
+  .catch(function() {
+    document.getElementById('feature-loading').style.display = 'none';
+    document.getElementById('feature-not-found').style.display = 'block';
+  });
+})();
+</script>
+
+<style>
+#feature-content { line-height: 1.8; max-width: 800px; margin: 0 auto; }
+#feature-content h1 { font-size: 1.6em; line-height: 1.3; margin-bottom: 0.5em; }
+#feature-content h2 { font-size: 1.3em; margin-top: 2em; padding-bottom: 0.3em; border-bottom: 1px solid #eee; }
+#feature-content h3 { font-size: 1.1em; margin-top: 1.5em; }
+#feature-content p { margin: 0.8em 0; }
+#feature-content table { width: 100%; border: none !important; border-collapse: separate; border-spacing: 0 12px; margin: 1em 0; font-size: 0.9em; }
+#feature-content thead { display: none; }
+#feature-content tbody { display: block; }
+#feature-content tr { display: block; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+#feature-content tr:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+#feature-content td { display: flex; justify-content: space-between; border: none !important; padding: 3px 0; font-size: 0.9em; }
+#feature-content td:first-child { font-weight: 700; font-size: 1em; color: #333; padding-bottom: 4px; border-bottom: 1px solid #eee !important; margin-bottom: 4px; }
+#feature-content td::before { content: attr(data-label); font-weight: 600; color: #666; min-width: 60px; margin-right: 8px; flex-shrink: 0; font-size: 0.85em; }
+#feature-content blockquote { border-left: 3px solid #2a7ae2; padding: 12px 16px; background: #f8f9fa; border-radius: 0 8px 8px 0; color: #444; font-size: 1em; margin: 1.5em 0; }
+#feature-content blockquote:last-child { border-left-color: #ddd; font-size: 0.78em; color: #888; background: transparent; }
+#feature-content blockquote p { margin: 0.3em 0; }
+#feature-content blockquote a { color: #999; text-decoration: none; }
+#feature-content blockquote ul { list-style: none; padding: 0; margin: 0.3em 0; }
+#feature-content blockquote li { padding: 1px 0; border: none !important; font-size: 0.95em; }
+#feature-content blockquote li::before { content: "· "; color: #bbb; }
+#feature-content a { color: #2a7ae2; }
+#feature-content hr { border: none; border-top: 1px solid #eee; margin: 2em 0; }
+.paywall-overlay { height: 120px; margin-top: -120px; position: relative; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1)); pointer-events: none; }
+.paywall-box { text-align: center; padding: 30px 20px; border: 2px solid #e5e7eb; border-radius: 12px; background: #f9fafb; margin-top: 10px; }
+.paywall-box h3 { font-size: 1.2em; margin-bottom: 10px; }
+.paywall-box p { color: #666; font-size: 0.95em; line-height: 1.6; margin-bottom: 16px; }
+.paywall-btn { display: inline-block; padding: 10px 28px; background: #2a7ae2; color: #fff !important; text-decoration: none !important; border-radius: 24px; font-size: 1em; font-weight: 600; }
+.paywall-btn:hover { background: #1a5fb4; }
+</style>

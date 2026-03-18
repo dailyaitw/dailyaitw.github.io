@@ -252,7 +252,7 @@ title: Daily AI Taiwan
   }
 
   async function loadFeatures() {
-    var posts = await apiFetch('type=eq.feature&select=date,title,summary,content&order=date.desc');
+    var posts = await apiFetch('type=eq.feature&select=date,title,summary,content,slug&order=date.desc');
     if (posts.length === 0) return;
     document.getElementById('feature-section').style.display = 'block';
     var html = '<div class="feature-grid">';
@@ -261,7 +261,7 @@ title: Daily AI Taiwan
       postsCache[key] = p.content;
       // Extract first line as subtitle
       var subtitle = p.summary || '';
-      var furl = '/post/feature/' + p.date;
+      var furl = p.slug ? '/feature/' + p.slug : '/post/feature/' + p.date;
       html += '<a href="' + furl + '" class="feature-card-link"><div class="feature-card">' +
         '<div class="feature-tag">專題</div>' +
         '<h3 class="feature-title">' + p.title + '</h3>' +
