@@ -77,23 +77,48 @@ async function apiFetch(table, query) {
   return res.json();
 }
 
-function checkAdmin() {
+async function checkAdmin() {
+  // Check URL key
   var urlParams = new URLSearchParams(window.location.search);
-  var adminKey = urlParams.get('key');
-  return adminKey === 'dailyaitw2026';
+  if (urlParams.get('key') === 'dailyaitw2026') return true;
+
+  // Check Supabase GitHub auth
+  try {
+    var sb = window.supabase.createClient(SB_URL, SB_KEY);
+    var { data } = await sb.auth.getSession();
+    if (data && data.session && data.session.user) {
+      var meta = data.session.user.user_metadata || {};
+      var ghUser = meta.user_name || meta.preferred_username || '';
+      if (ghUser === ADMIN_GITHUB) return { user: ghUser };
+    }
+  } catch(e) {}
+
+  return false;
+}
+
+async function loginGitHub() {
+  try {
+    var sb = window.supabase.createClient(SB_URL, SB_KEY);
+    await sb.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo: window.location.origin + '/admin' }
+    });
+  } catch(e) {
+    alert('GitHub 登入失敗，請稍後再試');
+  }
 }
 
 async function loadDashboard() {
-  const isAdmin = checkAdmin();
+  const isAdmin = await checkAdmin();
 
   if (!isAdmin) {
-    // Show login or denied
     document.getElementById('admin-login').style.display = 'block';
     return;
   }
 
   document.getElementById('admin-dashboard').style.display = 'block';
-  document.getElementById('admin-user').textContent = 'Logged in as admin';
+  var userName = (typeof isAdmin === 'object' && isAdmin.user) ? isAdmin.user : 'admin';
+  document.getElementById('admin-user').textContent = 'Logged in as ' + userName;
 
   // Load stats
   const visits = await apiFetch('visit_logs', 'select=*&order=created_at.desc&limit=500');
