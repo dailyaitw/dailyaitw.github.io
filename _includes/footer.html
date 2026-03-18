@@ -1,0 +1,111 @@
+<footer class="site-footer h-card">
+  <data class="u-url" href="{{ "/" | relative_url }}"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <h2 class="footer-heading">{{ site.title | escape }}</h2>
+        <p class="footer-desc">每日追蹤全球 AI 產業動態，提供重點新聞、投資分析、技術突破與獨立觀點。</p>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <h3 class="footer-col-title">聯絡我們</h3>
+        <ul class="contact-list">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <a href="mailto:ai@dailyai.tw">ai@dailyai.tw</a>
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <a href="https://github.com/dailyaitw" target="_blank">GitHub</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <h3 class="footer-col-title">商業合作</h3>
+        <p>歡迎洽談 AI 顧問、內容合作、廣告投放等商業機會。</p>
+        <p><a href="mailto:ai@dailyai.tw" class="footer-cta">聯繫我們 →</a></p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {{ site.time | date: '%Y' }} Daily AI Taiwan — 每日 AI 資訊整理 | 技術驅動 by Claude Code &times; GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+.site-footer {
+  border-top: 2px solid #e8e8e8;
+  padding: 30px 0;
+  background: #f8f9fa;
+}
+.footer-heading {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #333;
+}
+.footer-desc {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
+.footer-col-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+.footer-col-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-col {
+  flex: 1;
+  min-width: 200px;
+  font-size: 14px;
+  color: #555;
+}
+.footer-col p {
+  line-height: 1.6;
+}
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.contact-list li {
+  margin-bottom: 8px;
+}
+.contact-list a {
+  color: #2a7ae2;
+  text-decoration: none;
+}
+.contact-list a:hover {
+  text-decoration: underline;
+}
+.footer-cta {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 6px 16px;
+  background: #2a7ae2;
+  color: #fff !important;
+  border-radius: 4px;
+  text-decoration: none !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+.footer-cta:hover {
+  background: #1a5fb4;
+}
+.footer-bottom {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  font-size: 13px;
+  color: #999;
+}
+</style>
