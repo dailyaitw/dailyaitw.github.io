@@ -326,8 +326,8 @@ async function submitContact(e) {
     <p class="ext-note">此連結為資料來源，內容由第三方網站提供。<br>選擇「新分頁開啟」可保留目前頁面。</p>
     <div class="ext-actions">
       <button onclick="closeExtModal()" class="ext-btn ext-cancel">取消</button>
-      <a id="ext-link-go" href="#" rel="noopener noreferrer" class="ext-btn ext-newtab" onclick="closeExtModal()" target="_blank">新分頁開啟</a>
-      <a id="ext-link-same" href="#" rel="noopener noreferrer" class="ext-btn ext-go" onclick="closeExtModal()">前往網站 →</a>
+      <a id="ext-link-go" href="#" rel="noopener noreferrer" class="ext-btn ext-newtab" target="_blank" onclick="setTimeout(closeExtModal,100)">新分頁開啟</a>
+      <a id="ext-link-same" href="#" rel="noopener noreferrer" class="ext-btn ext-go">前往網站 →</a>
     </div>
   </div>
 </div>
@@ -340,6 +340,7 @@ async function submitContact(e) {
   var extLinkSame = document.getElementById("ext-link-same");
 
   document.addEventListener('click', function(e) {
+    if (e.target.closest('#ext-link-modal')) return;
     var link = e.target.closest('a[href]');
     if (!link) return;
     var href = link.getAttribute('href');
