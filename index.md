@@ -32,10 +32,16 @@ title: Daily AI Taiwan
 
 ---
 
-## 📊 月度回顧
+## 📊 月度回顧（2026）
 
 - **[2026 年 2 月](/posts/2026-02-review)** — $1,890 億融資紀錄 / Claude 4.6 雙模型 / Anthropic vs 五角大廈 / 超級盃 AI 廣告
 - **[2026 年 1 月](/posts/2026-01-review)** — DeepSeek R1 震撼 / 小模型崛起 / AI 基建軍備賽 / 韓國 AI 基本法生效
+
+## 📚 年度回顧
+
+- **[2025 年](/posts/2025-review)** — 推理模型元年 / DeepSeek 震撼 / AI Agent 崛起 / 開源逆襲 / 基建兆元時代
+- **[2024 年](/posts/2024-review)** — 多模態競賽 / AI 走入主流 / 歐盟 AI Act / 投資白熱化 / 安全隱憂浮現
+- **[2023 年](/posts/2023-review)** — ChatGPT 狂潮 / 生成式 AI 元年 / 科技七巨頭 / OpenAI 宮鬥 / 全球監管啟動
 
 ---
 
