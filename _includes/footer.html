@@ -323,10 +323,11 @@ async function submitContact(e) {
     <h3>即將離開 Daily AI Taiwan</h3>
     <p>你即將前往外部網站：</p>
     <p class="ext-url" id="ext-url-display"></p>
-    <p class="ext-note">此連結為資料來源，內容由第三方網站提供。</p>
+    <p class="ext-note">此連結為資料來源，內容由第三方網站提供。<br>選擇「新分頁開啟」可保留目前頁面。</p>
     <div class="ext-actions">
       <button onclick="closeExtModal()" class="ext-btn ext-cancel">取消</button>
-      <a id="ext-link-go" href="#" target="_blank" rel="noopener noreferrer" class="ext-btn ext-go" onclick="closeExtModal()">前往網站 →</a>
+      <a id="ext-link-go" href="#" rel="noopener noreferrer" class="ext-btn ext-newtab" onclick="closeExtModal()" target="_blank">新分頁開啟</a>
+      <a id="ext-link-same" href="#" rel="noopener noreferrer" class="ext-btn ext-go" onclick="closeExtModal()">前往網站 →</a>
     </div>
   </div>
 </div>
@@ -335,7 +336,8 @@ async function submitContact(e) {
 (function() {
   var extModal = document.getElementById('ext-link-modal');
   var extUrlDisplay = document.getElementById('ext-url-display');
-  var extLinkGo = document.getElementById('ext-link-go');
+  var extLinkGo = document.getElementById("ext-link-go");
+  var extLinkSame = document.getElementById("ext-link-same");
 
   document.addEventListener('click', function(e) {
     var link = e.target.closest('a[href]');
@@ -354,6 +356,7 @@ async function submitContact(e) {
       if (displayUrl.length > 60) displayUrl = displayUrl.substring(0, 57) + '...';
       extUrlDisplay.textContent = displayUrl;
       extLinkGo.href = href;
+      extLinkSame.href = href;
       extModal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     } catch(err) {}
@@ -407,6 +410,8 @@ async function submitContact(e) {
 }
 .ext-cancel { background: #f3f4f6; color: #666; }
 .ext-cancel:hover { background: #e5e7eb; }
+.ext-newtab { background: #fff; color: #2a7ae2 !important; border: 2px solid #2a7ae2; }
+.ext-newtab:hover { background: #f0f7ff; }
 .ext-go { background: #2a7ae2; color: #fff !important; }
 .ext-go:hover { background: #1a5fb4; }
 </style>
