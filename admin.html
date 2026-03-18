@@ -57,6 +57,16 @@ title: Admin Dashboard
 
     <hr>
 
+    <h2>📖 內容分析</h2>
+    <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+      <button class="pag-btn pag-active" id="cv-btn-daily" onclick="showContentView('daily')">📅 日報</button>
+      <button class="pag-btn" id="cv-btn-monthly" onclick="showContentView('monthly')">📊 月度</button>
+      <button class="pag-btn" id="cv-btn-yearly" onclick="showContentView('yearly')">📚 年度</button>
+    </div>
+    <div id="content-views-list"></div>
+
+    <hr>
+
     <h2>📬 聯繫訊息</h2>
     <div id="contacts-list"><p>載入中...</p></div>
 
@@ -289,7 +299,46 @@ function renderAuthUsers(page) {
   }
 }
 
-loadDashboard();
+// Content views
+var _postViews = [];
+async function loadContentViews() {
+  _postViews = await apiFetch('post_views', 'select=post_date,post_type,user_email&order=created_at.desc&limit=5000');
+  showContentView('daily');
+}
+
+function showContentView(type) {
+  ['daily','monthly','yearly'].forEach(function(t) {
+    document.getElementById('cv-btn-' + t).className = 'pag-btn' + (t === type ? ' pag-active' : '');
+  });
+
+  var filtered = _postViews.filter(function(v) { return v.post_type === type; });
+  var byDate = {};
+  filtered.forEach(function(v) {
+    if (!byDate[v.post_date]) byDate[v.post_date] = { total: 0, unique: new Set() };
+    byDate[v.post_date].total++;
+    if (v.user_email) byDate[v.post_date].unique.add(v.user_email);
+  });
+
+  var sorted = Object.entries(byDate).sort(function(a, b) { return b[1].total - a[1].total; });
+
+  var labels = { daily: '日期', monthly: '月份', yearly: '年份' };
+  var fmtFn = function(d) {
+    if (type === 'yearly') return d.substring(0, 4) + ' 年';
+    if (type === 'monthly') { var dt = new Date(d + 'T00:00:00'); return dt.getFullYear() + '/' + (dt.getMonth()+1); }
+    return d;
+  };
+
+  var html = '<table class="auth-users-table"><thead><tr>' +
+    '<th>#</th><th>' + labels[type] + '</th><th>瀏覽次數</th><th>獨立用戶</th></tr></thead><tbody>';
+  sorted.slice(0, 30).forEach(function(item, i) {
+    html += '<tr><td>' + (i+1) + '</td><td>' + fmtFn(item[0]) + '</td><td><strong>' + item[1].total + '</strong></td><td>' + item[1].unique.size + '</td></tr>';
+  });
+  if (sorted.length === 0) html += '<tr><td colspan="4" style="text-align:center;color:#999;">尚無瀏覽紀錄</td></tr>';
+  html += '</tbody></table>';
+  document.getElementById('content-views-list').innerHTML = html;
+}
+
+loadDashboard().then(loadContentViews);
 </script>
 
 <style>

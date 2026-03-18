@@ -89,6 +89,19 @@ title: Daily AI Taiwan
     });
   }
 
+  function trackPostView(date, type) {
+    var email = null, ip = null;
+    try {
+      var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+      if (stored) { var s = JSON.parse(stored); if (s && s.user) email = s.user.email; }
+    } catch(e) {}
+    fetch(SB_URL + '/rest/v1/post_views', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ post_date: date, post_type: type, user_email: email })
+    }).catch(function(){});
+  }
+
   function showPost(key) {
     const content = postsCache[key];
     if (!content) return;
@@ -97,6 +110,9 @@ title: Daily AI Taiwan
     addTableLabels(body);
     document.getElementById('post-modal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    // Track view
+    var parts = key.split('_');
+    if (parts.length === 2) trackPostView(parts[0], parts[1]);
   }
 
   function closeModal() {
@@ -158,11 +174,13 @@ title: Daily AI Taiwan
     if (data.length > 0) {
       el.innerHTML = marked.parse(data[0].content);
       addTableLabels(el);
+      trackPostView(data[0].date, 'daily');
     } else {
       var latest = await apiFetch('type=eq.daily&select=*&order=date.desc&limit=1');
       if (latest.length > 0) {
         el.innerHTML = '<p style="color:#888;font-style:italic;">今日日報尚未發布，以下為最新日報（' + fmt(latest[0].date) + '）：</p>' + marked.parse(latest[0].content);
         addTableLabels(el);
+        trackPostView(latest[0].date, 'daily');
       } else {
         el.innerHTML = '<p>尚無日報</p>';
       }
