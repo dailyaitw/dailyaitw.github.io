@@ -22,8 +22,14 @@ title: Daily AI Taiwan
 
   // Read from URL params: /post/?date=2026-03-18&type=daily
   var params = new URLSearchParams(window.location.search);
-  var date = params.get('date');
   var type = params.get('type') || 'daily';
+  var date = params.get('date');
+  var month = params.get('month');
+  var year = params.get('year');
+
+  // Build date from params
+  if (type === 'monthly' && month) date = month + '-01';
+  if (type === 'yearly' && year) date = year + '-12-31';
 
   if (!date) { window.location.href = '/'; return; }
 
