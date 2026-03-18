@@ -8,3 +8,6 @@ encoding: utf-8
 
 header_pages:
   - index.md
+
+# Exclude login from header_pages nav since auth-nav handles it
+exclude_login_from_nav: true
