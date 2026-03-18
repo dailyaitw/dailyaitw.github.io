@@ -73,17 +73,18 @@
 }
 
 .auth-login-link {
-  font-size: 0.9rem;
-  color: #2a7ae2;
+  font-size: 0.85rem;
+  color: #fff;
   text-decoration: none;
-  border: 1px solid #2a7ae2;
-  padding: 0.3rem 0.8rem;
-  border-radius: 4px;
+  background: #2a7ae2;
+  border: none;
+  padding: 0.4rem 1.2rem;
+  border-radius: 20px;
   transition: all 0.2s;
 }
 
 .auth-login-link:hover {
-  background: #2a7ae2;
+  background: #1a5fb4;
   color: #fff;
 }
 
