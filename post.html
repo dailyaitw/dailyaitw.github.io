@@ -80,7 +80,7 @@ title: Daily AI Taiwan
     var todayStr = new Date().toISOString().split('T')[0];
     if (type === 'daily' && date === todayStr) {
       var dateFmt = date.replace(/-/g, '/');
-      fullContent = fullContent.replace(/##\s*🧠\s*\d{4}\/\d{2}\/\d{2}\s*AI\s*重點/, '## 🧠 今日 (' + dateFmt + ') AI 重點');
+      fullContent = fullContent.replace(/🧠\s*\d{4}\/\d{2}\/\d{2}\s*AI\s*重點/, '🧠 今日 (' + dateFmt + ') AI 重點');
     }
 
     var html = '<div style="margin-bottom:12px;">' +
