@@ -62,6 +62,7 @@ title: Admin Dashboard
       <button class="pag-btn pag-active" id="cv-btn-daily" onclick="showContentView('daily')">📅 日報</button>
       <button class="pag-btn" id="cv-btn-monthly" onclick="showContentView('monthly')">📊 月度</button>
       <button class="pag-btn" id="cv-btn-yearly" onclick="showContentView('yearly')">📚 年度</button>
+      <button class="pag-btn" id="cv-btn-feature" onclick="showContentView('feature')">🔥 專題</button>
     </div>
     <div id="content-views-list"></div>
 
@@ -307,7 +308,7 @@ async function loadContentViews() {
 }
 
 function showContentView(type) {
-  ['daily','monthly','yearly'].forEach(function(t) {
+  ['daily','monthly','yearly','feature'].forEach(function(t) {
     document.getElementById('cv-btn-' + t).className = 'pag-btn' + (t === type ? ' pag-active' : '');
   });
 

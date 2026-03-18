@@ -169,6 +169,7 @@ title: Daily AI Taiwan
   function postUrl(date, type) {
     if (type === 'yearly') return '/post/' + date.substring(0, 4);
     if (type === 'monthly') return '/post/' + date.substring(0, 7);
+    if (type === 'feature') return '/post/feature/' + date;
     return '/post/' + date;
   }
 
@@ -260,13 +261,14 @@ title: Daily AI Taiwan
       postsCache[key] = p.content;
       // Extract first line as subtitle
       var subtitle = p.summary || '';
-      html += '<div class="feature-card" onclick="window._showPost(\'' + key + '\')">' +
+      var furl = '/post/feature/' + p.date;
+      html += '<a href="' + furl + '" class="feature-card-link"><div class="feature-card">' +
         '<div class="feature-tag">專題</div>' +
         '<h3 class="feature-title">' + p.title + '</h3>' +
         '<p class="feature-summary">' + subtitle + '</p>' +
-        '<span class="feature-date">' + fmt(p.date) + '</span>' +
-        '<a href="/post/feature/' + p.date + '" class="feature-link">閱讀全文 →</a>' +
-        '</div>';
+        '<div class="feature-footer"><span class="feature-date">' + fmt(p.date) + '</span>' +
+        '<span class="feature-link">閱讀全文 →</span></div>' +
+        '</div></a>';
     });
     html += '</div>';
     document.getElementById('feature-list').innerHTML = html;
@@ -308,9 +310,10 @@ title: Daily AI Taiwan
 }
 .feature-title { font-size: 1.1em; margin: 0 0 8px; color: #333; line-height: 1.4; }
 .feature-summary { font-size: 0.85em; color: #666; line-height: 1.5; flex: 1; margin-bottom: 10px; }
+.feature-card-link { text-decoration: none; color: inherit; }
+.feature-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
 .feature-date { font-size: 0.75em; color: #999; }
-.feature-link { font-size: 0.85em; color: #2a7ae2; text-decoration: none; margin-top: 8px; }
-.feature-link:hover { text-decoration: underline; }
+.feature-link { font-size: 0.85em; color: #2a7ae2; font-weight: 500; }
 
 #post-modal {
   display: none; position: fixed;
