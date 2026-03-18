@@ -27,6 +27,8 @@
 
 .site-header .site-title {
   line-height: 56px !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
 }
 
 /* Auth Nav Styles */
