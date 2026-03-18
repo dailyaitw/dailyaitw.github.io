@@ -153,7 +153,8 @@ async function loadDashboard() {
   document.getElementById('stat-today').textContent = visits.filter(function(v) { return v.created_at && v.created_at.startsWith(today); }).length;
   document.getElementById('stat-unique').textContent = new Set(visits.map(function(v) { return v.visitor_ip; }).filter(Boolean)).size;
   var authVisits = visits.filter(function(v) { return v.is_authenticated; });
-  document.getElementById('stat-auth').textContent = authVisits.length;
+  var uniqueAuthUsers = new Set(authVisits.map(function(v) { return v.user_email || v.user_id; }).filter(Boolean)).size;
+  document.getElementById('stat-auth').textContent = uniqueAuthUsers;
 
   // Build auth users data
   // Also fetch users from Supabase auth
