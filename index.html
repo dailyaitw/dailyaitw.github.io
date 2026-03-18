@@ -238,55 +238,68 @@ title: Daily AI Taiwan
 #post-modal-body blockquote { border-left: 3px solid #2a7ae2; padding-left: 1em; color: #555; }
 #post-modal-body a { color: #2a7ae2; }
 
-/* Today's post tables and content */
-#today-post table { width: 100%; border-collapse: collapse; margin: 1em 0; font-size: 0.9em; }
-#today-post th, #today-post td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-#today-post th { background: #f5f5f5; font-weight: 600; }
+/* Tables as cards */
+#today-post table,
+#post-modal-body table {
+  width: 100%;
+  border: none !important;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  margin: 1em 0;
+  font-size: 0.9em;
+}
+#today-post thead,
+#post-modal-body thead { display: none; }
+#today-post tbody,
+#post-modal-body tbody { display: block; }
+#today-post tr,
+#post-modal-body tr {
+  display: block;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.2s;
+}
+#today-post tr:hover,
+#post-modal-body tr:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+#today-post td,
+#post-modal-body td {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border: none !important;
+  padding: 3px 0;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+#today-post td:first-child,
+#post-modal-body td:first-child {
+  font-weight: 700;
+  font-size: 1em;
+  color: #333;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #eee !important;
+  margin-bottom: 4px;
+}
+#today-post td::before,
+#post-modal-body td::before {
+  content: attr(data-label);
+  font-weight: 600;
+  color: #666;
+  min-width: 60px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  font-size: 0.85em;
+}
 
 /* Mobile responsive */
 @media (max-width: 768px) {
   #post-modal-content { padding: 1em; width: 98%; }
   #app h1 { font-size: 1.3em; }
-
-  /* Card-style tables on mobile */
-  #today-post table,
-  #post-modal-body table {
-    display: block; font-size: 0.85em;
-  }
-  #today-post thead,
-  #post-modal-body thead { display: none; }
-  #today-post tbody,
-  #post-modal-body tbody { display: block; }
-  #today-post tr,
-  #post-modal-body tr {
-    display: block;
-    margin-bottom: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    background: #fafafa;
-  }
-  #today-post td,
-  #post-modal-body td {
-    display: flex;
-    justify-content: space-between;
-    border: none;
-    border-bottom: 1px solid #eee;
-    padding: 6px 4px;
-    font-size: 13px;
-  }
-  #today-post td:last-child,
-  #post-modal-body td:last-child { border-bottom: none; }
-  #today-post td::before,
-  #post-modal-body td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #333;
-    margin-right: 8px;
-    flex-shrink: 0;
-  }
-
-  /* Adjust stats cards on admin */
   #stats-summary { flex-direction: column; }
   .stat-card { min-width: auto; }
 }
