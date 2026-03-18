@@ -127,11 +127,17 @@ title: Daily AI Taiwan
   // Make showPost globally accessible
   window._showPost = showPost;
 
+  function postUrl(date, type) {
+    if (type === 'yearly') return '/post/' + date.substring(0, 4);
+    if (type === 'monthly') return '/post/' + date.substring(0, 7);
+    return '/post/' + date;
+  }
+
   function buildList(posts, formatFn) {
     return '<ul>' + posts.map(function(p) {
       var key = p.date + '_' + p.type;
       postsCache[key] = p.content;
-      return '<li><a href="javascript:void(0)" onclick="window._showPost(\'' + key + '\')">' +
+      return '<li><a href="' + postUrl(p.date, p.type) + '" onclick="event.preventDefault();window._showPost(\'' + key + '\')">' +
         '<strong>' + formatFn(p.date) + '</strong></a> — ' + (p.summary || p.title) + '</li>';
     }).join('') + '</ul>';
   }
@@ -158,7 +164,7 @@ title: Daily AI Taiwan
       groups[ym].forEach(function(p) {
         var key = p.date + '_' + p.type;
         postsCache[key] = p.content;
-        html += '<li><a href="javascript:void(0)" onclick="window._showPost(\'' + key + '\')">' +
+        html += '<li><a href="' + postUrl(p.date, p.type) + '" onclick="event.preventDefault();window._showPost(\'' + key + '\')">' +
           '<strong>' + fmt(p.date) + '</strong></a> — ' + (p.summary || p.title) + '</li>';
       });
       html += '</ul></details>';
