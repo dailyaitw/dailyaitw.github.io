@@ -10,8 +10,8 @@
 }
 
 .site-header .site-nav .trigger {
-  margin-top: 14px !important;
-  padding-top: 0 !important;
+  margin-top: 18px !important;
+  padding-top: 4px !important;
 }
 
 @media screen and (max-width: 600px) {
