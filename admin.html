@@ -34,7 +34,13 @@ title: Admin Dashboard
       <div class="stat-card"><div class="stat-num" id="stat-total">-</div><div class="stat-label">總訪問次數</div></div>
       <div class="stat-card"><div class="stat-num" id="stat-today">-</div><div class="stat-label">今日訪問</div></div>
       <div class="stat-card"><div class="stat-num" id="stat-unique">-</div><div class="stat-label">獨立訪客（IP）</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-auth">-</div><div class="stat-label">已登入用戶</div></div>
+      <div class="stat-card stat-clickable" onclick="toggleAuthUsers()"><div class="stat-num" id="stat-auth">-</div><div class="stat-label">已登入用戶 ▼</div></div>
+    </div>
+
+    <div id="auth-users-panel" style="display:none; margin-bottom:20px;">
+      <h3>👤 已登入用戶列表</h3>
+      <div id="auth-users-list"></div>
+      <div id="auth-users-pagination" style="text-align:center; margin-top:10px;"></div>
     </div>
 
     <h3>📱 裝置分佈</h3>
@@ -146,7 +152,21 @@ async function loadDashboard() {
   document.getElementById('stat-total').textContent = visits.length + (visits.length >= 500 ? '+' : '');
   document.getElementById('stat-today').textContent = visits.filter(function(v) { return v.created_at && v.created_at.startsWith(today); }).length;
   document.getElementById('stat-unique').textContent = new Set(visits.map(function(v) { return v.visitor_ip; }).filter(Boolean)).size;
-  document.getElementById('stat-auth').textContent = visits.filter(function(v) { return v.is_authenticated; }).length;
+  var authVisits = visits.filter(function(v) { return v.is_authenticated; });
+  document.getElementById('stat-auth').textContent = authVisits.length;
+
+  // Build auth users data
+  var userMap = {};
+  authVisits.forEach(function(v) {
+    var key = v.user_email || v.user_id || 'unknown';
+    if (!userMap[key]) {
+      userMap[key] = { email: key, first: v.created_at, last: v.created_at, count: 0 };
+    }
+    userMap[key].count++;
+    if (v.created_at < userMap[key].first) userMap[key].first = v.created_at;
+    if (v.created_at > userMap[key].last) userMap[key].last = v.created_at;
+  });
+  window._authUsers = Object.values(userMap).sort(function(a, b) { return b.count - a.count; });
 
   var devices = {}, browsers = {}, countries = {}, pages = {};
   visits.forEach(function(v) {
@@ -197,6 +217,51 @@ function makeBarChart(data) {
   }).join('') + '</div>';
 }
 
+var _authPage = 1;
+var _authPerPage = 10;
+
+function toggleAuthUsers() {
+  var panel = document.getElementById('auth-users-panel');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    renderAuthUsers(1);
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+function renderAuthUsers(page) {
+  _authPage = page;
+  var users = window._authUsers || [];
+  var total = users.length;
+  var totalPages = Math.ceil(total / _authPerPage);
+  var start = (page - 1) * _authPerPage;
+  var slice = users.slice(start, start + _authPerPage);
+
+  var html = '<table class="auth-users-table"><thead><tr>' +
+    '<th>#</th><th>Email</th><th>訪問次數</th><th>首次訪問</th><th>最近訪問</th></tr></thead><tbody>';
+  slice.forEach(function(u, i) {
+    var first = u.first ? new Date(u.first).toLocaleString('zh-TW') : '-';
+    var last = u.last ? new Date(u.last).toLocaleString('zh-TW') : '-';
+    html += '<tr><td>' + (start + i + 1) + '</td><td>' + u.email +
+      '</td><td><strong>' + u.count + '</strong></td><td>' + first + '</td><td>' + last + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('auth-users-list').innerHTML = html;
+
+  // Pagination
+  if (totalPages > 1) {
+    var pag = '';
+    for (var p = 1; p <= totalPages; p++) {
+      pag += '<button onclick="renderAuthUsers(' + p + ')" class="pag-btn' + (p === page ? ' pag-active' : '') + '">' + p + '</button> ';
+    }
+    pag = '<span style="color:#888;font-size:13px;">共 ' + total + ' 位用戶</span> ' + pag;
+    document.getElementById('auth-users-pagination').innerHTML = pag;
+  } else {
+    document.getElementById('auth-users-pagination').innerHTML = '<span style="color:#888;font-size:13px;">共 ' + total + ' 位用戶</span>';
+  }
+}
+
 loadDashboard();
 </script>
 
@@ -217,6 +282,15 @@ loadDashboard();
 .contact-card { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin: 10px 0; }
 .contact-header { margin-bottom: 8px; }
 .contact-body { color: #555; font-size: 14px; line-height: 1.6; }
+.stat-clickable { cursor: pointer; transition: all 0.2s; }
+.stat-clickable:hover { border-color: #2a7ae2; box-shadow: 0 2px 8px rgba(42,122,226,0.15); }
+.auth-users-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+.auth-users-table th { background: #f5f5f5; padding: 8px; text-align: left; border-bottom: 2px solid #ddd; }
+.auth-users-table td { padding: 6px 8px; border-bottom: 1px solid #eee; }
+.auth-users-table tr:hover { background: #f9f9f9; }
+.pag-btn { padding: 4px 10px; margin: 0 2px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px; }
+.pag-btn:hover { background: #f0f0f0; }
+.pag-active { background: #2a7ae2 !important; color: #fff !important; border-color: #2a7ae2 !important; }
 @media (max-width: 600px) {
   #stats-summary { flex-direction: column; }
   .stat-card { min-width: auto; }
