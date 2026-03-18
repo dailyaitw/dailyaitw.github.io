@@ -32,4 +32,11 @@ title: Daily AI Taiwan
 
 ---
 
+## 📊 月度回顧
+
+- **[2026 年 2 月](/posts/2026-02-review)** — $1,890 億融資紀錄 / Claude 4.6 雙模型 / Anthropic vs 五角大廈 / 超級盃 AI 廣告
+- **[2026 年 1 月](/posts/2026-01-review)** — DeepSeek R1 震撼 / 小模型崛起 / AI 基建軍備賽 / 韓國 AI 基本法生效
+
+---
+
 *Powered by Claude Code × GitHub Pages — [dailyai.tw](https://dailyai.tw)*
