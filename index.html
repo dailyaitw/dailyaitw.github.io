@@ -191,6 +191,10 @@ title: Daily AI Taiwan
     el.innerHTML = posts.length ? buildList(posts, fmtYear) : '<p>尚無年度回顧</p>';
   }
 
+  var PUBLIC_SLUGS = [
+    '2026-03-ai-impact-cissp-cybersecurity-future'
+  ];
+
   async function loadFeatures() {
     var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug&order=date.desc');
     if (posts.length === 0) return;
@@ -198,8 +202,12 @@ title: Daily AI Taiwan
     var html = '<div class="feature-grid">';
     posts.forEach(function(p) {
       var furl = p.slug ? featureUrl(p.slug) : postUrl(p.date, 'feature');
+      var isPublic = p.slug && PUBLIC_SLUGS.indexOf(p.slug) !== -1;
       html += '<a href="' + furl + '" class="feature-card-link"><div class="feature-card">' +
+        '<div class="feature-tags">' +
         '<div class="feature-tag">專題</div>' +
+        (isPublic ? '<div class="feature-tag-public">免費閱讀</div>' : '') +
+        '</div>' +
         '<h3 class="feature-title">' + p.title + '</h3>' +
         '<p class="feature-summary">' + (p.summary || '') + '</p>' +
         '<div class="feature-footer"><span class="feature-date">' + fmt(p.date) + '</span>' +
@@ -233,6 +241,12 @@ title: Daily AI Taiwan
 
 /* Feature articles */
 .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.feature-tags { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
+.feature-tag-public {
+  display: inline-block; background: #22c55e; color: #fff;
+  font-size: 0.7em; padding: 2px 10px; border-radius: 12px;
+  font-weight: 600; width: fit-content;
+}
 .feature-card {
   border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;
   background: #fff; cursor: pointer; transition: all 0.2s;
@@ -242,7 +256,7 @@ title: Daily AI Taiwan
 .feature-tag {
   display: inline-block; background: #ef4444; color: #fff;
   font-size: 0.7em; padding: 2px 10px; border-radius: 12px;
-  font-weight: 600; width: fit-content; margin-bottom: 10px;
+  font-weight: 600; width: fit-content;
 }
 .feature-title { font-size: 1.1em; margin: 0 0 8px; color: #333; line-height: 1.4; }
 .feature-summary { font-size: 0.85em; color: #666; line-height: 1.5; flex: 1; margin-bottom: 10px; }
