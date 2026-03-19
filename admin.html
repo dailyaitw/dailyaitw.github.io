@@ -302,9 +302,19 @@ function renderAuthUsers(page) {
 
 // Content views
 var _postViews = [];
+var _featurePosts = [];
+var SHORT_LINKS = { '1': '2026-03-ai-impact-cissp-cybersecurity-future', '2': '2026-03-boris-cherny-claude-code-creator-profile' };
+var PUBLIC_SLUGS = ['2026-03-ai-impact-cissp-cybersecurity-future', '2026-03-boris-cherny-claude-code-creator-profile'];
+
 async function loadContentViews() {
   _postViews = await apiFetch('post_views', 'select=post_date,post_type,user_email&order=created_at.desc&limit=5000');
+  _featurePosts = await apiFetch('posts', 'type=eq.feature&select=date,title,slug,summary&order=date.desc');
   showContentView('daily');
+}
+
+function getShortId(slug) {
+  for (var k in SHORT_LINKS) { if (SHORT_LINKS[k] === slug) return k; }
+  return null;
 }
 
 function showContentView(type) {
@@ -319,6 +329,11 @@ function showContentView(type) {
     byDate[v.post_date].total++;
     if (v.user_email) byDate[v.post_date].unique.add(v.user_email);
   });
+
+  if (type === 'feature') {
+    showFeatureView(byDate);
+    return;
+  }
 
   var sorted = Object.entries(byDate).sort(function(a, b) { return b[1].total - a[1].total; });
 
@@ -335,6 +350,31 @@ function showContentView(type) {
     html += '<tr><td>' + (i+1) + '</td><td>' + fmtFn(item[0]) + '</td><td><strong>' + item[1].total + '</strong></td><td>' + item[1].unique.size + '</td></tr>';
   });
   if (sorted.length === 0) html += '<tr><td colspan="4" style="text-align:center;color:#999;">尚無瀏覽紀錄</td></tr>';
+  html += '</tbody></table>';
+  document.getElementById('content-views-list').innerHTML = html;
+}
+
+function showFeatureView(byDate) {
+  var html = '<table class="auth-users-table"><thead><tr>' +
+    '<th>#</th><th>標題</th><th>公開</th><th>短連結</th><th>瀏覽</th><th>獨立用戶</th></tr></thead><tbody>';
+
+  _featurePosts.forEach(function(p, i) {
+    var views = byDate[p.date] || { total: 0, unique: new Set() };
+    var isPublic = PUBLIC_SLUGS.indexOf(p.slug) !== -1;
+    var shortId = getShortId(p.slug);
+    var featureUrl = '/view-feature?slug=' + (p.slug || '');
+    var shortUrl = shortId ? '/?s=' + shortId : '—';
+
+    html += '<tr><td>' + (i+1) + '</td>' +
+      '<td><a href="' + featureUrl + '" target="_blank" style="color:#2a7ae2;text-decoration:none;" title="' + (p.summary || '') + '">' + p.title + '</a>' +
+      '<div style="font-size:11px;color:#999;margin-top:2px;">' + p.date + '</div></td>' +
+      '<td>' + (isPublic ? '<span style="background:#22c55e;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">公開</span>' : '<span style="background:#6b7280;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">登入</span>') + '</td>' +
+      '<td>' + (shortId ? '<a href="' + shortUrl + '" target="_blank" style="color:#2a7ae2;font-size:12px;font-family:monospace;">dailyai.tw/?s=' + shortId + '</a>' : '<span style="color:#ccc;">—</span>') + '</td>' +
+      '<td><strong>' + views.total + '</strong></td>' +
+      '<td>' + views.unique.size + '</td></tr>';
+  });
+
+  if (_featurePosts.length === 0) html += '<tr><td colspan="6" style="text-align:center;color:#999;">尚無專題文章</td></tr>';
   html += '</tbody></table>';
   document.getElementById('content-views-list').innerHTML = html;
 }
