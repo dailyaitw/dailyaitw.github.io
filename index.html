@@ -3,6 +3,18 @@ layout: default
 title: Daily AI Taiwan
 ---
 
+<script>
+// Short link router: dailyai.tw/?s=N redirects to the corresponding article
+(function() {
+  var SHORT_LINKS = {
+    '1': '/view-feature?slug=2026-03-ai-impact-cissp-cybersecurity-future',
+    '2': '/view-feature?slug=2026-03-boris-cherny-claude-code-creator-profile'
+  };
+  var s = new URLSearchParams(window.location.search).get('s');
+  if (s && SHORT_LINKS[s]) { window.location.replace(SHORT_LINKS[s]); }
+})();
+</script>
+
 <div id="app">
 
   <div id="today-post">
