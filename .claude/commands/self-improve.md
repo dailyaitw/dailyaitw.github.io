@@ -13,13 +13,23 @@
 - 取得今天日期：`date +%m%d`（MMDD）、`date +%Y/%m/%d`（顯示用）
 - 取得目前時間：`date +%H:%M`（HH:MM）
 
+## 專案結構
+
+```
+C:\Users\mark\Documents\dailyaitw\          ← 主工作目錄（base）
+├── .claude/commands/self-improve.md        ← 本命令
+├── index.html, view-feature.html, ...      ← 前台（dailyaitw.github.io repo）
+├── posts/                                  ← 文章內容
+├── biz-core/                               ← 營運核心（dailyaitw/biz-core repo）
+│   └── md/self-improve/                    ← self-improve 歷史文件
+└── og-worker/                              ← OG 標籤 Cloudflare Worker
+```
+
 ## Self-improve 文件存放
 
-- Self-improve 文件存放在 GitHub repo：`dailyaitw/biz-core`，路徑 `md/self-improve/`
-- 使用 `gh` CLI 讀取和寫入（不是本地檔案）
-- 讀取：`gh api repos/dailyaitw/biz-core/contents/md/self-improve --jq '.[].name'`
-- 讀取內容：`gh api repos/dailyaitw/biz-core/contents/md/self-improve/FILENAME --jq '.content' | base64 -d`
-- 寫入：使用 gh api 建立或更新檔案
+- 本地路徑：`biz-core/md/self-improve/`
+- 遠端 repo：`dailyaitw/biz-core`（private）
+- 每輪結束時 commit + push 到 biz-core repo
 
 ## 步驟
 
@@ -35,7 +45,7 @@
 
 ### 2. 讀取上一輪的 self-improve 文件
 
-- 掃描 `dailyaitw/biz-core` 的 `md/self-improve/` 目錄，找到最新的文件（依檔名排序，takeN 最大者）
+- 掃描 `biz-core/md/self-improve/` 目錄，找到最新的文件（依檔名排序，takeN 最大者）
 - 讀取該文件的「二、待改善項目」區塊，了解上次留下的待處理事項
 
 ### 3. 規劃本輪工作
@@ -75,16 +85,7 @@
 - 若已有 `MMDD.md` → `MMDD-take2.md`
 - 若已有 `MMDD-takeN.md` → `MMDD-take(N+1).md`
 
-將文件上傳到 `dailyaitw/biz-core` repo 的 `md/self-improve/` 目錄：
-
-```bash
-# 將內容 base64 編碼後透過 gh api 上傳
-cat /tmp/self-improve-MMDD.md | base64 -w 0 > /tmp/si-content.b64
-gh api repos/dailyaitw/biz-core/contents/md/self-improve/FILENAME.md \
-  --method PUT \
-  --field message="新增 self-improve MMDD-takeN" \
-  --field content="$(cat /tmp/si-content.b64)"
-```
+將文件寫入本地 `biz-core/md/self-improve/FILENAME.md`
 
 文件格式：
 
@@ -147,11 +148,15 @@ gh api repos/dailyaitw/biz-core/contents/md/self-improve/FILENAME.md \
 > ⚠️ **此步驟為必要步驟，無論前面步驟是否全部完成，都必須執行 commit + push。**
 > 即使改善工作中途超時或遇到問題，也要將已完成的部分 commit + push。
 
-- 將所有程式碼改動 commit 到 `dailyaitw.github.io` repo
+**前台 repo（dailyaitw.github.io）：**
+- 將所有程式碼改動 commit
 - commit message 格式：`self-improve MMDD-takeN：簡述主要改動`
 - `git push origin main`
-- 確認 push 成功（若失敗則 pull --rebase 後重試）
-- Self-improve 文件已在步驟 7 上傳到 `biz-core` repo
+
+**biz-core repo：**
+- `cd biz-core && git add md/self-improve/ && git commit -m "新增 self-improve MMDD-takeN" && git push origin main && cd ..`
+
+- 確認兩個 repo 都 push 成功（若失敗則 pull --rebase 後重試）
 
 ## 重要規則
 
