@@ -98,6 +98,8 @@ function getSB() {
   return _sb;
 }
 
+function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
 async function apiFetch(table, query) {
   const res = await fetch(SB_URL + '/rest/v1/' + table + '?' + query, {
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
@@ -372,7 +374,7 @@ function showFeatureView(byDate) {
     var shortUrl = shortId ? '/?s=' + shortId : '—';
 
     html += '<tr><td>' + (i+1) + '</td>' +
-      '<td><a href="' + featureUrl + '" target="_blank" style="color:#2a7ae2;text-decoration:none;" title="' + (p.summary || '') + '">' + p.title + '</a>' +
+      '<td><a href="' + featureUrl + '" target="_blank" style="color:#2a7ae2;text-decoration:none;" title="' + esc(p.summary) + '">' + esc(p.title) + '</a>' +
       '<div style="font-size:11px;color:#999;margin-top:2px;">' + p.date + '</div></td>' +
       '<td>' + (isPublic ? '<span style="background:#22c55e;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">公開</span>' : '<span style="background:#6b7280;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">登入</span>') + '</td>' +
       '<td>' + (shortId ? '<a href="' + shortUrl + '" target="_blank" style="color:#2a7ae2;font-size:12px;font-family:monospace;">dailyai.tw/?s=' + shortId + '</a>' : '<span style="color:#ccc;">—</span>') + '</td>' +
