@@ -83,7 +83,9 @@ permalink: /login/
 </div>
 
 <script>
-  var _redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
+  // Validate redirect URL to prevent open redirect attacks
+  var _rawRedirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+  var _redirectUrl = (_rawRedirect.startsWith('/') && !_rawRedirect.startsWith('//')) ? _rawRedirect : '/';
 
   function switchTab(tab) {
     const loginForm = document.getElementById('login-form');

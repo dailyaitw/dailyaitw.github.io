@@ -52,7 +52,7 @@ sitemap: false
 
     var fullContent = marked.parse(post.content);
 
-    var pageUrl = encodeURIComponent(window.location.href);
+    var pageUrl = encodeURIComponent(window.location.pathname + window.location.search);
     var pageTitle = encodeURIComponent(post.title + ' — Daily AI Taiwan');
     var pageSummary = encodeURIComponent(post.summary || '');
 
@@ -95,7 +95,7 @@ sitemap: false
       html += '<div class="paywall-box">';
       html += '<h3>🔒 註冊免費閱讀完整專題</h3>';
       html += '<p>精選專題需要登入才能閱讀完整內容。<br>免費註冊即可解鎖！</p>';
-      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.href) + '" class="paywall-btn">免費註冊 / 登入</a>';
+      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '" class="paywall-btn">免費註冊 / 登入</a>';
       html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p>';
       html += '</div>';
     } else {
@@ -103,7 +103,7 @@ sitemap: false
       html += '<div class="share-bottom">' + shareBar + '</div>';
       if (isPublic && !isLoggedIn) {
         html += '<div class="public-cta">';
-        html += '<p>💡 喜歡這篇文章？<a href="/login?redirect=' + encodeURIComponent(window.location.href) + '">免費註冊</a>解鎖更多精選專題！</p>';
+        html += '<p>💡 喜歡這篇文章？<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '">免費註冊</a>解鎖更多精選專題！</p>';
         html += '</div>';
       }
     }
