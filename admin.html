@@ -92,9 +92,6 @@ title: Admin Dashboard
 <script>
 const SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
 const SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
-const ADMIN_GITHUB = 'dailyaitw';
-const ADMIN_EMAILS = ['ai@dailyai.tw', 'markluceai@gmail.com', 'mark@aipm.com.tw'];
-
 var _sb;
 function getSB() {
   if (!_sb && window.supabase) _sb = window.supabase.createClient(SB_URL, SB_KEY);
@@ -120,7 +117,13 @@ async function checkAdmin() {
       var email = user.email || meta.email || '';
       var name = meta.full_name || meta.name || ghUser || email;
 
-      if (ghUser === ADMIN_GITHUB || ADMIN_EMAILS.includes(email)) {
+      // Check admin from DB
+      var admins = await apiFetch('admins', 'select=email,github');
+      var isAdmin = admins.some(function(a) {
+        return a.email === email || (a.github && a.github === ghUser);
+      });
+
+      if (isAdmin) {
         return { user: name, email: email };
       }
       return { denied: true, user: name, email: email };
