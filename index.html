@@ -46,6 +46,8 @@ title: Daily AI Taiwan
   const SB_URL = window.DAILYAI_SB_URL;
   const SB_KEY = window.DAILYAI_SB_KEY;
 
+  function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
   async function apiFetch(query) {
     try {
       const res = await fetch(SB_URL + '/rest/v1/posts?' + query, {
@@ -113,7 +115,7 @@ title: Daily AI Taiwan
   function buildList(posts, formatFn) {
     return '<ul>' + posts.map(function(p) {
       return '<li><a href="' + postUrl(p.date, p.type) + '">' +
-        '<strong>' + formatFn(p.date) + '</strong></a> — ' + (p.summary || p.title) + '</li>';
+        '<strong>' + formatFn(p.date) + '</strong></a> — ' + esc(p.summary || p.title) + '</li>';
     }).join('') + '</ul>';
   }
 
@@ -137,7 +139,7 @@ title: Daily AI Taiwan
       html += '<ul>';
       groups[ym].forEach(function(p) {
         html += '<li><a href="' + postUrl(p.date, p.type) + '">' +
-          '<strong>' + fmt(p.date) + '</strong></a> — ' + (p.summary || p.title) + '</li>';
+          '<strong>' + fmt(p.date) + '</strong></a> — ' + esc(p.summary || p.title) + '</li>';
       });
       html += '</ul></details>';
     });
@@ -201,8 +203,8 @@ title: Daily AI Taiwan
       '<div class="feature-tag">專題</div>' +
       (isFree ? '<div class="feature-tag-public">免費閱讀</div>' : '') +
       '</div>' +
-      '<h3 class="feature-title">' + p.title + '</h3>' +
-      '<p class="feature-summary">' + (p.summary || '') + '</p>' +
+      '<h3 class="feature-title">' + esc(p.title) + '</h3>' +
+      '<p class="feature-summary">' + esc(p.summary) + '</p>' +
       '<div class="feature-footer"><span class="feature-date">' + fmt(p.date) + '</span>' +
       '<span class="feature-link">閱讀全文 →</span></div>' +
       '</div></a>';
