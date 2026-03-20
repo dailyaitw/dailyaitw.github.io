@@ -8,6 +8,11 @@ encoding: utf-8
 
 header_pages: []
 
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-feed
+
 include:
   - _redirects
   - _headers
