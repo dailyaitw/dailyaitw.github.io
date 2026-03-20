@@ -3,7 +3,6 @@ layout: default
 title: Admin Dashboard
 ---
 
-<script src="/assets/js/config.js"></script>
 <style>
   .page-content .wrapper { max-width: 100%; padding: 0 20px; }
 </style>
@@ -91,8 +90,8 @@ title: Admin Dashboard
 </div>
 
 <script>
-const SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
-const SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+const SB_URL = window.DAILYAI_SB_URL;
+const SB_KEY = window.DAILYAI_SB_KEY;
 var _sb;
 function getSB() {
   if (!_sb && window.supabase) _sb = window.supabase.createClient(SB_URL, SB_KEY);

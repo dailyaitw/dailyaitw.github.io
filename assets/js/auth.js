@@ -1,12 +1,9 @@
-// Supabase Auth Configuration
-const SUPABASE_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
-
+// Supabase Auth — uses config from /assets/js/config.js
 let supabaseClient = null;
 
 function getSupabase() {
   if (!supabaseClient) {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    supabaseClient = supabase.createClient(window.DAILYAI_SB_URL, window.DAILYAI_SB_KEY);
   }
   return supabaseClient;
 }

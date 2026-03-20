@@ -114,11 +114,11 @@ async function submitContact(e) {
   };
 
   try {
-    const res = await fetch('https://kszbdgfbihnawjgmwjlk.supabase.co/rest/v1/contacts', {
+    const res = await fetch(window.DAILYAI_SB_URL + '/rest/v1/contacts', {
       method: 'POST',
       headers: {
-        'apikey': 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f',
-        'Authorization': 'Bearer sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f',
+        'apikey': window.DAILYAI_SB_KEY,
+        'Authorization': 'Bearer ' + window.DAILYAI_SB_KEY,
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal'
       },

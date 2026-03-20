@@ -1,6 +1,6 @@
 (function() {
-  var SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
-  var SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+  var SB_URL = window.DAILYAI_SB_URL;
+  var SB_KEY = window.DAILYAI_SB_KEY;
 
   function getDeviceType() {
     var ua = navigator.userAgent;

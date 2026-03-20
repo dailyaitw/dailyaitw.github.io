@@ -3,7 +3,6 @@ layout: default
 title: Daily AI Taiwan
 ---
 
-<script src="/assets/js/config.js"></script>
 <script>
 // Short link router: dailyai.tw/?s=N redirects to the corresponding article
 (function() {
@@ -44,8 +43,8 @@ title: Daily AI Taiwan
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 (function() {
-  const SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
-  const SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+  const SB_URL = window.DAILYAI_SB_URL;
+  const SB_KEY = window.DAILYAI_SB_KEY;
 
   async function apiFetch(query) {
     try {

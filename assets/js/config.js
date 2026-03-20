@@ -1,4 +1,9 @@
 // Shared configuration for dailyai.tw
+
+// Supabase connection
+window.DAILYAI_SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
+window.DAILYAI_SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+
 // SHORT_LINKS: maps short IDs to feature article slugs
 // Usage: dailyai.tw/?s=N redirects to the corresponding article
 window.DAILYAI_SHORT_LINKS = {
