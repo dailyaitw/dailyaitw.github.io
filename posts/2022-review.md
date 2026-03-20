@@ -3,8 +3,6 @@ layout: default
 title: 2022 年 AI 年度回顧
 ---
 
-[← 回首頁](/)
-
 # 📅 2022 年 — AI 年度回顧
 
 > 年度關鍵字：**ChatGPT 橫空出世** / **AI 繪圖爆發** / **Stable Diffusion 開源** / **DALL-E 2** / **生成式 AI 序幕**
