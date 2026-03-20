@@ -1,6 +1,9 @@
----
-layout: default
-title: 意見領袖：Boris Cherny — Claude Code 之父，「寫程式已被解決」的佈道者
+# 意見領袖：Boris Cherny — Claude Code 之父，「寫程式已被解決」的佈道者
+
+> 2026-03-19
+
+Anthropic Claude Code 負責人暨創造者，從烏克蘭移民到 Meta Principal Engineer 再到 AI 工具革命推動者——他的信念、工作流與對軟體產業未來的預言
+
 ---
 
 

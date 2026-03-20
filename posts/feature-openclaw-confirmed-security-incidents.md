@@ -1,6 +1,9 @@
----
-layout: default
-title: OpenClaw 已證實的重大資安事件及其後續處理實況
+# OpenClaw 已證實的重大資安事件及其後續處理實況
+
+> 2026-03-24
+
+完整記錄 OpenClaw 八大已證實資安事件：CVE-2026-25253 RCE、ClawJacked 暴力破解、42,000+ 暴露實例、ClawHub 惡意技能、Discord 記憶投毒、Moltbook 資料庫洩露、供應鏈攻擊，及各方回應
+
 ---
 
 

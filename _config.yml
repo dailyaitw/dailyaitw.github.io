@@ -18,10 +18,15 @@ defaults:
       path: "posts"
     values:
       sitemap: false
+      published: false
   - scope:
       path: "admin.html"
     values:
       sitemap: false
+
+exclude:
+  - scripts
+  - node_modules
 
 include:
   - _redirects

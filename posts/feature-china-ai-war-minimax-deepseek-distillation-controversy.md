@@ -1,6 +1,9 @@
----
-layout: default
-title: 中國 AI 群雄爭霸：MiniMax M2.5 異軍突起，蒸餾爭議引爆中美 AI 角力
+# 中國 AI 群雄爭霸：MiniMax M2.5 異軍突起，蒸餾爭議引爆中美 AI 角力
+
+> 2026-03-16
+
+中國五家 AI 實驗室密集發布新模型，MiniMax M2.5 以低成本挑戰 Claude Opus，但蒸餾爭議引發產業震盪。
+
 ---
 
 # 中國 AI 群雄爭霸：MiniMax M2.5 異軍突起，蒸餾爭議引爆中美 AI 角力

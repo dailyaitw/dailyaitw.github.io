@@ -38,17 +38,12 @@ function toFilename(post) {
 }
 
 function toMarkdown(post) {
-  const lines = [
-    '---',
-    'layout: default',
-    `title: ${post.title || 'Daily AI — ' + post.date}`,
-    '---',
-    '',
-  ];
-  if (post.content) {
-    lines.push(post.content);
+  // Plain markdown without Jekyll frontmatter (posts/ is excluded from Jekyll build)
+  const header = `# ${post.title || 'Daily AI — ' + post.date}\n\n> ${post.date}\n`;
+  if (post.summary) {
+    return header + `\n${post.summary}\n\n---\n\n${post.content || ''}`;
   }
-  return lines.join('\n');
+  return header + '\n' + (post.content || '');
 }
 
 async function main() {

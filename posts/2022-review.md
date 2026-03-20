@@ -1,6 +1,9 @@
----
-layout: default
-title: 2022 年 AI 年度回顧
+# 2022 年 AI 年度回顧
+
+> 2022-12-31
+
+ChatGPT 橫空出世 / AI 繪圖爆發 / Stable Diffusion 開源
+
 ---
 
 # 📅 2022 年 — AI 年度回顧

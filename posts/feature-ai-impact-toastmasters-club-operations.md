@@ -1,6 +1,9 @@
----
-layout: default
-title: AI 如何改變 Toastmasters 社團營運
+# AI 如何改變 Toastmasters 社團營運
+
+> 2026-03-21
+
+從 Yoodli 演講分析到會議排程自動化、會員留存預測到 AI 評估——全球最大演講社團的 AI 轉型全解析
+
 ---
 
 

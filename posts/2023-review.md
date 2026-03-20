@@ -1,6 +1,9 @@
----
-layout: default
-title: 2023 年 AI 年度回顧
+# 2023 年 AI 年度回顧
+
+> 2023-12-31
+
+ChatGPT 狂潮 / 生成式 AI 元年 / OpenAI 宮鬥 / 全球監管啟動
+
 ---
 
 # 📅 2023 年 — AI 年度回顧

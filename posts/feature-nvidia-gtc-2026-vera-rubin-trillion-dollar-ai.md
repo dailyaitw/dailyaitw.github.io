@@ -1,6 +1,9 @@
----
-layout: default
-title: NVIDIA GTC 2026：Vera Rubin 平台震撼登場，黃仁勳宣告 AI 基建邁向兆美元時代
+# NVIDIA GTC 2026：Vera Rubin 平台震撼登場，黃仁勳宣告 AI 基建邁向兆美元時代
+
+> 2026-03-17
+
+NVIDIA 在 GTC 2026 發表全新 Vera Rubin 平台，搭載六款新晶片，效能較前代提升十倍，黃仁勳預估 AI 基礎建設營收將突破一兆美元。
+
 ---
 
 # NVIDIA GTC 2026：Vera Rubin 平台震撼登場，黃仁勳宣告 AI 基建邁向兆美元時代

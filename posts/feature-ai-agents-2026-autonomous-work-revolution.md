@@ -1,6 +1,9 @@
----
-layout: default
-title: AI Agent 元年：從聊天機器人到自主工作代理人——2026 年企業 AI 的最大轉變
+# AI Agent 元年：從聊天機器人到自主工作代理人——2026 年企業 AI 的最大轉變
+
+> 2026-03-13
+
+2026 年被稱為「AI Agent 元年」，Anthropic、OpenAI、Microsoft 紛紛推出自主代理框架，企業 AI 從問答式進化到自主執行任務。
+
 ---
 
 # AI Agent 元年：從聊天機器人到自主工作代理人——2026 年企業 AI 的最大轉變
