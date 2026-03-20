@@ -196,38 +196,61 @@ title: Daily AI Taiwan
     el.innerHTML = posts.length ? buildList(posts, fmtYear) : '<p>尚無年度回顧</p>';
   }
 
-  var PUBLIC_SLUGS = [
-    '2026-03-ai-impact-cissp-cybersecurity-future',
-    '2026-03-boris-cherny-claude-code-creator-profile',
-    '2026-03-ai-impact-toastmasters-club-operations',
-    '2026-03-ai-impact-retirees-us-canada-taiwan',
-    '2026-03-ai-impact-global-jobs-2023-2029',
-    '2026-03-openclaw-ai-industry-security-concerns',
-    '2026-03-openclaw-confirmed-security-incidents'
-  ];
+  var featureOffset = 0;
+  var FEATURE_INITIAL = 7;
+  var FEATURE_BATCH = 5;
+  var allFeaturesLoaded = false;
+
+  function renderFeatureCard(p) {
+    var furl = p.slug ? featureUrl(p.slug) : postUrl(p.date, 'feature');
+    var isFree = p.is_free === true;
+    return '<a href="' + furl + '" class="feature-card-link"><div class="feature-card">' +
+      '<div class="feature-tags">' +
+      '<div class="feature-tag">專題</div>' +
+      (isFree ? '<div class="feature-tag-public">免費閱讀</div>' : '') +
+      '</div>' +
+      '<h3 class="feature-title">' + p.title + '</h3>' +
+      '<p class="feature-summary">' + (p.summary || '') + '</p>' +
+      '<div class="feature-footer"><span class="feature-date">' + fmt(p.date) + '</span>' +
+      '<span class="feature-link">閱讀全文 →</span></div>' +
+      '</div></a>';
+  }
 
   async function loadFeatures() {
-    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug&order=date.desc');
+    var limit = FEATURE_INITIAL;
+    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug,is_free&order=date.desc&limit=' + limit);
     if (posts.length === 0) return;
     document.getElementById('feature-section').style.display = 'block';
-    var html = '<div class="feature-grid">';
-    posts.forEach(function(p) {
-      var furl = p.slug ? featureUrl(p.slug) : postUrl(p.date, 'feature');
-      var isPublic = p.slug && PUBLIC_SLUGS.indexOf(p.slug) !== -1;
-      html += '<a href="' + furl + '" class="feature-card-link"><div class="feature-card">' +
-        '<div class="feature-tags">' +
-        '<div class="feature-tag">專題</div>' +
-        (isPublic ? '<div class="feature-tag-public">免費閱讀</div>' : '') +
-        '</div>' +
-        '<h3 class="feature-title">' + p.title + '</h3>' +
-        '<p class="feature-summary">' + (p.summary || '') + '</p>' +
-        '<div class="feature-footer"><span class="feature-date">' + fmt(p.date) + '</span>' +
-        '<span class="feature-link">閱讀全文 →</span></div>' +
-        '</div></a>';
-    });
+    var html = '<div class="feature-grid" id="feature-grid">';
+    posts.forEach(function(p) { html += renderFeatureCard(p); });
     html += '</div>';
+    if (posts.length >= limit) {
+      html += '<div id="feature-load-more" style="text-align:center;margin-top:16px;">' +
+        '<button onclick="loadMoreFeatures()" class="load-more-btn">載入更多專題</button></div>';
+    }
     document.getElementById('feature-list').innerHTML = html;
+    featureOffset = posts.length;
   }
+
+  async function loadMoreFeatures() {
+    if (allFeaturesLoaded) return;
+    var btn = document.querySelector('#feature-load-more button');
+    btn.textContent = '載入中...';
+    btn.disabled = true;
+    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug,is_free&order=date.desc&limit=' + FEATURE_BATCH + '&offset=' + featureOffset);
+    var grid = document.getElementById('feature-grid');
+    posts.forEach(function(p) { grid.insertAdjacentHTML('beforeend', renderFeatureCard(p)); });
+    featureOffset += posts.length;
+    if (posts.length < FEATURE_BATCH) {
+      document.getElementById('feature-load-more').remove();
+      allFeaturesLoaded = true;
+    } else {
+      btn.textContent = '載入更多專題';
+      btn.disabled = false;
+    }
+  }
+  // expose to onclick
+  window.loadMoreFeatures = loadMoreFeatures;
 
   Promise.all([loadFeatures(), loadToday(), loadDaily(), loadMonthly(), loadYearly()])
     .catch(function(e) { console.error('Load error:', e); });
@@ -276,6 +299,13 @@ title: Daily AI Taiwan
 .feature-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
 .feature-date { font-size: 0.75em; color: #999; }
 .feature-link { font-size: 0.85em; color: #2a7ae2; font-weight: 500; }
+.load-more-btn {
+  padding: 10px 28px; background: #fff; color: #2a7ae2;
+  border: 1px solid #2a7ae2; border-radius: 24px; font-size: 0.95em;
+  font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.load-more-btn:hover { background: #2a7ae2; color: #fff; }
+.load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Tables as cards */
 #today-post table {
