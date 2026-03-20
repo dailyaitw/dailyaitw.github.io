@@ -307,8 +307,8 @@ function renderAuthUsers(page) {
 // Content views
 var _postViews = [];
 var _featurePosts = [];
-var SHORT_LINKS = { '1': '2026-03-ai-impact-cissp-cybersecurity-future', '2': '2026-03-boris-cherny-claude-code-creator-profile', '3': '2026-03-ai-impact-toastmasters-club-operations', '4': '2026-03-ai-impact-retirees-us-canada-taiwan', '5': '2026-03-ai-impact-global-jobs-2023-2029' };
-var PUBLIC_SLUGS = ['2026-03-ai-impact-cissp-cybersecurity-future', '2026-03-boris-cherny-claude-code-creator-profile', '2026-03-ai-impact-toastmasters-club-operations', '2026-03-ai-impact-retirees-us-canada-taiwan', '2026-03-ai-impact-global-jobs-2023-2029'];
+var SHORT_LINKS = { '1': '2026-03-ai-impact-cissp-cybersecurity-future', '2': '2026-03-boris-cherny-claude-code-creator-profile', '3': '2026-03-ai-impact-toastmasters-club-operations', '4': '2026-03-ai-impact-retirees-us-canada-taiwan', '5': '2026-03-ai-impact-global-jobs-2023-2029', '6': '2026-03-openclaw-ai-industry-security-concerns' };
+var PUBLIC_SLUGS = ['2026-03-ai-impact-cissp-cybersecurity-future', '2026-03-boris-cherny-claude-code-creator-profile', '2026-03-ai-impact-toastmasters-club-operations', '2026-03-ai-impact-retirees-us-canada-taiwan', '2026-03-ai-impact-global-jobs-2023-2029', '2026-03-openclaw-ai-industry-security-concerns'];
 
 async function loadContentViews() {
   _postViews = await apiFetch('post_views', 'select=post_date,post_type,user_email&order=created_at.desc&limit=5000');
