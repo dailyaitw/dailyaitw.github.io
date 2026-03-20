@@ -15,29 +15,41 @@ title: Daily AI Taiwan
 <div id="app">
 
   <div id="today-post">
-    <h2>📰 載入今日日報中...</h2>
+    <h2 id="today-heading"></h2>
   </div>
 
   <!-- Feature Articles -->
   <div id="feature-section" style="display:none;">
-    <h2>🔥 本月精選專題</h2>
+    <h2 id="feature-heading"></h2>
     <div id="feature-list"></div>
   </div>
 
   <hr>
 
-  <h2>📅 日報列表</h2>
-  <div id="daily-list"><p>載入中...</p></div>
+  <h2 id="daily-heading"></h2>
+  <div id="daily-list"><p id="daily-loading"></p></div>
 
   <hr>
 
-  <h2>📊 月度回顧</h2>
-  <div id="monthly-list"><p>載入中...</p></div>
+  <h2 id="monthly-heading"></h2>
+  <div id="monthly-list"><p id="monthly-loading"></p></div>
 
   <hr>
 
-  <h2>📚 年度回顧</h2>
-  <div id="yearly-list"><p>載入中...</p></div>
+  <h2 id="yearly-heading"></h2>
+  <div id="yearly-list"><p id="yearly-loading"></p></div>
+
+  <script>
+  // Set bilingual headings
+  document.getElementById('today-heading').textContent = t('📰 載入今日日報中...', '📰 Loading today\'s briefing...');
+  document.getElementById('feature-heading').textContent = t('🔥 本月精選專題', '🔥 Featured Articles');
+  document.getElementById('daily-heading').textContent = t('📅 日報列表', '📅 Daily Briefings');
+  document.getElementById('daily-loading').textContent = t('載入中...', 'Loading...');
+  document.getElementById('monthly-heading').textContent = t('📊 月度回顧', '📊 Monthly Reviews');
+  document.getElementById('monthly-loading').textContent = t('載入中...', 'Loading...');
+  document.getElementById('yearly-heading').textContent = t('📚 年度回顧', '📚 Annual Reviews');
+  document.getElementById('yearly-loading').textContent = t('載入中...', 'Loading...');
+  </script>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -65,12 +77,14 @@ title: Daily AI Taiwan
     const dt = new Date(d + 'T00:00:00');
     return dt.getFullYear() + '/' + String(dt.getMonth()+1).padStart(2,'0') + '/' + String(dt.getDate()).padStart(2,'0');
   }
+  var MONTHS_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtMonth(d) {
-    const dt = new Date(d + 'T00:00:00');
+    var dt = new Date(d + 'T00:00:00');
+    if (getLang() === 'en') return MONTHS_EN[dt.getMonth()] + ' ' + dt.getFullYear();
     return dt.getFullYear() + ' 年 ' + (dt.getMonth()+1) + ' 月';
   }
   function fmtYear(d) {
-    return new Date(d + 'T00:00:00').getFullYear() + ' 年';
+    return new Date(d + 'T00:00:00').getFullYear() + (getLang() === 'en' ? '' : ' 年');
   }
 
   function addTableLabels(container) {
@@ -115,7 +129,7 @@ title: Daily AI Taiwan
   function buildList(posts, formatFn) {
     return '<ul>' + posts.map(function(p) {
       return '<li><a href="' + postUrl(p.date, p.type) + '">' +
-        '<strong>' + formatFn(p.date) + '</strong></a> — ' + esc(p.summary || p.title) + '</li>';
+        '<strong>' + formatFn(p.date) + '</strong></a> — ' + esc(pickField(p, 'summary') || pickField(p, 'title')) + '</li>';
     }).join('') + '</ul>';
   }
 
@@ -131,15 +145,15 @@ title: Daily AI Taiwan
     var html = '';
     keys.forEach(function(ym, idx) {
       var d = new Date(ym + '-01T00:00:00');
-      var label = d.getFullYear() + ' 年 ' + (d.getMonth()+1) + ' 月';
+      var label = getLang() === 'en' ? MONTHS_EN[d.getMonth()] + ' ' + d.getFullYear() : d.getFullYear() + ' 年 ' + (d.getMonth()+1) + ' 月';
       var count = groups[ym].length;
       var open = idx === 0 ? 'open' : '';
       html += '<details ' + open + ' class="month-group">';
-      html += '<summary><strong>' + label + '</strong> <span class="month-count">(' + count + ' 篇)</span></summary>';
+      html += '<summary><strong>' + label + '</strong> <span class="month-count">(' + count + (getLang()==='en'?' articles':' 篇') + ')</span></summary>';
       html += '<ul>';
       groups[ym].forEach(function(p) {
         html += '<li><a href="' + postUrl(p.date, p.type) + '">' +
-          '<strong>' + fmt(p.date) + '</strong></a> — ' + esc(p.summary || p.title) + '</li>';
+          '<strong>' + fmt(p.date) + '</strong></a> — ' + esc(pickField(p, 'summary') || pickField(p, 'title')) + '</li>';
       });
       html += '</ul></details>';
     });
@@ -152,10 +166,12 @@ title: Daily AI Taiwan
     var el = document.getElementById('today-post');
 
     if (data.length > 0) {
-      var html = marked.parse(data[0].content);
-      // Replace date with 今日 and move heading to top
-      var todayHeading = '<h2>🧠 今日 (' + fmt(data[0].date) + ') AI 重點</h2>';
-      html = html.replace(/<h2[^>]*>🧠[^<]*AI[^<]*重點<\/h2>/, '');
+      var content = pickField(data[0], 'content');
+      var html = marked.parse(content);
+      var todayHeading = getLang() === 'en'
+        ? '<h2>🧠 Today\'s (' + fmt(data[0].date) + ') AI Highlights</h2>'
+        : '<h2>🧠 今日 (' + fmt(data[0].date) + ') AI 重點</h2>';
+      html = html.replace(/<h2[^>]*>🧠[^<]*<\/h2>/, '');
       html = todayHeading + html.replace(/^\s*<hr>/, '');
       el.innerHTML = html;
       addTableLabels(el);
@@ -163,31 +179,35 @@ title: Daily AI Taiwan
     } else {
       var latest = await apiFetch('type=eq.daily&select=*&order=date.desc&limit=1');
       if (latest.length > 0) {
-        el.innerHTML = '<p style="color:#888;font-style:italic;">今日日報尚未發布，以下為最新日報（' + fmt(latest[0].date) + '）：</p>' + marked.parse(latest[0].content);
+        var latestContent = pickField(latest[0], 'content');
+        var notice = getLang() === 'en'
+          ? '<p style="color:#888;font-style:italic;">Today\'s briefing not yet published. Showing latest (' + fmt(latest[0].date) + '):</p>'
+          : '<p style="color:#888;font-style:italic;">今日日報尚未發布，以下為最新日報（' + fmt(latest[0].date) + '）：</p>';
+        el.innerHTML = notice + marked.parse(latestContent);
         addTableLabels(el);
         trackPostView(latest[0].date, 'daily');
       } else {
-        el.innerHTML = '<p>尚無日報</p>';
+        el.innerHTML = '<p>' + t('尚無日報', 'No briefings yet') + '</p>';
       }
     }
   }
 
   async function loadDaily() {
-    var posts = await apiFetch('type=eq.daily&select=date,type,title,summary&order=date.desc');
+    var posts = await apiFetch('type=eq.daily&select=date,type,title,summary,title_en,summary_en&order=date.desc');
     var el = document.getElementById('daily-list');
-    el.innerHTML = posts.length ? buildGroupedList(posts) : '<p>尚無日報</p>';
+    el.innerHTML = posts.length ? buildGroupedList(posts) : '<p>' + t('尚無日報','No briefings yet') + '</p>';
   }
 
   async function loadMonthly() {
-    var posts = await apiFetch('type=eq.monthly&select=date,type,title,summary&order=date.desc');
+    var posts = await apiFetch('type=eq.monthly&select=date,type,title,summary,title_en,summary_en&order=date.desc');
     var el = document.getElementById('monthly-list');
-    el.innerHTML = posts.length ? buildList(posts, fmtMonth) : '<p>尚無月度回顧</p>';
+    el.innerHTML = posts.length ? buildList(posts, fmtMonth) : '<p>' + t('尚無月度回顧','No monthly reviews yet') + '</p>';
   }
 
   async function loadYearly() {
-    var posts = await apiFetch('type=eq.yearly&select=date,type,title,summary&order=date.desc');
+    var posts = await apiFetch('type=eq.yearly&select=date,type,title,summary,title_en,summary_en&order=date.desc');
     var el = document.getElementById('yearly-list');
-    el.innerHTML = posts.length ? buildList(posts, fmtYear) : '<p>尚無年度回顧</p>';
+    el.innerHTML = posts.length ? buildList(posts, fmtYear) : '<p>' + t('尚無年度回顧','No annual reviews yet') + '</p>';
   }
 
   var featureOffset = 0;
@@ -200,19 +220,19 @@ title: Daily AI Taiwan
     var isFree = p.is_free === true;
     return '<a href="' + furl + '" class="feature-card-link"><div class="feature-card">' +
       '<div class="feature-tags">' +
-      '<div class="feature-tag">專題</div>' +
-      (isFree ? '<div class="feature-tag-public">免費閱讀</div>' : '') +
+      '<div class="feature-tag">' + t('專題','Feature') + '</div>' +
+      (isFree ? '<div class="feature-tag-public">' + t('免費閱讀','Free') + '</div>' : '') +
       '</div>' +
-      '<h3 class="feature-title">' + esc(p.title) + '</h3>' +
-      '<p class="feature-summary">' + esc(p.summary) + '</p>' +
+      '<h3 class="feature-title">' + esc(pickField(p, 'title')) + '</h3>' +
+      '<p class="feature-summary">' + esc(pickField(p, 'summary')) + '</p>' +
       '<div class="feature-footer"><span class="feature-date">' + fmt(p.date) + '</span>' +
-      '<span class="feature-link">閱讀全文 →</span></div>' +
+      '<span class="feature-link">' + t('閱讀全文 →','Read more →') + '</span></div>' +
       '</div></a>';
   }
 
   async function loadFeatures() {
     var limit = FEATURE_INITIAL;
-    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug,is_free&order=date.desc&limit=' + limit);
+    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug,is_free,title_en,summary_en&order=date.desc&limit=' + limit);
     if (posts.length === 0) return;
     document.getElementById('feature-section').style.display = 'block';
     var html = '<div class="feature-grid" id="feature-grid">';
@@ -220,7 +240,7 @@ title: Daily AI Taiwan
     html += '</div>';
     if (posts.length >= limit) {
       html += '<div id="feature-load-more" style="text-align:center;margin-top:16px;">' +
-        '<button onclick="loadMoreFeatures()" class="load-more-btn">載入更多專題</button></div>';
+        '<button onclick="loadMoreFeatures()" class="load-more-btn">' + t('載入更多專題','Load more') + '</button></div>';
     }
     document.getElementById('feature-list').innerHTML = html;
     featureOffset = posts.length;
@@ -229,9 +249,9 @@ title: Daily AI Taiwan
   async function loadMoreFeatures() {
     if (allFeaturesLoaded) return;
     var btn = document.querySelector('#feature-load-more button');
-    btn.textContent = '載入中...';
+    btn.textContent = t('載入中...','Loading...');
     btn.disabled = true;
-    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug,is_free&order=date.desc&limit=' + FEATURE_BATCH + '&offset=' + featureOffset);
+    var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug,is_free,title_en,summary_en&order=date.desc&limit=' + FEATURE_BATCH + '&offset=' + featureOffset);
     var grid = document.getElementById('feature-grid');
     posts.forEach(function(p) { grid.insertAdjacentHTML('beforeend', renderFeatureCard(p)); });
     featureOffset += posts.length;
@@ -239,7 +259,7 @@ title: Daily AI Taiwan
       document.getElementById('feature-load-more').remove();
       allFeaturesLoaded = true;
     } else {
-      btn.textContent = '載入更多專題';
+      btn.textContent = t('載入更多專題','Load more');
       btn.disabled = false;
     }
   }

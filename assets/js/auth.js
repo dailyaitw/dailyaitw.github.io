@@ -21,12 +21,12 @@ async function updateAuthNav() {
     authNav.innerHTML = `
       <span class="auth-user-info">
         <span class="auth-user-email">${escapeHtml(displayName)}</span>
-        <a href="#" class="auth-logout-btn" onclick="handleLogout(event)">登出</a>
+        <a href="#" class="auth-logout-btn" onclick="handleLogout(event)">${typeof t==='function'?t('登出','Logout'):'登出'}</a>
       </span>
     `;
   } else {
     authNav.innerHTML = `
-      <a href="/login" class="auth-login-link">登入 / 註冊</a>
+      <a href="/login" class="auth-login-link">${typeof t==='function'?t('登入 / 註冊','Login / Sign Up'):'登入 / 註冊'}</a>
     `;
   }
 }

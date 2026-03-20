@@ -5,12 +5,12 @@ sitemap: false
 ---
 
 <div id="feature-app">
-  <div id="feature-loading" style="text-align:center; padding:40px; color:#888;">載入中...</div>
+  <div id="feature-loading" style="text-align:center; padding:40px; color:#888;"></div>
   <div id="feature-content" style="display:none;"></div>
   <div id="feature-not-found" style="display:none; text-align:center; padding:40px;">
-    <h2>找不到這篇文章</h2>
-    <p style="color:#888;">請確認網址是否正確。</p>
-    <a href="/" style="color:#2a7ae2;">← 回首頁</a>
+    <h2 id="not-found-title"></h2>
+    <p id="not-found-desc" style="color:#888;"></p>
+    <a href="/" id="not-found-home" style="color:#2a7ae2;"></a>
   </div>
 </div>
 
@@ -19,6 +19,12 @@ sitemap: false
 (function() {
   var SB_URL = window.DAILYAI_SB_URL;
   var SB_KEY = window.DAILYAI_SB_KEY;
+
+  // Set bilingual static text
+  document.getElementById('feature-loading').textContent = t('載入中...', 'Loading...');
+  document.getElementById('not-found-title').textContent = t('找不到這篇文章', 'Article not found');
+  document.getElementById('not-found-desc').textContent = t('請確認網址是否正確。', 'Please check if the URL is correct.');
+  document.getElementById('not-found-home').textContent = t('← 回首頁', '← Home');
 
   // Access controlled by is_free field in DB
   // Read from URL params: /view-feature?slug=2026-03/ai-transforming-social-media
@@ -42,7 +48,10 @@ sitemap: false
     }
 
     var post = data[0];
-    document.title = post.title + ' — Daily AI Taiwan';
+    var postTitle = pickField(post, 'title');
+    var postSummary = pickField(post, 'summary') || '';
+    var postContent = pickField(post, 'content');
+    document.title = postTitle + ' — Daily AI Taiwan';
 
     var isLoggedIn = false;
     try {
@@ -50,34 +59,34 @@ sitemap: false
       if (stored) { var sess = JSON.parse(stored); if (sess && sess.user) isLoggedIn = true; }
     } catch(e) {}
 
-    var fullContent = marked.parse(post.content);
+    var fullContent = marked.parse(postContent);
 
     var pageUrl = encodeURIComponent(window.location.pathname + window.location.search);
-    var pageTitle = encodeURIComponent(post.title + ' — Daily AI Taiwan');
-    var pageSummary = encodeURIComponent(post.summary || '');
+    var pageTitle = encodeURIComponent(postTitle + ' — Daily AI Taiwan');
+    var pageSummary = encodeURIComponent(postSummary);
 
     // Update OG meta tags for social sharing
-    document.title = post.title + ' — Daily AI Taiwan';
-    var ogTags = { 'og:title': post.title, 'og:description': post.summary || '', 'og:url': window.location.href, 'og:type': 'article', 'og:site_name': 'Daily AI Taiwan' };
+    document.title = postTitle + ' — Daily AI Taiwan';
+    var ogTags = { 'og:title': postTitle, 'og:description': postSummary, 'og:url': window.location.href, 'og:type': 'article', 'og:site_name': 'Daily AI Taiwan' };
     Object.keys(ogTags).forEach(function(prop) {
       var el = document.querySelector('meta[property="' + prop + '"]');
       if (el) { el.setAttribute('content', ogTags[prop]); }
       else { var m = document.createElement('meta'); m.setAttribute('property', prop); m.setAttribute('content', ogTags[prop]); document.head.appendChild(m); }
     });
     var descEl = document.querySelector('meta[name="description"]');
-    if (descEl) descEl.setAttribute('content', post.summary || '');
+    if (descEl) descEl.setAttribute('content', postSummary);
 
     // Use Facebook Feed dialog for better preview (passes title + description)
     var fbShareUrl = 'https://www.facebook.com/sharer/sharer.php?u=' + pageUrl + '&quote=' + pageTitle;
     var shareBar = '<div class="share-bar">' +
-      '<a href="' + fbShareUrl + '" target="_blank" rel="noopener" class="share-icon share-fb" title="分享到 Facebook"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>' +
+      '<a href="' + fbShareUrl + '" target="_blank" rel="noopener" class="share-icon share-fb" title="' + t('分享到 Facebook', 'Share on Facebook') + '"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>' +
       '</div>';
 
     var html = '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
       '<div>' +
-      '<a href="/" style="color:#2a7ae2;text-decoration:none;font-size:0.9em;">← 回首頁</a>' +
+      '<a href="/" style="color:#2a7ae2;text-decoration:none;font-size:0.9em;">' + t('← 回首頁', '← Home') + '</a>' +
       ' <span style="color:#ddd;margin:0 8px;">|</span> ' +
-      '<span style="display:inline-block;background:#ef4444;color:#fff;font-size:0.7em;padding:2px 10px;border-radius:12px;font-weight:600;vertical-align:middle;">專題</span>' +
+      '<span style="display:inline-block;background:#ef4444;color:#fff;font-size:0.7em;padding:2px 10px;border-radius:12px;font-weight:600;vertical-align:middle;">' + t('專題', 'Feature') + '</span>' +
       '</div>' + shareBar +
       '</div>';
 
@@ -93,17 +102,17 @@ sitemap: false
       html += preview;
       html += '<div class="paywall-overlay"></div>';
       html += '<div class="paywall-box">';
-      html += '<h3>🔒 註冊免費閱讀完整專題</h3>';
-      html += '<p>精選專題需要登入才能閱讀完整內容。<br>免費註冊即可解鎖！</p>';
-      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '" class="paywall-btn">免費註冊 / 登入</a>';
-      html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p>';
+      html += '<h3>' + t('🔒 註冊免費閱讀完整專題', '🔒 Sign up to read the full article') + '</h3>';
+      html += '<p>' + t('精選專題需要登入才能閱讀完整內容。<br>免費註冊即可解鎖！', 'Featured articles require login to read in full.<br>Sign up for free to unlock!') + '</p>';
+      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '" class="paywall-btn">' + t('免費註冊 / 登入', 'Sign Up / Log In') + '</a>';
+      html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">' + t('支援 Email、Google、GitHub、Discord 登入', 'Sign in with Email, Google, GitHub, or Discord') + '</p>';
       html += '</div>';
     } else {
       html += fullContent;
       html += '<div class="share-bottom">' + shareBar + '</div>';
       if (isPublic && !isLoggedIn) {
         html += '<div class="public-cta">';
-        html += '<p>💡 喜歡這篇文章？<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '">免費註冊</a>解鎖更多精選專題！</p>';
+        html += '<p>' + t('💡 喜歡這篇文章？<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '">免費註冊</a>解鎖更多精選專題！', '💡 Enjoyed this article? <a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '">Sign up for free</a> to unlock more featured articles!') + '</p>';
         html += '</div>';
       }
     }

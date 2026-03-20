@@ -7,7 +7,7 @@ permalink: /login/
 <div class="auth-page">
   <div class="auth-card">
     <h1>Daily AI Taiwan</h1>
-    <p class="auth-subtitle">登入或建立帳號以獲取完整內容</p>
+    <p class="auth-subtitle" id="auth-subtitle">登入或建立帳號以獲取完整內容</p>
 
     <!-- Tabs -->
     <div class="auth-tabs">
@@ -21,63 +21,63 @@ permalink: /login/
     <!-- Login Form -->
     <form id="login-form" onsubmit="handleEmailLogin(event)">
       <div class="auth-form-group">
-        <label for="login-email">電子郵件</label>
+        <label for="login-email" id="login-email-label">電子郵件</label>
         <input type="email" id="login-email" placeholder="you@example.com" required>
       </div>
       <div class="auth-form-group">
-        <label for="login-password">密碼</label>
+        <label for="login-password" id="login-password-label">密碼</label>
         <input type="password" id="login-password" placeholder="請輸入密碼" required minlength="6">
       </div>
-      <a class="auth-reset-link" onclick="handlePasswordReset(event)">忘記密碼？</a>
+      <a class="auth-reset-link" id="reset-link" onclick="handlePasswordReset(event)">忘記密碼？</a>
       <button type="submit" class="auth-submit-btn" id="login-submit">登入</button>
     </form>
 
     <!-- Signup Form (hidden by default) -->
     <form id="signup-form" style="display:none" onsubmit="handleEmailSignup(event)">
       <div class="auth-form-group">
-        <label for="signup-email">電子郵件</label>
+        <label for="signup-email" id="signup-email-label">電子郵件</label>
         <input type="email" id="signup-email" placeholder="you@example.com" required>
       </div>
       <div class="auth-form-group">
-        <label for="signup-password">密碼</label>
+        <label for="signup-password" id="signup-password-label">密碼</label>
         <input type="password" id="signup-password" placeholder="至少 6 個字元" required minlength="6">
       </div>
       <div class="auth-form-group">
-        <label for="signup-password-confirm">確認密碼</label>
+        <label for="signup-password-confirm" id="signup-password-confirm-label">確認密碼</label>
         <input type="password" id="signup-password-confirm" placeholder="再次輸入密碼" required minlength="6">
       </div>
       <button type="submit" class="auth-submit-btn" id="signup-submit">建立帳號</button>
     </form>
 
     <!-- Social Login -->
-    <div class="auth-divider"><span>或使用以下方式</span></div>
+    <div class="auth-divider"><span id="auth-divider-text">或使用以下方式</span></div>
 
     <div class="auth-social-buttons">
-      <button class="auth-social-btn" onclick="handleSocialLogin('google')">
+      <button class="auth-social-btn" id="social-google" onclick="handleSocialLogin('google')">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
         </svg>
-        使用 Google 登入
+        <span class="social-text">使用 Google 登入</span>
       </button>
-      <button class="auth-social-btn" onclick="handleSocialLogin('github')">
+      <button class="auth-social-btn" id="social-github" onclick="handleSocialLogin('github')">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" fill="#333"/>
         </svg>
-        使用 GitHub 登入
+        <span class="social-text">使用 GitHub 登入</span>
       </button>
-      <button class="auth-social-btn" onclick="handleSocialLogin('discord')">
+      <button class="auth-social-btn" id="social-discord" onclick="handleSocialLogin('discord')">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z" fill="#5865F2"/>
         </svg>
-        使用 Discord 登入
+        <span class="social-text">使用 Discord 登入</span>
       </button>
     </div>
 
     <div class="auth-footer">
-      <a href="/">← 返回首頁</a>
+      <a href="/" id="back-home">← 返回首頁</a>
     </div>
   </div>
 </div>
@@ -119,7 +119,7 @@ permalink: /login/
     e.preventDefault();
     const btn = document.getElementById('login-submit');
     btn.disabled = true;
-    btn.textContent = '登入中...';
+    btn.textContent = t('登入中...', 'Logging in...');
 
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
@@ -128,12 +128,12 @@ permalink: /login/
       const sb = getSupabase();
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      showMessage('登入成功！正在跳轉...', 'success');
+      showMessage(t('登入成功！正在跳轉...', 'Login successful! Redirecting...'), 'success');
       setTimeout(() => { window.location.href = _redirectUrl; }, 1000);
     } catch (err) {
       showMessage(translateError(err.message), 'error');
       btn.disabled = false;
-      btn.textContent = '登入';
+      btn.textContent = t('登入', 'Login');
     }
   }
 
@@ -141,16 +141,16 @@ permalink: /login/
     e.preventDefault();
     const btn = document.getElementById('signup-submit');
     btn.disabled = true;
-    btn.textContent = '註冊中...';
+    btn.textContent = t('註冊中...', 'Signing up...');
 
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
     const confirm = document.getElementById('signup-password-confirm').value;
 
     if (password !== confirm) {
-      showMessage('兩次輸入的密碼不一致', 'error');
+      showMessage(t('兩次輸入的密碼不一致', 'Passwords do not match'), 'error');
       btn.disabled = false;
-      btn.textContent = '建立帳號';
+      btn.textContent = t('建立帳號', 'Create Account');
       return;
     }
 
@@ -158,12 +158,12 @@ permalink: /login/
       const sb = getSupabase();
       const { data, error } = await sb.auth.signUp({ email, password });
       if (error) throw error;
-      showMessage('註冊成功！請至信箱確認驗證信。', 'success');
+      showMessage(t('註冊成功！請至信箱確認驗證信。', 'Sign up successful! Please check your email to verify.'), 'success');
     } catch (err) {
       showMessage(translateError(err.message), 'error');
     }
     btn.disabled = false;
-    btn.textContent = '建立帳號';
+    btn.textContent = t('建立帳號', 'Create Account');
   }
 
   async function handleSocialLogin(provider) {
@@ -185,7 +185,7 @@ permalink: /login/
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     if (!email) {
-      showMessage('請先輸入電子郵件地址', 'error');
+      showMessage(t('請先輸入電子郵件地址', 'Please enter your email address first'), 'error');
       return;
     }
     try {
@@ -194,14 +194,14 @@ permalink: /login/
         redirectTo: window.location.origin + '/login/'
       });
       if (error) throw error;
-      showMessage('密碼重設信已寄出，請至信箱查收。', 'success');
+      showMessage(t('密碼重設信已寄出，請至信箱查收。', 'Password reset email sent. Please check your inbox.'), 'success');
     } catch (err) {
       showMessage(translateError(err.message), 'error');
     }
   }
 
   function translateError(msg) {
-    const map = {
+    const zhMap = {
       'Invalid login credentials': '電子郵件或密碼不正確',
       'Email not confirmed': '請先至信箱確認驗證信',
       'User already registered': '此電子郵件已被註冊',
@@ -209,6 +209,15 @@ permalink: /login/
       'Email rate limit exceeded': '操作過於頻繁，請稍後再試',
       'For security purposes, you can only request this once every 60 seconds': '安全限制：每 60 秒僅能請求一次，請稍後再試',
     };
+    const enMap = {
+      'Invalid login credentials': 'Invalid email or password',
+      'Email not confirmed': 'Please confirm your email first',
+      'User already registered': 'This email is already registered',
+      'Password should be at least 6 characters': 'Password must be at least 6 characters',
+      'Email rate limit exceeded': 'Too many requests, please try again later',
+      'For security purposes, you can only request this once every 60 seconds': 'For security purposes, you can only request this once every 60 seconds',
+    };
+    const map = getLang() === 'en' ? enMap : zhMap;
     return map[msg] || msg;
   }
 
@@ -218,11 +227,36 @@ permalink: /login/
     const { data: { user } } = await sb.auth.getUser();
     if (user) {
       if (_redirectUrl !== '/') {
-        showMessage('已登入！正在跳轉...', 'success');
+        showMessage(t('已登入！正在跳轉...', 'Logged in! Redirecting...'), 'success');
         setTimeout(function() { window.location.href = _redirectUrl; }, 500);
       } else {
-        showMessage('您已登入（' + (user.user_metadata?.full_name || user.email) + '）', 'success');
+        showMessage(t('您已登入（', 'You are logged in (') + (user.user_metadata?.full_name || user.email) + t('）', ')'), 'success');
       }
     }
+  })();
+
+  // i18n: set static text based on language
+  (function() {
+    document.getElementById('auth-subtitle').textContent = t('登入或建立帳號以獲取完整內容', 'Login or create an account to access full content');
+    document.getElementById('tab-login').textContent = t('登入', 'Login');
+    document.getElementById('tab-signup').textContent = t('註冊', 'Sign Up');
+    document.getElementById('login-email-label').textContent = t('電子郵件', 'Email');
+    document.getElementById('login-password-label').textContent = t('密碼', 'Password');
+    document.getElementById('login-email').placeholder = t('you@example.com', 'you@example.com');
+    document.getElementById('login-password').placeholder = t('請輸入密碼', 'Enter your password');
+    document.getElementById('reset-link').textContent = t('忘記密碼？', 'Forgot password?');
+    document.getElementById('login-submit').textContent = t('登入', 'Login');
+    document.getElementById('signup-email-label').textContent = t('電子郵件', 'Email');
+    document.getElementById('signup-password-label').textContent = t('密碼', 'Password');
+    document.getElementById('signup-password-confirm-label').textContent = t('確認密碼', 'Confirm Password');
+    document.getElementById('signup-email').placeholder = t('you@example.com', 'you@example.com');
+    document.getElementById('signup-password').placeholder = t('至少 6 個字元', 'At least 6 characters');
+    document.getElementById('signup-password-confirm').placeholder = t('再次輸入密碼', 'Re-enter your password');
+    document.getElementById('signup-submit').textContent = t('建立帳號', 'Create Account');
+    document.getElementById('auth-divider-text').textContent = t('或使用以下方式', 'Or sign in with');
+    document.querySelector('#social-google .social-text').textContent = t('使用 Google 登入', 'Sign in with Google');
+    document.querySelector('#social-github .social-text').textContent = t('使用 GitHub 登入', 'Sign in with GitHub');
+    document.querySelector('#social-discord .social-text').textContent = t('使用 Discord 登入', 'Sign in with Discord');
+    document.getElementById('back-home').textContent = t('← 返回首頁', '← Home');
   })();
 </script>

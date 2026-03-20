@@ -5,12 +5,9 @@ sitemap: false
 ---
 
 <div id="post-app">
-  <div id="post-loading" style="text-align:center; padding:40px; color:#888;">載入中...</div>
+  <div id="post-loading" style="text-align:center; padding:40px; color:#888;"></div>
   <div id="post-content" style="display:none;"></div>
   <div id="post-not-found" style="display:none; text-align:center; padding:40px;">
-    <h2>找不到這篇文章</h2>
-    <p style="color:#888;">請確認網址是否正確。</p>
-    <a href="/" style="color:#2a7ae2;">← 回首頁</a>
   </div>
 </div>
 
@@ -21,6 +18,13 @@ sitemap: false
   var SB_KEY = window.DAILYAI_SB_KEY;
 
   // Read from URL params: /post/?date=2026-03-18&type=daily
+  // Initialize bilingual static text
+  document.getElementById('post-loading').textContent = t('載入中...', 'Loading...');
+  var notFoundEl = document.getElementById('post-not-found');
+  notFoundEl.innerHTML = '<h2>' + t('找不到這篇文章', 'Post not found') + '</h2>' +
+    '<p style="color:#888;">' + t('請確認網址是否正確。', 'Please check the URL.') + '</p>' +
+    '<a href="/" style="color:#2a7ae2;">' + t('← 回首頁', '← Home') + '</a>';
+
   var params = new URLSearchParams(window.location.search);
   var type = params.get('type') || 'daily';
   var date = params.get('date');
@@ -61,7 +65,7 @@ sitemap: false
     }
 
     var post = data[0];
-    document.title = post.title + ' — Daily AI Taiwan';
+    document.title = pickField(post, 'title') + ' — Daily AI Taiwan';
 
     var isLoggedIn = false;
     try {
@@ -75,16 +79,16 @@ sitemap: false
     var isFree = (type === 'daily' && diffDays <= 7) || isLoggedIn;
     if (type !== 'daily' && !isLoggedIn) isFree = false;
 
-    var fullContent = marked.parse(post.content);
+    var fullContent = marked.parse(pickField(post, 'content'));
     // Show 今日 only when viewing today's post
     var todayStr = new Date().toISOString().split('T')[0];
     if (type === 'daily' && date === todayStr) {
       var dateFmt = date.replace(/-/g, '/');
-      fullContent = fullContent.replace(/🧠\s*\d{4}\/\d{2}\/\d{2}\s*AI\s*重點/, '🧠 今日 (' + dateFmt + ') AI 重點');
+      fullContent = fullContent.replace(/🧠\s*\d{4}\/\d{2}\/\d{2}\s*AI\s*重點/, '🧠 ' + t('今日', 'Today') + ' (' + dateFmt + ') AI ' + t('重點', 'Highlights'));
     }
 
     var html = '<div style="margin-bottom:12px;">' +
-      '<a href="/" style="color:#2a7ae2;text-decoration:none;font-size:0.9em;">← 回首頁</a>' +
+      '<a href="/" style="color:#2a7ae2;text-decoration:none;font-size:0.9em;">' + t('← 回首頁', '← Home') + '</a>' +
       '</div>';
 
     if (!isFree) {
@@ -99,14 +103,14 @@ sitemap: false
       html += previewHtml;
       html += '<div class="paywall-overlay"></div>';
       html += '<div class="paywall-box">';
-      html += '<h3>🔒 註冊免費閱讀完整內容</h3>';
+      html += '<h3>' + t('🔒 註冊免費閱讀完整內容', '🔒 Sign up to read the full content') + '</h3>';
       if (type === 'daily') {
-        html += '<p>超過 7 天的日報需要登入才能閱讀。<br>免費註冊即可解鎖所有歷史日報！</p>';
+        html += '<p>' + t('超過 7 天的日報需要登入才能閱讀。<br>免費註冊即可解鎖所有歷史日報！', 'Daily posts older than 7 days require login.<br>Sign up for free to unlock all archives!') + '</p>';
       } else {
-        html += '<p>月度回顧和年度回顧需要登入才能閱讀。<br>免費註冊即可解鎖！</p>';
+        html += '<p>' + t('月度回顧和年度回顧需要登入才能閱讀。<br>免費註冊即可解鎖！', 'Monthly and yearly reviews require login.<br>Sign up for free to unlock!') + '</p>';
       }
-      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '" class="paywall-btn">免費註冊 / 登入</a>';
-      html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">支援 Email、Google、GitHub、Discord 登入</p>';
+      html += '<a href="/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search) + '" class="paywall-btn">' + t('免費註冊 / 登入', 'Sign Up / Log In') + '</a>';
+      html += '<p style="font-size:0.8em;color:#999;margin-top:12px;">' + t('支援 Email、Google、GitHub、Discord 登入', 'Supports Email, Google, GitHub, Discord login') + '</p>';
       html += '</div>';
     } else {
       html += fullContent;

@@ -5,12 +5,12 @@
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
         <h2 class="footer-heading">Daily AI Taiwan</h2>
-        <p class="footer-tagline">立足台灣，讀懂 AI</p>
-        <p class="footer-desc">每日追蹤全球 AI 產業動態，提供重點新聞、投資分析、技術突破與獨立觀點。</p>
+        <p class="footer-tagline" id="footer-tagline">立足台灣，讀懂 AI</p>
+        <p class="footer-desc" id="footer-desc">每日追蹤全球 AI 產業動態，提供重點新聞、投資分析、技術突破與獨立觀點。</p>
       </div>
 
       <div class="footer-col footer-col-2">
-        <h3 class="footer-col-title">聯絡我們</h3>
+        <h3 class="footer-col-title" id="footer-contact-title">聯絡我們</h3>
         <ul class="contact-list">
           <li>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
@@ -28,9 +28,9 @@
       </div>
 
       <div class="footer-col footer-col-3">
-        <h3 class="footer-col-title">商業合作</h3>
-        <p>歡迎洽談 AI 顧問、內容合作、廣告投放等商業機會。</p>
-        <p><a href="javascript:void(0)" onclick="openContactForm()" class="footer-cta">聯繫我們 →</a></p>
+        <h3 class="footer-col-title" id="footer-biz-title">商業合作</h3>
+        <p id="footer-biz-desc">歡迎洽談 AI 顧問、內容合作、廣告投放等商業機會。</p>
+        <p><a href="javascript:void(0)" onclick="openContactForm()" class="footer-cta" id="footer-cta">聯繫我們 →</a></p>
       </div>
     </div>
 
@@ -76,7 +76,7 @@ function openContactForm() {
   var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
   var session = stored ? JSON.parse(stored) : null;
   if (!session || !session.user) {
-    if (confirm('需要先登入才能聯繫我們。\n是否前往登入頁面？')) {
+    if (confirm(t('需要先登入才能聯繫我們。\n是否前往登入頁面？', 'Please log in first to contact us.\nGo to login page?'))) {
       window.location.href = '/login';
     }
     return;
@@ -104,7 +104,7 @@ function closeContactForm() {
 async function submitContact(e) {
   e.preventDefault();
   const btn = document.getElementById('contact-submit-btn');
-  btn.textContent = '送出中...';
+  btn.textContent = t('送出中...', 'Sending...');
   btn.disabled = true;
 
   const data = {
@@ -129,15 +129,58 @@ async function submitContact(e) {
       document.getElementById('contact-form').style.display = 'none';
       document.getElementById('contact-success').style.display = 'block';
     } else {
-      alert('送出失敗，請稍後再試或直接寄信至 ai@dailyai.tw');
+      alert(t('送出失敗，請稍後再試或直接寄信至 ai@dailyai.tw', 'Failed to send. Please try again or email ai@dailyai.tw'));
     }
   } catch (err) {
-    alert('網路錯誤，請稍後再試或直接寄信至 ai@dailyai.tw');
+    alert(t('網路錯誤，請稍後再試或直接寄信至 ai@dailyai.tw', 'Network error. Please try again or email ai@dailyai.tw'));
   }
 
-  btn.textContent = '送出訊息';
+  btn.textContent = t('送出訊息', 'Send Message');
   btn.disabled = false;
 }
+
+// Footer i18n
+(function() {
+  var $ = function(id) { return document.getElementById(id); };
+  if ($('footer-tagline')) $('footer-tagline').textContent = t('立足台灣，讀懂 AI', "Taiwan's Daily AI Briefing");
+  if ($('footer-desc')) $('footer-desc').textContent = t('每日追蹤全球 AI 產業動態，提供重點新聞、投資分析、技術突破與獨立觀點。', 'Daily coverage of global AI industry trends: key news, investment analysis, tech breakthroughs, and independent perspectives.');
+  if ($('footer-contact-title')) $('footer-contact-title').textContent = t('聯絡我們', 'Contact Us');
+  if ($('footer-biz-title')) $('footer-biz-title').textContent = t('商業合作', 'Business');
+  if ($('footer-biz-desc')) $('footer-biz-desc').textContent = t('歡迎洽談 AI 顧問、內容合作、廣告投放等商業機會。', 'AI consulting, content partnerships, advertising opportunities.');
+  if ($('footer-cta')) $('footer-cta').textContent = t('聯繫我們 →', 'Contact Us →');
+  // Contact form
+  var modal = document.querySelector('#contact-modal h3');
+  if (modal) modal.textContent = t('📬 聯繫我們', '📬 Contact Us');
+  var desc = document.querySelector('#contact-modal .contact-desc');
+  if (desc) desc.textContent = t('歡迎洽談 AI 顧問、內容合作、廣告投放等商業機會。', 'AI consulting, content partnerships, advertising opportunities.');
+  var nameLabel = document.querySelector('label[for="contact-name"]');
+  if (nameLabel) nameLabel.textContent = t('姓名', 'Name');
+  var msgLabel = document.querySelector('label[for="contact-message"]');
+  if (msgLabel) msgLabel.textContent = t('訊息 *', 'Message *');
+  if ($('contact-name')) $('contact-name').placeholder = t('您的姓名', 'Your name');
+  if ($('contact-message')) $('contact-message').placeholder = t('請描述您的需求或合作想法...', 'Describe your needs or collaboration ideas...');
+  if ($('contact-submit-btn')) $('contact-submit-btn').textContent = t('送出訊息', 'Send Message');
+  // Success
+  var successH4 = document.querySelector('#contact-success h4');
+  if (successH4) successH4.textContent = t('訊息已送出！', 'Message sent!');
+  var successP = document.querySelector('#contact-success p');
+  if (successP) successP.textContent = t('感謝您的來信，我們會盡快回覆至您的信箱。', 'Thank you! We will reply to your email shortly.');
+  var closeBtn = document.querySelector('#contact-success button');
+  if (closeBtn) closeBtn.textContent = t('關閉', 'Close');
+  // External link modal
+  var extH3 = document.querySelector('#ext-link-modal h3');
+  if (extH3) extH3.textContent = t('即將離開 Daily AI Taiwan', 'Leaving Daily AI Taiwan');
+  var extPs = document.querySelectorAll('#ext-link-modal .ext-dialog > p');
+  if (extPs[0]) extPs[0].textContent = t('您即將前往外部網站：', 'You are about to visit:');
+  var extNote = document.querySelector('.ext-note');
+  if (extNote) extNote.innerHTML = t('此連結為資料來源，內容由第三方網站提供。<br>選擇「新分頁開啟」可保留目前頁面。', 'This link leads to an external site.<br>Choose "Open in new tab" to keep this page.');
+  var cancelBtn = document.querySelector('.ext-cancel');
+  if (cancelBtn) cancelBtn.textContent = t('取消', 'Cancel');
+  var newtabBtn = document.querySelector('.ext-newtab');
+  if (newtabBtn) newtabBtn.textContent = t('新分頁開啟', 'Open in new tab');
+  var goBtn = document.querySelector('.ext-go');
+  if (goBtn) goBtn.textContent = t('前往網站 →', 'Visit site →');
+})();
 </script>
 </footer>
 

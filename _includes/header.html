@@ -2,10 +2,11 @@
   <div class="wrapper header-wrapper">
     <div class="header-left">
       <a class="site-title" rel="author" href="{{ "/" | relative_url }}">Daily AI Taiwan</a>
-      <span class="site-tagline">立足台灣，讀懂 AI</span>
+      <span class="site-tagline" id="site-tagline">立足台灣，讀懂 AI</span>
     </div>
 
     <div class="header-right">
+      <span class="lang-toggle" id="lang-toggle"></span>
       <span class="auth-nav-container" id="auth-nav">
         <a href="/login" class="auth-login-link">登入 / 註冊</a>
       </span>
@@ -13,9 +14,35 @@
   </div>
 </header>
 
+<script>
+(function() {
+  var lang = getLang();
+  // Tagline
+  document.getElementById('site-tagline').textContent = lang === 'en' ? "Taiwan's Daily AI Briefing" : '立足台灣，讀懂 AI';
+  // Language toggle
+  var toggle = document.getElementById('lang-toggle');
+  if (lang === 'en') {
+    toggle.innerHTML = '<a href="#" class="lang-btn" onclick="setLang(\'zh\');return false;">中文</a><span class="lang-sep">|</span><span class="lang-active">EN</span>';
+  } else {
+    toggle.innerHTML = '<span class="lang-active">中文</span><span class="lang-sep">|</span><a href="#" class="lang-btn" onclick="setLang(\'en\');return false;">EN</a>';
+  }
+  // Auth nav default text
+  var authNav = document.getElementById('auth-nav');
+  if (authNav && authNav.querySelector('.auth-login-link')) {
+    authNav.querySelector('.auth-login-link').textContent = lang === 'en' ? 'Login / Sign Up' : '登入 / 註冊';
+  }
+})();
+</script>
+
 <style>
 .header-left { display: flex; align-items: baseline; gap: 12px; }
 .site-tagline { font-size: 0.8em; color: #888; letter-spacing: 0.3px; white-space: nowrap; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.lang-toggle { font-size: 13px; white-space: nowrap; }
+.lang-active { font-weight: 700; color: #333; }
+.lang-sep { color: #ccc; margin: 0 4px; }
+.lang-btn { color: #2a7ae2; text-decoration: none; }
+.lang-btn:hover { text-decoration: underline; }
 @media (max-width: 480px) {
   .site-tagline { display: none; }
 }
