@@ -13,6 +13,16 @@ plugins:
   - jekyll-seo-tag
   - jekyll-feed
 
+defaults:
+  - scope:
+      path: "posts"
+    values:
+      sitemap: false
+  - scope:
+      path: "admin.html"
+    values:
+      sitemap: false
+
 include:
   - _redirects
   - _headers
