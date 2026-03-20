@@ -1,16 +1,16 @@
 (function() {
-  const SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
-  const SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+  var SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
+  var SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
 
   function getDeviceType() {
-    const ua = navigator.userAgent;
+    var ua = navigator.userAgent;
     if (/Mobi|Android/i.test(ua)) return 'mobile';
     if (/Tablet|iPad/i.test(ua)) return 'tablet';
     return 'desktop';
   }
 
   function getBrowser() {
-    const ua = navigator.userAgent;
+    var ua = navigator.userAgent;
     if (ua.includes('Firefox')) return 'Firefox';
     if (ua.includes('Edg')) return 'Edge';
     if (ua.includes('Chrome')) return 'Chrome';
@@ -20,7 +20,7 @@
   }
 
   function getOS() {
-    const ua = navigator.userAgent;
+    var ua = navigator.userAgent;
     if (ua.includes('Win')) return 'Windows';
     if (ua.includes('Mac')) return 'macOS';
     if (ua.includes('Linux')) return 'Linux';
@@ -30,7 +30,7 @@
   }
 
   function getSessionId() {
-    let sid = sessionStorage.getItem('dai_sid');
+    var sid = sessionStorage.getItem('dai_sid');
     if (!sid) {
       sid = Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
       sessionStorage.setItem('dai_sid', sid);
@@ -38,39 +38,61 @@
     return sid;
   }
 
-  async function getIP() {
+  // Primary: Cloudflare /cdn-cgi/trace (free, unlimited, includes IP + country)
+  async function getCfTrace() {
     try {
-      const res = await fetch('https://api.ipify.org?format=json');
-      const data = await res.json();
+      var res = await fetch('/cdn-cgi/trace');
+      var text = await res.text();
+      var parsed = {};
+      text.split('\n').forEach(function(line) {
+        var parts = line.split('=');
+        if (parts.length === 2) parsed[parts[0]] = parts[1];
+      });
+      return { ip: parsed.ip || null, country: parsed.loc || null };
+    } catch (e) {
+      return { ip: null, country: null };
+    }
+  }
+
+  // Fallback: ipify for IP only
+  async function getIPFallback() {
+    try {
+      var res = await fetch('https://api.ipify.org?format=json');
+      var data = await res.json();
       return data.ip;
     } catch (e) {
       return null;
     }
   }
 
-  async function getGeoInfo(ip) {
-    if (!ip) return {};
-    try {
-      const res = await fetch('https://ipapi.co/' + ip + '/json/');
-      const data = await res.json();
-      return { country: data.country_name, city: data.city };
-    } catch (e) {
-      return {};
-    }
-  }
+  // Country code to display name (common ones for this site's audience)
+  var COUNTRY_NAMES = {
+    TW: 'Taiwan', US: 'United States', JP: 'Japan', HK: 'Hong Kong',
+    SG: 'Singapore', CN: 'China', KR: 'South Korea', GB: 'United Kingdom',
+    DE: 'Germany', CA: 'Canada', AU: 'Australia', FR: 'France',
+    MY: 'Malaysia', TH: 'Thailand', VN: 'Vietnam', PH: 'Philippines',
+    IN: 'India', ID: 'Indonesia', NL: 'Netherlands', SE: 'Sweden'
+  };
 
   async function trackVisit() {
-    const ip = await getIP();
-    const geo = await getGeoInfo(ip);
+    // Try Cloudflare trace first (free, unlimited)
+    var cf = await getCfTrace();
+    var ip = cf.ip;
+    var country = cf.country ? (COUNTRY_NAMES[cf.country] || cf.country) : null;
 
-    // Check if user is authenticated (from Supabase auth)
-    let userId = null;
-    let userEmail = null;
-    let isAuth = false;
+    // Fallback to ipify if Cloudflare trace failed
+    if (!ip) {
+      ip = await getIPFallback();
+    }
+
+    // Check if user is authenticated
+    var userId = null;
+    var userEmail = null;
+    var isAuth = false;
     try {
-      const stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+      var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
       if (stored) {
-        const session = JSON.parse(stored);
+        var session = JSON.parse(stored);
         if (session && session.user) {
           userId = session.user.id;
           userEmail = session.user.email;
@@ -79,7 +101,7 @@
       }
     } catch (e) {}
 
-    const payload = {
+    var payload = {
       visitor_ip: ip,
       user_id: userId,
       user_email: userEmail,
@@ -92,8 +114,8 @@
       screen_width: window.screen.width,
       screen_height: window.screen.height,
       language: navigator.language,
-      country: geo.country || null,
-      city: geo.city || null,
+      country: country,
+      city: null,
       is_authenticated: isAuth,
       session_id: getSessionId()
     };
@@ -110,7 +132,6 @@
     }).catch(function() {});
   }
 
-  // Track on page load
   if (document.readyState === 'complete') {
     trackVisit();
   } else {
