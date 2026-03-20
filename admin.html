@@ -3,6 +3,7 @@ layout: default
 title: Admin Dashboard
 ---
 
+<script src="/assets/js/config.js"></script>
 <style>
   .page-content .wrapper { max-width: 100%; padding: 0 20px; }
 </style>
@@ -310,12 +311,11 @@ function renderAuthUsers(page) {
 // Content views
 var _postViews = [];
 var _featurePosts = [];
-var SHORT_LINKS = { '1': '2026-03-ai-impact-cissp-cybersecurity-future', '2': '2026-03-boris-cherny-claude-code-creator-profile', '3': '2026-03-ai-impact-toastmasters-club-operations', '4': '2026-03-ai-impact-retirees-us-canada-taiwan', '5': '2026-03-ai-impact-global-jobs-2023-2029', '6': '2026-03-openclaw-ai-industry-security-concerns', '7': '2026-03-openclaw-confirmed-security-incidents' };
-var PUBLIC_SLUGS = ['2026-03-ai-impact-cissp-cybersecurity-future', '2026-03-boris-cherny-claude-code-creator-profile', '2026-03-ai-impact-toastmasters-club-operations', '2026-03-ai-impact-retirees-us-canada-taiwan', '2026-03-ai-impact-global-jobs-2023-2029', '2026-03-openclaw-ai-industry-security-concerns', '2026-03-openclaw-confirmed-security-incidents'];
+var SHORT_LINKS = window.DAILYAI_SHORT_LINKS || {};
 
 async function loadContentViews() {
   _postViews = await apiFetch('post_views', 'select=post_date,post_type,user_email&order=created_at.desc&limit=5000');
-  _featurePosts = await apiFetch('posts', 'type=eq.feature&select=date,title,slug,summary&order=date.desc');
+  _featurePosts = await apiFetch('posts', 'type=eq.feature&select=date,title,slug,summary,is_free&order=date.desc');
   showContentView('daily');
 }
 
@@ -367,7 +367,7 @@ function showFeatureView(byDate) {
 
   _featurePosts.forEach(function(p, i) {
     var views = byDate[p.date] || { total: 0, unique: new Set() };
-    var isPublic = PUBLIC_SLUGS.indexOf(p.slug) !== -1;
+    var isPublic = p.is_free === true;
     var shortId = getShortId(p.slug);
     var featureUrl = '/view-feature?slug=' + (p.slug || '');
     var shortUrl = shortId ? '/?s=' + shortId : '—';

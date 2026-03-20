@@ -3,20 +3,13 @@ layout: default
 title: Daily AI Taiwan
 ---
 
+<script src="/assets/js/config.js"></script>
 <script>
 // Short link router: dailyai.tw/?s=N redirects to the corresponding article
 (function() {
-  var SHORT_LINKS = {
-    '1': '/view-feature?slug=2026-03-ai-impact-cissp-cybersecurity-future',
-    '2': '/view-feature?slug=2026-03-boris-cherny-claude-code-creator-profile',
-    '3': '/view-feature?slug=2026-03-ai-impact-toastmasters-club-operations',
-    '4': '/view-feature?slug=2026-03-ai-impact-retirees-us-canada-taiwan',
-    '5': '/view-feature?slug=2026-03-ai-impact-global-jobs-2023-2029',
-    '6': '/view-feature?slug=2026-03-openclaw-ai-industry-security-concerns',
-    '7': '/view-feature?slug=2026-03-openclaw-confirmed-security-incidents'
-  };
+  var LINKS = window.DAILYAI_SHORT_LINKS || {};
   var s = new URLSearchParams(window.location.search).get('s');
-  if (s && SHORT_LINKS[s]) { window.location.replace(SHORT_LINKS[s]); }
+  if (s && LINKS[s]) { window.location.replace('/view-feature?slug=' + LINKS[s]); }
 })();
 </script>
 
