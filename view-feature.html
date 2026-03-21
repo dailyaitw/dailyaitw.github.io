@@ -61,7 +61,7 @@ sitemap: false
 
     var fullContent = marked.parse(postContent);
 
-    var pageUrl = encodeURIComponent(window.location.pathname + window.location.search);
+    var pageUrl = encodeURIComponent(window.location.origin + window.location.pathname + window.location.search);
     var pageTitle = encodeURIComponent(postTitle + ' — Daily AI Taiwan');
     var pageSummary = encodeURIComponent(postSummary);
 
