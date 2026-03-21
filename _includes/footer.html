@@ -405,6 +405,16 @@ async function submitContact(e) {
       e.preventDefault();
       var displayUrl = url.hostname + url.pathname;
       if (displayUrl.length > 60) displayUrl = displayUrl.substring(0, 57) + '...';
+      // Set bilingual text each time modal opens
+      extModal.querySelector('h3').textContent = t('即將離開 Daily AI Taiwan', 'Leaving Daily AI Taiwan');
+      extModal.querySelector('.ext-dialog > p').textContent = t('您即將前往外部網站：', 'You are about to visit:');
+      extModal.querySelector('.ext-note').innerHTML = t(
+        '此連結為資料來源，內容由第三方網站提供。<br>選擇「新分頁開啟」可保留目前頁面。',
+        'This link leads to an external site.<br>Choose "Open in new tab" to keep this page.'
+      );
+      extModal.querySelector('.ext-cancel').textContent = t('取消', 'Cancel');
+      extModal.querySelector('.ext-newtab').textContent = t('新分頁開啟', 'Open in new tab');
+      extModal.querySelector('.ext-go').textContent = t('前往網站 →', 'Visit site →');
       extUrlDisplay.textContent = displayUrl;
       extLinkGo.href = href;
       extLinkSame.href = href;
