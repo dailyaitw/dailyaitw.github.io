@@ -62,9 +62,14 @@ title: Daily AI Taiwan
 
   async function apiFetch(query) {
     try {
-      const res = await fetch(SB_URL + '/rest/v1/posts?' + query, {
-        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+      if (!SB_URL || !SB_KEY) throw new Error('Missing SB config: URL=' + SB_URL + ' KEY=' + (SB_KEY ? SB_KEY.substring(0,10) + '...' : 'undefined'));
+      var controller = new AbortController();
+      var timeout = setTimeout(function() { controller.abort(); }, 10000);
+      var res = await fetch(SB_URL + '/rest/v1/posts?' + query, {
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY },
+        signal: controller.signal
       });
+      clearTimeout(timeout);
       if (!res.ok) throw new Error('API error: ' + res.status);
       return await res.json();
     } catch (e) {
@@ -267,8 +272,12 @@ title: Daily AI Taiwan
   // expose to onclick
   window.loadMoreFeatures = loadMoreFeatures;
 
-  Promise.all([loadFeatures(), loadToday(), loadDaily(), loadMonthly(), loadYearly()])
-    .catch(function(e) { console.error('Load error:', e); });
+  // Load each section independently so one failure doesn't block others
+  loadToday().catch(function(e) { console.error('loadToday error:', e); document.getElementById('today-post').innerHTML = '<p style="color:red;">載入失敗</p>'; });
+  loadFeatures().catch(function(e) { console.error('loadFeatures error:', e); });
+  loadDaily().catch(function(e) { console.error('loadDaily error:', e); document.getElementById('daily-list').innerHTML = '<p style="color:red;">載入失敗</p>'; });
+  loadMonthly().catch(function(e) { console.error('loadMonthly error:', e); document.getElementById('monthly-list').innerHTML = '<p style="color:red;">載入失敗</p>'; });
+  loadYearly().catch(function(e) { console.error('loadYearly error:', e); document.getElementById('yearly-list').innerHTML = '<p style="color:red;">載入失敗</p>'; });
 })();
 </script>
 
