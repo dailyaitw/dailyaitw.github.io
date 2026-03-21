@@ -117,13 +117,14 @@ title: Daily AI Taiwan
 
   // URL param-based links (classic navigation, no popup)
   function postUrl(date, type) {
-    if (type === 'monthly') return '/post?month=' + encodeURIComponent(date.substring(0, 7)) + '&type=monthly';
-    if (type === 'yearly') return '/post?year=' + encodeURIComponent(date.substring(0, 4)) + '&type=yearly';
-    return '/post?date=' + encodeURIComponent(date) + '&type=' + encodeURIComponent(type);
+    var lp = langParam();
+    if (type === 'monthly') return '/post?month=' + encodeURIComponent(date.substring(0, 7)) + '&type=monthly' + lp;
+    if (type === 'yearly') return '/post?year=' + encodeURIComponent(date.substring(0, 4)) + '&type=yearly' + lp;
+    return '/post?date=' + encodeURIComponent(date) + '&type=' + encodeURIComponent(type) + lp;
   }
 
   function featureUrl(slug) {
-    return '/view-feature?slug=' + encodeURIComponent(slug);
+    return '/view-feature?slug=' + encodeURIComponent(slug) + langParam();
   }
 
   function buildList(posts, formatFn) {

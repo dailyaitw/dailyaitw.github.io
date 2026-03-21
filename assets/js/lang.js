@@ -16,7 +16,14 @@
 
   window.setLang = function(lang) {
     localStorage.setItem(STORAGE_KEY, lang);
-    window.location.reload();
+    // Update URL with lang param and reload
+    var url = new URL(window.location.href);
+    if (lang === 'en') {
+      url.searchParams.set('lang', 'en');
+    } else {
+      url.searchParams.delete('lang');
+    }
+    window.location.href = url.toString();
   };
 
   // Pick field based on language: tries field_en first if lang=en, falls back to field
@@ -42,6 +49,11 @@
       return '> *English translation not yet available. Showing original Chinese content.*\n\n---\n\n' + (obj[field] || '');
     }
     return obj[field] || '';
+  };
+
+  // Returns '&lang=en' or '' for appending to URLs
+  window.langParam = function() {
+    return getLang() === 'en' ? '&lang=en' : '';
   };
 
   // Set html lang attribute
