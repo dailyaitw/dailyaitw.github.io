@@ -13,5 +13,6 @@ window.DAILYAI_SHORT_LINKS = {
   '4': '2026-03-ai-impact-retirees-us-canada-taiwan',
   '5': '2026-03-ai-impact-global-jobs-2023-2029',
   '6': '2026-03-openclaw-ai-industry-security-concerns',
-  '7': '2026-03-openclaw-confirmed-security-incidents'
+  '7': '2026-03-openclaw-confirmed-security-incidents',
+  '8': '2026-03-ai-knowledge-workers-adaptation'
 };
