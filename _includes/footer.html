@@ -398,9 +398,13 @@ async function submitContact(e) {
     try {
       var url = new URL(href, window.location.origin);
       if (url.hostname === window.location.hostname) return;
-      // Internal service URLs - skip
+      // Internal service URLs and social share - skip
       if (url.hostname.includes('supabase.co')) return;
       if (url.hostname.includes('discord.gg')) return;
+      if (url.hostname.includes('facebook.com')) return;
+      if (url.hostname.includes('twitter.com')) return;
+      if (url.hostname.includes('x.com')) return;
+      if (url.hostname.includes('linkedin.com')) return;
       // Show modal for external links
       e.preventDefault();
       var displayUrl = url.hostname + url.pathname;
