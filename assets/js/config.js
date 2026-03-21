@@ -2,7 +2,7 @@
 
 // Supabase connection
 window.DAILYAI_SB_URL = 'https://kszbdgfbihnawjgmwjlk.supabase.co';
-window.DAILYAI_SB_KEY = 'sb_publishable_VrgzauRQ_kV_2MD0ujZ39w_0KREni_f';
+window.DAILYAI_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzemJkZ2ZiaWhuYXdqZ213amxrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3OTg2NjUsImV4cCI6MjA4OTM3NDY2NX0.t_d91Ktnzl0IDPF5uV4MZgVoVRGreOod03Wv8JWj94k';
 
 // SHORT_LINKS: maps short IDs to feature article slugs
 // Usage: dailyai.tw/?s=N redirects to the corresponding article
