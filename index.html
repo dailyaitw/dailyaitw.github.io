@@ -166,7 +166,7 @@ title: Daily AI Taiwan
     var el = document.getElementById('today-post');
 
     if (data.length > 0) {
-      var content = pickField(data[0], 'content');
+      var content = pickContent(data[0], 'content');
       var html = marked.parse(content);
       var todayHeading = getLang() === 'en'
         ? '<h2>🧠 Today\'s (' + fmt(data[0].date) + ') AI Highlights</h2>'
@@ -179,7 +179,7 @@ title: Daily AI Taiwan
     } else {
       var latest = await apiFetch('type=eq.daily&select=*&order=date.desc&limit=1');
       if (latest.length > 0) {
-        var latestContent = pickField(latest[0], 'content');
+        var latestContent = pickContent(latest[0], 'content');
         var notice = getLang() === 'en'
           ? '<p style="color:#888;font-style:italic;">Today\'s briefing not yet published. Showing latest (' + fmt(latest[0].date) + '):</p>'
           : '<p style="color:#888;font-style:italic;">今日日報尚未發布，以下為最新日報（' + fmt(latest[0].date) + '）：</p>';

@@ -33,6 +33,17 @@
     return getLang() === 'en' ? en : zh;
   };
 
+  // Pick content with fallback notice for missing translations
+  window.pickContent = function(obj, field) {
+    if (getLang() === 'en') {
+      var enVal = obj[field + '_en'];
+      if (enVal && enVal.trim()) return enVal;
+      // Fallback to Chinese with notice
+      return '> *English translation not yet available. Showing original Chinese content.*\n\n---\n\n' + (obj[field] || '');
+    }
+    return obj[field] || '';
+  };
+
   // Set html lang attribute
   document.documentElement.lang = getLang() === 'en' ? 'en' : 'zh-Hant';
 })();

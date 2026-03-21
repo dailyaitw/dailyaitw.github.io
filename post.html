@@ -79,7 +79,7 @@ sitemap: false
     var isFree = (type === 'daily' && diffDays <= 7) || isLoggedIn;
     if (type !== 'daily' && !isLoggedIn) isFree = false;
 
-    var fullContent = marked.parse(pickField(post, 'content'));
+    var fullContent = marked.parse(pickContent(post, 'content'));
     // Show 今日 only when viewing today's post
     var todayStr = new Date().toISOString().split('T')[0];
     if (type === 'daily' && date === todayStr) {

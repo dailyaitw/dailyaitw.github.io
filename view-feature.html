@@ -50,7 +50,7 @@ sitemap: false
     var post = data[0];
     var postTitle = pickField(post, 'title');
     var postSummary = pickField(post, 'summary') || '';
-    var postContent = pickField(post, 'content');
+    var postContent = pickContent(post, 'content');
     document.title = postTitle + ' — Daily AI Taiwan';
 
     var isLoggedIn = false;
