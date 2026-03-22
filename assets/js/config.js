@@ -16,5 +16,6 @@ window.DAILYAI_SHORT_LINKS = {
   '7': '2026-03-openclaw-confirmed-security-incidents',
   '8': '2026-03-ai-knowledge-workers-adaptation',
   '9': '2026-03-karpathy-code-agents-autoresearch-loopy-era',
-  '10': '2026-03-bgm-manufacturing-frontiers-north-america-taiwan'
+  '10': '2026-03-bgm-manufacturing-frontiers-north-america-taiwan',
+  '11': '2026-03-claude-code-opinion-leaders-automated-programming'
 };
