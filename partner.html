@@ -175,8 +175,8 @@ async function loadChat(userId, email) {
   if (_messages.length === 0) {
     // Add welcome message
     var welcome = t(
-      '你好！我是 Daily AI Taiwan 的合作夥伴招募助理。\n\nMark 掌握了最新 AI 開發能力，正在找合作夥伴。你不必出任何資金，也不必學任何 IT 或 AI — 只需要帶著你熟悉領域的想法。\n\n請告訴我：\n1. 你的背景或工作領域？\n2. 你希望有什麼樣的網站或服務？\n\n不管是寶媽職場、特定產業工具、還是任何生活中的需求 — 都歡迎聊聊！',
-      'Hi! I\'m the partner recruitment assistant for Daily AI Taiwan.\n\nMark has the latest AI development capabilities and is looking for partners. You don\'t need any money or tech skills — just your ideas from your own field.\n\nTell me:\n1. What\'s your background or work area?\n2. What kind of website or service do you wish existed?\n\nWhether it\'s for working parents, a specific industry, or any real-life need — all ideas welcome!'
+      '你好！我是 Daily AI Taiwan 的合作夥伴招募助理。\n\nMark 掌握了最新 AI 開發能力，正在找合作夥伴。你不必出任何資金，也不必學任何 IT 或 AI — 只需要帶著你熟悉領域的想法。\n\n我會用幾個簡單的問題來了解你的構想。\n\n首先 — 你目前在什麼領域工作，或是生活中最熟悉什麼？',
+      'Hi! I\'m the partner recruitment assistant for Daily AI Taiwan.\n\nMark has AI & development expertise and is looking for partners with real-world ideas. You don\'t need any money or tech skills — just your domain knowledge.\n\nLet me walk you through a few quick questions to understand your idea.\n\nFirst — what\'s your background? What field do you work in, or what area of life are you most familiar with?'
     );
     _messages.push({ role: 'assistant', content: welcome, time: new Date().toISOString() });
   }
