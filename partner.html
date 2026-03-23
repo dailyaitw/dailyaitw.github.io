@@ -320,38 +320,53 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
   }
 });
 
-// Email chat to user
-function emailChat() {
+// Email chat to user (server-side via Edge Function)
+async function emailChat() {
   var userMsgs = _messages.filter(function(m) { return m.role === 'user'; });
   if (userMsgs.length === 0) return;
 
-  // Get user email
-  var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
-  var session = stored ? JSON.parse(stored) : null;
-  var email = session && session.user ? session.user.email : '';
-  if (!email) { alert(t('無法取得您的 Email', 'Could not get your email')); return; }
+  var btn = document.getElementById('chat-email-btn');
+  btn.disabled = true;
+  btn.textContent = t('📧 寄送中...', '📧 Sending...');
 
-  // Build email body
-  var subject = t(
-    '[Daily AI Taiwan] 我的共同創辦人構想對話記錄',
-    '[Daily AI Taiwan] My Co-Founder Idea Chat Transcript'
-  );
-  var body = t('以下是您在 dailyai.tw/partner 的對話記錄：\n\n', 'Here is your chat transcript from dailyai.tw/partner:\n\n');
-  _messages.forEach(function(m) {
-    var label = m.role === 'assistant' ? '🤖 AI' : '👤 ' + t('你', 'You');
-    body += label + ':\n' + m.content + '\n\n';
-  });
-  body += '---\n' + t(
-    'Mark 會親自審閱這段對話。如有任何問題，請回覆 ai@dailyai.tw',
-    'Mark will personally review this conversation. For any questions, reply to ai@dailyai.tw'
-  );
+  try {
+    var { data: { session: freshSession } } = await _sbClient.auth.getSession();
+    if (freshSession) _accessToken = freshSession.access_token;
 
-  // Open mailto with BCC to business
-  var mailto = 'mailto:' + encodeURIComponent(email)
-    + '?subject=' + encodeURIComponent(subject)
-    + '&bcc=' + encodeURIComponent('ai+biz@dailyai.tw')
-    + '&body=' + encodeURIComponent(body);
-  window.open(mailto, '_blank');
+    var res = await fetch(window.DAILYAI_SB_URL + '/functions/v1/chat-partner', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + window.DAILYAI_SB_KEY,
+        'apikey': window.DAILYAI_SB_KEY
+      },
+      body: JSON.stringify({
+        action: 'email',
+        user_token: _accessToken,
+        messages: _messages,
+        lang: getLang()
+      })
+    });
+
+    if (res.ok) {
+      btn.textContent = t('✅ 已寄出！', '✅ Sent!');
+      setTimeout(function() {
+        btn.textContent = t('📧 將對話寄給我', '📧 Email me this chat');
+        btn.disabled = false;
+      }, 3000);
+    } else {
+      var errText = await res.text();
+      console.error('Email error:', errText);
+      throw new Error('Email failed');
+    }
+  } catch(e) {
+    console.error('Email error:', e);
+    btn.textContent = t('❌ 寄送失敗', '❌ Failed');
+    setTimeout(function() {
+      btn.textContent = t('📧 將對話寄給我', '📧 Email me this chat');
+      btn.disabled = false;
+    }, 3000);
+  }
 }
 </script>
 
