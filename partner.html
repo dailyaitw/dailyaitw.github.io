@@ -225,7 +225,8 @@ async function sendMessage() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + accessToken
+        'Authorization': 'Bearer ' + accessToken,
+        'apikey': window.DAILYAI_SB_KEY
       },
       body: JSON.stringify({
         message: text,
