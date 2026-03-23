@@ -77,6 +77,15 @@ title: Admin Dashboard
 
     <hr>
 
+    <h2>🤝 合作夥伴對話</h2>
+    <div id="partner-stats" style="display:flex; gap:20px; flex-wrap:wrap; margin:10px 0 16px;">
+      <div class="stat-card"><div class="stat-num" id="stat-partner-total">-</div><div class="stat-label">總對話數</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-partner-new">-</div><div class="stat-label">待審閱</div></div>
+    </div>
+    <div id="partner-chats-list"><p>載入中...</p></div>
+
+    <hr>
+
     <h2>📝 最近訪客記錄（最新 50 筆）</h2>
     <div style="overflow-x:auto;">
       <table id="visits-table">
@@ -387,7 +396,93 @@ function showFeatureView(byDate) {
   document.getElementById('content-views-list').innerHTML = html;
 }
 
-loadDashboard().then(loadContentViews);
+async function loadPartnerChats() {
+  try {
+    var chats = await apiFetch('partner_chats', 'select=*&order=created_at.desc&limit=50');
+    var el = document.getElementById('partner-chats-list');
+    var totalEl = document.getElementById('stat-partner-total');
+    var newEl = document.getElementById('stat-partner-new');
+
+    totalEl.textContent = chats.length;
+    newEl.textContent = chats.filter(function(c) { return c.status === 'new'; }).length;
+
+    if (chats.length === 0) {
+      el.innerHTML = '<p style="color:#999;">尚無合作夥伴對話</p>';
+      return;
+    }
+
+    el.innerHTML = chats.map(function(c) {
+      var msgs = c.messages || [];
+      var userMsgs = msgs.filter(function(m) { return m.role === 'user'; });
+      var preview = userMsgs.length > 0 ? userMsgs[0].content : '(無訊息)';
+      if (preview.length > 80) preview = preview.substring(0, 80) + '...';
+      var time = c.created_at ? new Date(c.created_at).toLocaleString('zh-TW') : '-';
+      var statusColors = { new: '#f59e0b', reviewed: '#3b82f6', contacted: '#8b5cf6', accepted: '#22c55e', declined: '#ef4444' };
+      var statusLabels = { new: '待審閱', reviewed: '已審閱', contacted: '已聯繫', accepted: '已合作', declined: '未採納' };
+      var color = statusColors[c.status] || '#999';
+      var label = statusLabels[c.status] || c.status;
+      var catLabels = { working_parent: '寶媽/職場父母', industry_specific: '特定產業', senior: '銀髮族', freelancer: '自由工作者', community: '社群', education: '教育', health: '健康', small_business: '中小企業', other: '其他' };
+
+      return '<div class="partner-chat-card" onclick="togglePartnerChat(\'' + c.id + '\')">' +
+        '<div class="partner-chat-header">' +
+        '<strong>' + esc(c.user_email || 'Unknown') + '</strong>' +
+        '<span style="background:' + color + ';color:#fff;padding:2px 10px;border-radius:10px;font-size:11px;margin-left:8px;">' + label + '</span>' +
+        (c.category && c.category !== 'other' ? '<span style="background:#e5e7eb;color:#555;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:4px;">' + (catLabels[c.category] || c.category) + '</span>' : '') +
+        '<span style="color:#999;font-size:12px;margin-left:auto;">' + time + ' · ' + msgs.length + ' 則訊息</span>' +
+        '</div>' +
+        '<div class="partner-chat-preview">' + esc(preview) + '</div>' +
+        '<div class="partner-chat-detail" id="pc-' + c.id + '" style="display:none;">' +
+        '<div class="partner-chat-messages">' +
+        msgs.map(function(m) {
+          var isAI = m.role === 'assistant';
+          return '<div style="padding:8px 12px;background:' + (isAI ? '#f7f7f8' : '#fff') + ';border-bottom:1px solid #f0f0f0;font-size:13px;">' +
+            '<strong style="color:#888;">' + (isAI ? '🤖 AI' : '👤 用戶') + '</strong>' +
+            '<p style="margin:4px 0 0;line-height:1.5;white-space:pre-wrap;">' + esc(m.content) + '</p></div>';
+        }).join('') +
+        '</div>' +
+        '<div class="partner-chat-actions">' +
+        '<select onchange="updatePartnerStatus(\'' + c.id + '\', this.value)" style="padding:4px 8px;border-radius:4px;border:1px solid #ddd;font-size:12px;">' +
+        '<option value="new"' + (c.status === 'new' ? ' selected' : '') + '>待審閱</option>' +
+        '<option value="reviewed"' + (c.status === 'reviewed' ? ' selected' : '') + '>已審閱</option>' +
+        '<option value="contacted"' + (c.status === 'contacted' ? ' selected' : '') + '>已聯繫</option>' +
+        '<option value="accepted"' + (c.status === 'accepted' ? ' selected' : '') + '>已合作</option>' +
+        '<option value="declined"' + (c.status === 'declined' ? ' selected' : '') + '>未採納</option>' +
+        '</select>' +
+        '<input type="text" placeholder="管理員備註..." value="' + esc(c.admin_notes || '') + '" ' +
+        'onblur="updatePartnerNotes(\'' + c.id + '\', this.value)" ' +
+        'style="flex:1;padding:4px 8px;border-radius:4px;border:1px solid #ddd;font-size:12px;">' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+  } catch(e) {
+    console.error('Load partner chats error:', e);
+    document.getElementById('partner-chats-list').innerHTML = '<p style="color:#999;">載入失敗（partner_chats 表可能不存在）</p>';
+  }
+}
+
+function togglePartnerChat(id) {
+  var el = document.getElementById('pc-' + id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+async function updatePartnerStatus(id, status) {
+  await fetch(SB_URL + '/rest/v1/partner_chats?id=eq.' + id, {
+    method: 'PATCH',
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: status, updated_at: new Date().toISOString() })
+  });
+}
+
+async function updatePartnerNotes(id, notes) {
+  await fetch(SB_URL + '/rest/v1/partner_chats?id=eq.' + id, {
+    method: 'PATCH',
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ admin_notes: notes, updated_at: new Date().toISOString() })
+  });
+}
+
+loadDashboard().then(function() { loadContentViews(); loadPartnerChats(); });
 </script>
 
 <style>
@@ -416,8 +511,17 @@ loadDashboard().then(loadContentViews);
 .pag-btn { padding: 4px 10px; margin: 0 2px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px; }
 .pag-btn:hover { background: #f0f0f0; }
 .pag-active { background: #2a7ae2 !important; color: #fff !important; border-color: #2a7ae2 !important; }
+.partner-chat-card { border: 1px solid #e5e7eb; border-radius: 8px; margin: 10px 0; cursor: pointer; transition: all 0.15s; overflow: hidden; }
+.partner-chat-card:hover { border-color: #2a7ae2; box-shadow: 0 2px 8px rgba(42,122,226,0.1); }
+.partner-chat-header { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding: 12px 14px; background: #f9fafb; }
+.partner-chat-preview { padding: 8px 14px; font-size: 13px; color: #666; border-top: 1px solid #f0f0f0; }
+.partner-chat-detail { border-top: 1px solid #e5e7eb; }
+.partner-chat-messages { max-height: 400px; overflow-y: auto; }
+.partner-chat-actions { display: flex; gap: 8px; padding: 10px 14px; background: #f9fafb; border-top: 1px solid #e5e7eb; align-items: center; }
 @media (max-width: 600px) {
   #stats-summary { flex-direction: column; }
   .stat-card { min-width: auto; }
+  .partner-chat-header { font-size: 13px; }
+  .partner-chat-actions { flex-direction: column; }
 }
 </style>
