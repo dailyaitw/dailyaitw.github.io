@@ -34,7 +34,10 @@ title: Partner With Us — Daily AI Taiwan
       <textarea id="chat-input" rows="2" maxlength="1000"></textarea>
       <button id="chat-send" onclick="sendMessage()"></button>
     </div>
-    <p class="chat-hint" id="chat-hint"></p>
+    <div class="chat-footer">
+      <p class="chat-hint" id="chat-hint"></p>
+      <button id="chat-email-btn" onclick="emailChat()" style="display:none;"></button>
+    </div>
   </div>
 
   <!-- Details section — collapsed by default, expandable -->
@@ -152,6 +155,7 @@ title: Partner With Us — Daily AI Taiwan
     '我們的 AI 助理會和你聊聊構想的方向與可行性。Mark 會親自審閱每段對話。',
     'Our AI assistant will discuss your idea at a conceptual level. Mark will personally review every conversation.'
   );
+  document.getElementById('chat-email-btn').textContent = t('📧 將對話寄給我', '📧 Email me this chat');
 })();
 
 // ---- Auth check ----
@@ -288,6 +292,8 @@ async function sendMessage() {
     var result = await res.json();
     _chatId = result.chat_id;
     _messages.push({ role: 'assistant', content: result.reply, time: new Date().toISOString() });
+    // Show email button after first real exchange
+    document.getElementById('chat-email-btn').style.display = 'inline-block';
   } catch(e) {
     console.error('Chat error:', e);
     _messages.push({
@@ -313,6 +319,39 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
     sendMessage();
   }
 });
+
+// Email chat to user
+function emailChat() {
+  var userMsgs = _messages.filter(function(m) { return m.role === 'user'; });
+  if (userMsgs.length === 0) return;
+
+  // Get user email
+  var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+  var session = stored ? JSON.parse(stored) : null;
+  var email = session && session.user ? session.user.email : '';
+  if (!email) { alert(t('無法取得您的 Email', 'Could not get your email')); return; }
+
+  // Build email body
+  var subject = t(
+    '[Daily AI Taiwan] 我的共同創辦人構想對話記錄',
+    '[Daily AI Taiwan] My Co-Founder Idea Chat Transcript'
+  );
+  var body = t('以下是您在 dailyai.tw/partner 的對話記錄：\n\n', 'Here is your chat transcript from dailyai.tw/partner:\n\n');
+  _messages.forEach(function(m) {
+    var label = m.role === 'assistant' ? '🤖 AI' : '👤 ' + t('你', 'You');
+    body += label + ':\n' + m.content + '\n\n';
+  });
+  body += '---\n' + t(
+    'Mark 會親自審閱這段對話。如有任何問題，請回覆 ai@dailyai.tw',
+    'Mark will personally review this conversation. For any questions, reply to ai@dailyai.tw'
+  );
+
+  // Open mailto
+  var mailto = 'mailto:' + encodeURIComponent(email)
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
+  window.open(mailto, '_blank');
+}
 </script>
 
 <style>
@@ -542,12 +581,30 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
 }
 #chat-send:hover { background: #111; }
 #chat-send:disabled { background: #ccc; cursor: not-allowed; }
+.chat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+}
 .chat-hint {
   font-size: 0.72em;
   color: #bbb;
-  text-align: center;
-  margin-top: 6px;
+  margin: 0;
 }
+#chat-email-btn {
+  padding: 6px 14px;
+  background: #fff;
+  color: #2a7ae2;
+  border: 1px solid #d9d9e3;
+  border-radius: 16px;
+  font-size: 0.78em;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+#chat-email-btn:hover { background: #f0f7ff; border-color: #2a7ae2; }
 
 @media (max-width: 600px) {
   .chat-messages { height: 300px; }
