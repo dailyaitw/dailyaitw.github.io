@@ -162,13 +162,27 @@ var _sending = false;
 var _accessToken = null;
 
 (async function() {
-  // Use Supabase client to get fresh session (auto-refreshes expired tokens)
-  var { data: { session } } = await _sbClient.auth.getSession();
+  // Get session — try Supabase client first, fallback to localStorage
+  var session = null;
+  try {
+    var result = await _sbClient.auth.getSession();
+    session = result.data.session;
+  } catch(e) { console.error('getSession error:', e); }
+
+  if (!session) {
+    // Fallback: read from localStorage directly
+    try {
+      var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+      if (stored) session = JSON.parse(stored);
+    } catch(e) {}
+  }
+
   if (!session || !session.user) {
     document.getElementById('login-prompt').style.display = 'block';
     return;
   }
   _accessToken = session.access_token;
+  console.log('Partner chat: auth OK, token length:', _accessToken ? _accessToken.length : 0);
   document.getElementById('chat-section').style.display = 'block';
   document.getElementById('chat-status').textContent = t('已登入', 'Logged in');
 
@@ -267,6 +281,7 @@ async function sendMessage() {
 
     if (!res.ok) {
       var errText = await res.text();
+      console.error('Chat API error:', res.status, errText);
       throw new Error(errText || 'Request failed');
     }
 
