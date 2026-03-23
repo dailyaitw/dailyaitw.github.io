@@ -46,6 +46,28 @@ title: Daily AI Taiwan
     <div id="feature-list"></div>
   </div>
 
+  <!-- Partner CTA -->
+  <div class="partner-cta-block" id="partner-cta">
+    <div class="partner-cta-inner">
+      <span class="partner-cta-icon">🤝</span>
+      <div class="partner-cta-text">
+        <strong id="partner-cta-title"></strong>
+        <span id="partner-cta-desc"></span>
+      </div>
+      <a href="/partner" class="partner-cta-btn" id="partner-cta-btn"></a>
+    </div>
+  </div>
+  <script>
+  (function() {
+    document.getElementById('partner-cta-title').textContent = t('尋找合作夥伴', 'Looking for Partners');
+    document.getElementById('partner-cta-desc').textContent = t(
+      '有網站構想嗎？我們提供 AI 技術 + 開發費用，一起把想法變成現實',
+      'Have a website idea? We provide AI tech + development costs — let\'s build it together'
+    );
+    document.getElementById('partner-cta-btn').textContent = t('了解更多 →', 'Learn More →');
+  })();
+  </script>
+
   <hr>
 
   <h2 id="daily-heading"></h2>
@@ -352,6 +374,40 @@ title: Daily AI Taiwan
 }
 .load-more-btn:hover { background: #2a7ae2; color: #fff; }
 .load-more-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Partner CTA */
+.partner-cta-block {
+  margin: 20px 0;
+}
+.partner-cta-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+}
+.partner-cta-icon { font-size: 2em; flex-shrink: 0; }
+.partner-cta-text { flex: 1; }
+.partner-cta-text strong { display: block; font-size: 1em; color: #166534; margin-bottom: 2px; }
+.partner-cta-text span { font-size: 0.85em; color: #555; }
+.partner-cta-btn {
+  flex-shrink: 0;
+  padding: 8px 20px;
+  background: #16a34a;
+  color: #fff !important;
+  border-radius: 8px;
+  text-decoration: none !important;
+  font-weight: 600;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+.partner-cta-btn:hover { background: #15803d; }
+@media (max-width: 600px) {
+  .partner-cta-inner { flex-wrap: wrap; }
+  .partner-cta-btn { width: 100%; text-align: center; }
+}
 
 /* Tables as cards */
 #today-post table {

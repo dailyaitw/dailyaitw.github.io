@@ -1,0 +1,454 @@
+---
+layout: default
+title: Partner With Us — Daily AI Taiwan
+---
+
+<div id="app">
+  <div id="partner-intro">
+    <h1 id="partner-title"></h1>
+    <div class="partner-desc" id="partner-desc"></div>
+
+    <div class="partner-cards">
+      <div class="partner-card">
+        <div class="partner-card-icon">💡</div>
+        <h3 id="card1-title"></h3>
+        <p id="card1-desc"></p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-icon">🛠️</div>
+        <h3 id="card2-title"></h3>
+        <p id="card2-desc"></p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-icon">🚀</div>
+        <h3 id="card3-title"></h3>
+        <p id="card3-desc"></p>
+      </div>
+      <div class="partner-card">
+        <div class="partner-card-icon">💰</div>
+        <h3 id="card4-title"></h3>
+        <p id="card4-desc"></p>
+      </div>
+    </div>
+
+    <div class="partner-pitch" id="partner-pitch"></div>
+
+    <div class="partner-examples">
+      <h3 id="examples-title"></h3>
+      <div class="example-tags" id="example-tags"></div>
+    </div>
+  </div>
+
+  <!-- Login prompt (shown when not logged in) -->
+  <div id="login-prompt" style="display:none;">
+    <div class="login-prompt-box">
+      <p id="login-prompt-text"></p>
+      <a href="/login" class="partner-login-btn" id="login-prompt-btn"></a>
+    </div>
+  </div>
+
+  <!-- Chat interface (shown when logged in) -->
+  <div id="chat-section" style="display:none;">
+    <div class="chat-header">
+      <h2 id="chat-title"></h2>
+      <span class="chat-status" id="chat-status"></span>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-area">
+      <textarea id="chat-input" rows="2" maxlength="1000"></textarea>
+      <button id="chat-send" onclick="sendMessage()"></button>
+    </div>
+    <p class="chat-hint" id="chat-hint"></p>
+  </div>
+</div>
+
+<script>
+(function() {
+  var lang = getLang();
+  // Intro section
+  document.getElementById('partner-title').textContent = t(
+    '🤝 尋找合作夥伴',
+    '🤝 Partner With Us'
+  );
+  document.getElementById('partner-desc').innerHTML = t(
+    'Mark 掌握了 2026 最新 AI 寫程式的方法和心法，以網站開發為起點，正在尋找有想法的合作夥伴。<br><strong>你不必出任何資金，不必學任何 IT 或 AI</strong>  — 只需要帶著你熟悉領域的構想。',
+    'Mark has mastered the latest 2026 AI-powered development methods, starting with website development, and is looking for partners with ideas.<br><strong>You don\'t need to invest any money or learn any IT/AI</strong> — just bring your domain expertise and vision.'
+  );
+
+  // Cards
+  document.getElementById('card1-title').textContent = t('你熟悉的領域', 'Your Domain Expertise');
+  document.getElementById('card1-desc').textContent = t(
+    '最好有實際需求 — 從自己的需求出發，擴展為服務他人的網站',
+    'Ideally a real need — start from your own pain point, then serve others like you'
+  );
+  document.getElementById('card2-title').textContent = t('我們提供一切技術', 'We Handle All Tech');
+  document.getElementById('card2-desc').textContent = t(
+    'AI 開發、程式設計、網站建置 — 所有技術和費用由我們承擔',
+    'AI development, programming, website building — all tech and costs covered by us'
+  );
+  document.getElementById('card3-title').textContent = t('合作模式可談', 'Flexible Partnership');
+  document.getElementById('card3-desc').textContent = t(
+    '能成為商業機會最好，不行就當做練習和情懷，模式都可以談',
+    'Commercial potential is great; if not, it\'s still valuable as practice or a passion project'
+  );
+  document.getElementById('card4-title').textContent = t('2026 營收目標', '2026 Revenue Goal');
+  document.getElementById('card4-desc').textContent = t(
+    '簡單目的：2026 年一起創造營收。先做出來，再一起經營',
+    'Simple goal: generate revenue together in 2026. Build first, grow together'
+  );
+
+  // Pitch quote
+  document.getElementById('partner-pitch').innerHTML = t(
+    '<p>「在 AI 時代，<strong>高齡族群</strong>和<strong>職場媽媽</strong>都有新的機會。不管是寶媽職場、特定產業服務、還是任何你生活中遇到的痛點 — 只要你有運營想法，我們就能一起把它變成網站，服務更多人。」</p><p class="pitch-author">— Mark，馬克路思科技創辦人</p>',
+    '<p>"In the AI era, <strong>older professionals</strong> and <strong>working parents</strong> have new opportunities. Whether it\'s a niche job platform, an industry-specific service, or any real pain point from your life — if you have an operational vision, we can build it together and serve more people."</p><p class="pitch-author">— Mark, Founder of Markroots Technology</p>'
+  );
+
+  // Example domains
+  document.getElementById('examples-title').textContent = t('適合的構想方向（不限於此）', 'Example Ideas (Not Limited To)');
+  var examples = lang === 'en' ? [
+    'Working parents platform', 'Industry-specific tools', 'Local community services',
+    'Education & training', 'Health & wellness', 'Small business solutions',
+    'Freelancer marketplace', 'Senior lifestyle', 'Hobby communities', 'Your own idea!'
+  ] : [
+    '寶媽職場平台', '特定產業工具', '在地社區服務',
+    '教育培訓', '健康生活', '中小企業方案',
+    '自由工作者媒合', '銀髮族生活', '興趣社群', '你的構想！'
+  ];
+  document.getElementById('example-tags').innerHTML = examples.map(function(e) {
+    return '<span class="example-tag">' + e + '</span>';
+  }).join('');
+
+  // Login prompt
+  document.getElementById('login-prompt-text').textContent = t(
+    '請先登入，即可與 AI 助理討論你的網站構想',
+    'Please log in to discuss your website idea with our AI assistant'
+  );
+  document.getElementById('login-prompt-btn').textContent = t('登入 / 註冊', 'Login / Sign Up');
+
+  // Chat section
+  document.getElementById('chat-title').textContent = t('💬 與 AI 助理聊聊你的構想', '💬 Chat About Your Idea');
+  document.getElementById('chat-input').placeholder = t(
+    '描述你的網站構想，例如：我在餐飲業工作，想做一個...',
+    'Describe your website idea, e.g.: I work in hospitality and want to build a...'
+  );
+  document.getElementById('chat-send').textContent = t('送出', 'Send');
+  document.getElementById('chat-hint').textContent = t(
+    '我們的 AI 助理會和你聊聊構想的方向與可行性。Mark 會親自審閱每段對話。',
+    'Our AI assistant will discuss your idea at a conceptual level. Mark will personally review every conversation.'
+  );
+})();
+
+// ---- Auth check ----
+var _sbClient = window.supabase.createClient(window.DAILYAI_SB_URL, window.DAILYAI_SB_KEY);
+var _chatId = null;
+var _messages = [];
+var _sending = false;
+
+(async function() {
+  var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+  var session = stored ? JSON.parse(stored) : null;
+  if (!session || !session.user) {
+    document.getElementById('login-prompt').style.display = 'block';
+    return;
+  }
+  document.getElementById('chat-section').style.display = 'block';
+  document.getElementById('chat-status').textContent = t('已登入', 'Logged in');
+
+  // Load existing chat or start new
+  await loadChat(session.user.id, session.user.email);
+})();
+
+async function loadChat(userId, email) {
+  try {
+    var res = await fetch(window.DAILYAI_SB_URL + '/rest/v1/partner_chats?user_id=eq.' + userId + '&order=created_at.desc&limit=1', {
+      headers: { 'apikey': window.DAILYAI_SB_KEY, 'Authorization': 'Bearer ' + window.DAILYAI_SB_KEY }
+    });
+    var data = await res.json();
+    if (data && data.length > 0) {
+      _chatId = data[0].id;
+      _messages = data[0].messages || [];
+    }
+  } catch(e) { console.error('Load chat error:', e); }
+
+  if (_messages.length === 0) {
+    // Add welcome message
+    var welcome = t(
+      '你好！我是 Daily AI Taiwan 的合作夥伴招募助理。\n\nMark 掌握了最新 AI 開發能力，正在找合作夥伴。你不必出任何資金，也不必學任何 IT 或 AI — 只需要帶著你熟悉領域的想法。\n\n請告訴我：\n1. 你的背景或工作領域？\n2. 你希望有什麼樣的網站或服務？\n\n不管是寶媽職場、特定產業工具、還是任何生活中的需求 — 都歡迎聊聊！',
+      'Hi! I\'m the partner recruitment assistant for Daily AI Taiwan.\n\nMark has the latest AI development capabilities and is looking for partners. You don\'t need any money or tech skills — just your ideas from your own field.\n\nTell me:\n1. What\'s your background or work area?\n2. What kind of website or service do you wish existed?\n\nWhether it\'s for working parents, a specific industry, or any real-life need — all ideas welcome!'
+    );
+    _messages.push({ role: 'assistant', content: welcome, time: new Date().toISOString() });
+  }
+  renderMessages();
+}
+
+function renderMessages() {
+  var container = document.getElementById('chat-messages');
+  container.innerHTML = '';
+  _messages.forEach(function(msg) {
+    var bubble = document.createElement('div');
+    bubble.className = 'chat-bubble chat-' + msg.role;
+    var text = document.createElement('div');
+    text.className = 'chat-text';
+    text.textContent = msg.content;
+    bubble.appendChild(text);
+    var time = document.createElement('div');
+    time.className = 'chat-time';
+    time.textContent = msg.time ? new Date(msg.time).toLocaleString() : '';
+    bubble.appendChild(time);
+    container.appendChild(bubble);
+  });
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendMessage() {
+  if (_sending) return;
+  var input = document.getElementById('chat-input');
+  var text = input.value.trim();
+  if (!text) return;
+
+  _sending = true;
+  var btn = document.getElementById('chat-send');
+  btn.disabled = true;
+  btn.textContent = t('思考中...', 'Thinking...');
+
+  // Add user message
+  _messages.push({ role: 'user', content: text, time: new Date().toISOString() });
+  input.value = '';
+  renderMessages();
+
+  try {
+    var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
+    var session = stored ? JSON.parse(stored) : null;
+    var accessToken = session ? session.access_token : '';
+
+    var res = await fetch(window.DAILYAI_SB_URL + '/functions/v1/chat-partner', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + accessToken
+      },
+      body: JSON.stringify({
+        message: text,
+        chat_id: _chatId,
+        history: _messages.slice(-10),  // last 10 messages for context
+        lang: getLang()
+      })
+    });
+
+    if (!res.ok) {
+      var errText = await res.text();
+      throw new Error(errText || 'Request failed');
+    }
+
+    var result = await res.json();
+    _chatId = result.chat_id;
+    _messages.push({ role: 'assistant', content: result.reply, time: new Date().toISOString() });
+  } catch(e) {
+    console.error('Chat error:', e);
+    _messages.push({
+      role: 'assistant',
+      content: t(
+        '抱歉，目前無法回應。請稍後再試，或直接寄信到 ai@dailyai.tw 告訴我們你的想法！',
+        'Sorry, I\'m unable to respond right now. Please try again later, or email ai@dailyai.tw with your idea!'
+      ),
+      time: new Date().toISOString()
+    });
+  }
+
+  renderMessages();
+  btn.disabled = false;
+  btn.textContent = t('送出', 'Send');
+  _sending = false;
+}
+
+// Enter key to send
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+</script>
+
+<style>
+/* Intro section */
+#partner-intro {
+  text-align: center;
+  padding: 20px 0 30px;
+}
+#partner-title {
+  font-size: 1.8em;
+  margin-bottom: 12px;
+}
+.partner-desc {
+  font-size: 1.05em;
+  color: #555;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+.partner-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.partner-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px 16px;
+  text-align: center;
+}
+.partner-card-icon { font-size: 2em; margin-bottom: 8px; }
+.partner-card h3 { font-size: 1em; margin: 0 0 6px; color: #333; }
+.partner-card p { font-size: 0.85em; color: #666; margin: 0; line-height: 1.5; }
+
+/* Pitch quote */
+.partner-pitch {
+  max-width: 650px;
+  margin: 28px auto 24px;
+  padding: 20px 24px;
+  background: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 10px 10px 0;
+  text-align: left;
+}
+.partner-pitch p { font-size: 0.95em; color: #444; line-height: 1.7; margin: 0 0 6px; }
+.partner-pitch .pitch-author { font-size: 0.82em; color: #999; margin: 8px 0 0; font-style: italic; }
+
+/* Example tags */
+.partner-examples { max-width: 650px; margin: 0 auto 30px; }
+.partner-examples h3 { font-size: 0.95em; color: #555; margin-bottom: 10px; }
+.example-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.example-tag {
+  padding: 5px 14px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  font-size: 0.82em;
+  color: #555;
+}
+.example-tag:last-child { background: #ecfdf5; border-color: #bbf7d0; color: #16a34a; font-weight: 600; }
+
+/* Login prompt */
+.login-prompt-box {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f0f7ff;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+.login-prompt-box p { font-size: 1.05em; color: #444; margin-bottom: 16px; }
+.partner-login-btn {
+  display: inline-block;
+  padding: 10px 28px;
+  background: #2a7ae2;
+  color: #fff !important;
+  border-radius: 8px;
+  text-decoration: none !important;
+  font-weight: 600;
+  font-size: 1em;
+}
+.partner-login-btn:hover { background: #1a5fb4; }
+
+/* Chat section */
+#chat-section { margin-top: 10px; }
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.chat-header h2 { font-size: 1.2em; margin: 0; }
+.chat-status {
+  font-size: 0.8em;
+  color: #22c55e;
+  background: #f0fdf4;
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+.chat-messages {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  height: 400px;
+  overflow-y: auto;
+  background: #fafafa;
+  margin-bottom: 12px;
+}
+.chat-bubble {
+  margin-bottom: 14px;
+  max-width: 80%;
+}
+.chat-assistant { margin-right: auto; }
+.chat-user { margin-left: auto; }
+.chat-text {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.95em;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-assistant .chat-text {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  color: #333;
+}
+.chat-user .chat-text {
+  background: #2a7ae2;
+  color: #fff;
+}
+.chat-time {
+  font-size: 0.7em;
+  color: #aaa;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+.chat-user .chat-time { text-align: right; }
+.chat-input-area {
+  display: flex;
+  gap: 8px;
+}
+#chat-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 0.95em;
+  font-family: inherit;
+  resize: none;
+  transition: border-color 0.2s;
+}
+#chat-input:focus {
+  outline: none;
+  border-color: #2a7ae2;
+  box-shadow: 0 0 0 2px rgba(42,122,226,0.15);
+}
+#chat-send {
+  padding: 10px 24px;
+  background: #2a7ae2;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95em;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+#chat-send:hover { background: #1a5fb4; }
+#chat-send:disabled { background: #94a3b8; cursor: not-allowed; }
+.chat-hint {
+  font-size: 0.78em;
+  color: #999;
+  text-align: center;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+  .chat-messages { height: 300px; }
+  .chat-bubble { max-width: 90%; }
+  #partner-title { font-size: 1.4em; }
+}
+</style>
