@@ -143,14 +143,16 @@ var _sbClient = window.supabase.createClient(window.DAILYAI_SB_URL, window.DAILY
 var _chatId = null;
 var _messages = [];
 var _sending = false;
+var _accessToken = null;
 
 (async function() {
-  var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
-  var session = stored ? JSON.parse(stored) : null;
+  // Use Supabase client to get fresh session (auto-refreshes expired tokens)
+  var { data: { session } } = await _sbClient.auth.getSession();
   if (!session || !session.user) {
     document.getElementById('login-prompt').style.display = 'block';
     return;
   }
+  _accessToken = session.access_token;
   document.getElementById('chat-section').style.display = 'block';
   document.getElementById('chat-status').textContent = t('已登入', 'Logged in');
 
@@ -217,15 +219,15 @@ async function sendMessage() {
   renderMessages();
 
   try {
-    var stored = localStorage.getItem('sb-kszbdgfbihnawjgmwjlk-auth-token');
-    var session = stored ? JSON.parse(stored) : null;
-    var accessToken = session ? session.access_token : '';
+    // Refresh token if needed
+    var { data: { session: freshSession } } = await _sbClient.auth.getSession();
+    if (freshSession) _accessToken = freshSession.access_token;
 
     var res = await fetch(window.DAILYAI_SB_URL + '/functions/v1/chat-partner', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + accessToken,
+        'Authorization': 'Bearer ' + _accessToken,
         'apikey': window.DAILYAI_SB_KEY
       },
       body: JSON.stringify({
