@@ -346,9 +346,10 @@ function emailChat() {
     'Mark will personally review this conversation. For any questions, reply to ai@dailyai.tw'
   );
 
-  // Open mailto
+  // Open mailto with BCC to business
   var mailto = 'mailto:' + encodeURIComponent(email)
     + '?subject=' + encodeURIComponent(subject)
+    + '&bcc=' + encodeURIComponent('ai+biz@dailyai.tw')
     + '&body=' + encodeURIComponent(body);
   window.open(mailto, '_blank');
 }
