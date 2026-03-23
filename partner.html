@@ -4,10 +4,42 @@ title: Partner With Us — Daily AI Taiwan
 ---
 
 <div id="app">
+  <!-- Compact intro — always visible -->
   <div id="partner-intro">
     <h1 id="partner-title"></h1>
     <div class="partner-desc" id="partner-desc"></div>
+    <div class="partner-highlights">
+      <span class="highlight-pill" id="hl1"></span>
+      <span class="highlight-pill" id="hl2"></span>
+      <span class="highlight-pill" id="hl3"></span>
+    </div>
+  </div>
 
+  <!-- Login prompt (shown when not logged in) -->
+  <div id="login-prompt" style="display:none;">
+    <div class="login-prompt-box">
+      <p id="login-prompt-text"></p>
+      <a href="/login" class="partner-login-btn" id="login-prompt-btn"></a>
+    </div>
+  </div>
+
+  <!-- Chat interface (shown when logged in) — this is the main focus -->
+  <div id="chat-section" style="display:none;">
+    <div class="chat-header">
+      <h2 id="chat-title"></h2>
+      <span class="chat-status" id="chat-status"></span>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-area">
+      <textarea id="chat-input" rows="2" maxlength="1000"></textarea>
+      <button id="chat-send" onclick="sendMessage()"></button>
+    </div>
+    <p class="chat-hint" id="chat-hint"></p>
+  </div>
+
+  <!-- Details section — collapsed by default, expandable -->
+  <details class="partner-details" id="partner-details">
+    <summary id="details-summary"></summary>
     <div class="partner-cards">
       <div class="partner-card">
         <div class="partner-card-icon">💡</div>
@@ -30,50 +62,34 @@ title: Partner With Us — Daily AI Taiwan
         <p id="card4-desc"></p>
       </div>
     </div>
-
     <div class="partner-pitch" id="partner-pitch"></div>
-
     <div class="partner-examples">
       <h3 id="examples-title"></h3>
       <div class="example-tags" id="example-tags"></div>
     </div>
-  </div>
-
-  <!-- Login prompt (shown when not logged in) -->
-  <div id="login-prompt" style="display:none;">
-    <div class="login-prompt-box">
-      <p id="login-prompt-text"></p>
-      <a href="/login" class="partner-login-btn" id="login-prompt-btn"></a>
-    </div>
-  </div>
-
-  <!-- Chat interface (shown when logged in) -->
-  <div id="chat-section" style="display:none;">
-    <div class="chat-header">
-      <h2 id="chat-title"></h2>
-      <span class="chat-status" id="chat-status"></span>
-    </div>
-    <div class="chat-messages" id="chat-messages"></div>
-    <div class="chat-input-area">
-      <textarea id="chat-input" rows="2" maxlength="1000"></textarea>
-      <button id="chat-send" onclick="sendMessage()"></button>
-    </div>
-    <p class="chat-hint" id="chat-hint"></p>
-  </div>
+  </details>
 </div>
 
 <script>
 (function() {
   var lang = getLang();
-  // Intro section
+  // Compact intro
   document.getElementById('partner-title').textContent = t(
     '🤝 尋找共同創辦人',
     '🤝 Find a Co-Founder'
   );
   document.getElementById('partner-desc').innerHTML = t(
-    '我掌握了最新 AI 與程式開發能力，正在尋找<strong>共同創辦人</strong>一起合作。<br>你帶領域知識和運營想法，我負責所有技術和開發費用。<br>不是外包、不是接案 — 是<strong>一起創業、一起經營、一起分享成果</strong>。',
-    'I have the latest AI & development capabilities and am looking for a <strong>co-founder</strong> to build something together.<br>You bring domain knowledge and operational vision. I cover all tech and development costs.<br>This is not outsourcing — it\'s <strong>co-founding, co-operating, and sharing the outcome together</strong>.'
+    '你有領域知識和想法，我出技術和資金 — 不是外包，是<strong>一起創業、一起經營</strong>。',
+    'You bring domain knowledge & ideas, I bring tech & funding — not outsourcing, <strong>co-founding together</strong>.'
   );
+
+  // Highlight pills
+  document.getElementById('hl1').textContent = t('💡 你出想法', '💡 You bring ideas');
+  document.getElementById('hl2').textContent = t('🛠️ 我出技術和資金', '🛠️ I bring tech & funding');
+  document.getElementById('hl3').textContent = t('🚀 一起經營分享成果', '🚀 Co-operate & share outcomes');
+
+  // Details toggle
+  document.getElementById('details-summary').textContent = t('了解更多細節 ▸', 'Learn more details ▸');
 
   // Cards
   document.getElementById('card1-title').textContent = t('你出想法和領域', 'You Bring the Vision');
@@ -120,8 +136,8 @@ title: Partner With Us — Daily AI Taiwan
 
   // Login prompt
   document.getElementById('login-prompt-text').textContent = t(
-    '請先登入，即可與 AI 助理討論你的網站構想',
-    'Please log in to discuss your website idea with our AI assistant'
+    '請先登入，即可與 AI 助理聊聊你的構想',
+    'Please log in to chat with our AI assistant about your idea'
   );
   document.getElementById('login-prompt-btn').textContent = t('登入 / 註冊', 'Login / Sign Up');
 
@@ -274,21 +290,37 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
 </script>
 
 <style>
-/* Intro section */
+/* Compact intro */
 #partner-intro {
   text-align: center;
-  padding: 20px 0 30px;
+  padding: 16px 0 12px;
 }
 #partner-title {
-  font-size: 1.8em;
-  margin-bottom: 12px;
+  font-size: 1.5em;
+  margin-bottom: 8px;
 }
 .partner-desc {
-  font-size: 1.05em;
+  font-size: 0.95em;
   color: #555;
-  line-height: 1.7;
-  max-width: 600px;
-  margin: 0 auto 30px;
+  line-height: 1.6;
+  max-width: 550px;
+  margin: 0 auto 12px;
+}
+.partner-highlights {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.highlight-pill {
+  padding: 5px 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 20px;
+  font-size: 0.82em;
+  color: #166534;
+  font-weight: 600;
 }
 .partner-cards {
   display: grid;
@@ -306,6 +338,27 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
 .partner-card-icon { font-size: 2em; margin-bottom: 8px; }
 .partner-card h3 { font-size: 1em; margin: 0 0 6px; color: #333; }
 .partner-card p { font-size: 0.85em; color: #666; margin: 0; line-height: 1.5; }
+
+/* Collapsible details */
+.partner-details {
+  margin: 16px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.partner-details summary {
+  padding: 12px 18px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #2a7ae2;
+  background: #f9fafb;
+}
+.partner-details summary:hover { background: #f3f4f6; }
+.partner-details[open] summary { border-bottom: 1px solid #e5e7eb; }
+.partner-details .partner-cards { padding: 16px; }
+.partner-details .partner-pitch { margin: 0 16px 16px; }
+.partner-details .partner-examples { padding: 0 16px 16px; }
 
 /* Pitch quote */
 .partner-pitch {
