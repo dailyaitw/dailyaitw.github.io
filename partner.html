@@ -253,14 +253,15 @@ async function sendMessage() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + _accessToken,
+        'Authorization': 'Bearer ' + window.DAILYAI_SB_KEY,
         'apikey': window.DAILYAI_SB_KEY
       },
       body: JSON.stringify({
         message: text,
         chat_id: _chatId,
-        history: _messages.slice(-10),  // last 10 messages for context
-        lang: getLang()
+        history: _messages.slice(-10),
+        lang: getLang(),
+        user_token: _accessToken
       })
     });
 
