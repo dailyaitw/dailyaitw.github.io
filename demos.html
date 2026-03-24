@@ -1,0 +1,241 @@
+---
+layout: default
+title: SMB Website Demos — Daily AI Taiwan
+---
+
+<div id="app">
+  <h1 id="demos-title"></h1>
+  <p id="demos-desc" style="color:#666;margin-bottom:24px;"></p>
+
+  <div class="demo-grid" id="demo-grid">
+    <!-- Cards inserted by JS -->
+  </div>
+</div>
+
+<script>
+(function() {
+  var isEn = getLang() === 'en';
+
+  document.getElementById('demos-title').textContent = isEn
+    ? 'SMB Website Demos'
+    : '中小企業網站 Demo';
+  document.getElementById('demos-desc').textContent = isEn
+    ? '10 industry verticals — click any card to see the demo'
+    : '10 大產業垂直方案 — 點擊任一卡片查看 Demo';
+
+  var demos = [
+    {
+      id: 'restaurant',
+      icon: '🍽️',
+      title: isEn ? 'Restaurant' : '餐飲',
+      tam: '150,000+',
+      desc: isEn ? 'Online menu, reservation, LINE integration' : '線上菜單、訂位、LINE 整合',
+      pain: isEn ? 'Phone orders, no digital menu' : '電話點餐、無數位菜單',
+      competitors: 'iCHEF, Eats365, inline',
+      price: '$499-999/mo',
+      opportunity: isEn ? 'Medium' : '中等',
+      color: '#ef4444'
+    },
+    {
+      id: 'beauty',
+      icon: '💇',
+      title: isEn ? 'Beauty Salon' : '美容美髮',
+      tam: '50,000+',
+      desc: isEn ? 'Booking, portfolio showcase, customer history' : '預約、作品集展示、客戶歷史',
+      pain: isEn ? 'Booking chaos, no-shows' : '預約混亂、爽約頻繁',
+      competitors: 'SimplyBook.me, StyleMap, Fresha',
+      price: '$499/mo',
+      opportunity: isEn ? 'High' : '高',
+      color: '#ec4899'
+    },
+    {
+      id: 'cram-school',
+      icon: '📚',
+      title: isEn ? 'Cram School' : '補習班',
+      tam: '54,000+',
+      desc: isEn ? 'Attendance, billing, parent notifications' : '點名、收費、家長通知',
+      pain: isEn ? 'Paper attendance, manual billing' : '紙本點名、手動收費',
+      competitors: '傑人校掌雲, 巧掌櫃',
+      price: '$999/mo',
+      opportunity: isEn ? 'High' : '高',
+      color: '#8b5cf6'
+    },
+    {
+      id: 'fitness',
+      icon: '🏋️',
+      title: isEn ? 'Fitness / Yoga' : '健身 / 瑜伽',
+      tam: '10,000+',
+      desc: isEn ? 'Class schedule, booking, membership' : '課表、預約、會員管理',
+      pain: isEn ? 'Class capacity, membership tracking' : '課堂容量、會員追蹤',
+      competitors: '17FIT, ClassPass, Gymdesk',
+      price: '$699/mo',
+      opportunity: isEn ? 'Medium' : '中等',
+      color: '#f59e0b'
+    },
+    {
+      id: 'pet',
+      icon: '🐾',
+      title: isEn ? 'Pet Services' : '寵物服務',
+      tam: '15,000+',
+      desc: isEn ? 'Pet profiles, booking, photo gallery' : '寵物檔案、預約、作品集',
+      pain: isEn ? 'No pet records, LINE-only booking' : '無寵物紀錄、僅 LINE 預約',
+      competitors: 'PetBacker, Fluv',
+      price: '$499/mo',
+      opportunity: isEn ? 'Very High' : '極高',
+      color: '#10b981'
+    },
+    {
+      id: 'clinic',
+      icon: '🏥',
+      title: isEn ? 'Medical Clinic' : '診所',
+      tam: '30,000+',
+      desc: isEn ? 'Doctor profiles, online booking, LINE sync' : '醫師介紹、線上掛號、LINE 通知',
+      pain: isEn ? 'Phone-only booking (59.7%)' : '僅電話掛號 (59.7%)',
+      competitors: '診所通, SimplyBook.me',
+      price: '$999/mo',
+      opportunity: isEn ? 'Very High' : '極高',
+      color: '#3b82f6'
+    },
+    {
+      id: 'd2c',
+      icon: '🛍️',
+      title: isEn ? 'D2C Brand' : '品牌電商',
+      tam: '100,000+',
+      desc: isEn ? 'Product landing page, checkout, social sync' : '產品頁面、結帳、社群同步',
+      pain: isEn ? 'Platform commissions 15-30%' : '平台抽成 15-30%',
+      competitors: 'SHOPLINE, Cyberbiz, WACA',
+      price: '$699/mo',
+      opportunity: isEn ? 'Low' : '低',
+      color: '#6366f1'
+    },
+    {
+      id: 'auto-repair',
+      icon: '🔧',
+      title: isEn ? 'Auto Repair' : '汽車維修',
+      tam: '30,000+',
+      desc: isEn ? 'Service history, booking, LINE reminders' : '維修歷史、預約、LINE 提醒',
+      pain: isEn ? 'Paper records, zero digital presence' : '紙本記錄、零數位化',
+      competitors: isEn ? 'None (greenfield!)' : '無（空白市場！）',
+      price: '$499/mo',
+      opportunity: isEn ? 'Highest' : '最高',
+      color: '#dc2626'
+    },
+    {
+      id: 'homestay',
+      icon: '🏡',
+      title: isEn ? 'Homestay / B&B' : '民宿',
+      tam: '10,000+',
+      desc: isEn ? 'Photo gallery, direct booking, zero commission' : '照片集、直接訂房、零抽成',
+      pain: isEn ? 'OTA commissions 15-20%' : 'OTA 抽成 15-20%',
+      competitors: 'OwlNest, AsiaYo',
+      price: '$499/mo',
+      opportunity: isEn ? 'High' : '高',
+      color: '#0d9488'
+    },
+    {
+      id: 'b2b',
+      icon: '🏭',
+      title: isEn ? 'B2B Supplier' : 'B2B 供應商',
+      tam: '50,000+',
+      desc: isEn ? 'Digital catalog, RFQ form, bilingual' : '數位型錄、詢價單、雙語',
+      pain: isEn ? 'Paper catalogs, static HTML sites' : '紙本型錄、靜態 HTML 網站',
+      competitors: 'Taiwantrade, IMB2B',
+      price: '$999/mo',
+      opportunity: isEn ? 'Very High' : '極高',
+      color: '#78716c'
+    }
+  ];
+
+  var grid = document.getElementById('demo-grid');
+  demos.forEach(function(d) {
+    var opportunityClass = '';
+    if (d.opportunity === 'Highest' || d.opportunity === '最高') opportunityClass = 'opp-highest';
+    else if (d.opportunity === 'Very High' || d.opportunity === '極高') opportunityClass = 'opp-very-high';
+    else if (d.opportunity === 'High' || d.opportunity === '高') opportunityClass = 'opp-high';
+
+    var card = document.createElement('a');
+    card.href = '/demo-' + d.id;
+    card.className = 'demo-card';
+    card.style.borderTopColor = d.color;
+    card.innerHTML =
+      '<div class="demo-card-header">' +
+        '<span class="demo-icon">' + d.icon + '</span>' +
+        '<span class="demo-title">' + d.title + '</span>' +
+      '</div>' +
+      '<div class="demo-desc">' + d.desc + '</div>' +
+      '<div class="demo-meta">' +
+        '<div class="demo-meta-row"><span class="meta-label">TAM</span><span class="meta-value">' + d.tam + '</span></div>' +
+        '<div class="demo-meta-row"><span class="meta-label">' + (isEn ? 'Pain' : '痛點') + '</span><span class="meta-value">' + d.pain + '</span></div>' +
+        '<div class="demo-meta-row"><span class="meta-label">' + (isEn ? 'Competitors' : '競品') + '</span><span class="meta-value">' + d.competitors + '</span></div>' +
+        '<div class="demo-meta-row"><span class="meta-label">' + (isEn ? 'Price' : '定價') + '</span><span class="meta-value">' + d.price + '</span></div>' +
+      '</div>' +
+      '<div class="demo-opportunity ' + opportunityClass + '">' +
+        (isEn ? 'Opportunity: ' : '機會: ') + d.opportunity +
+      '</div>';
+    grid.appendChild(card);
+  });
+})();
+</script>
+
+<style>
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+.demo-card {
+  display: block;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #888;
+  border-radius: 12px;
+  padding: 20px;
+  text-decoration: none !important;
+  color: inherit !important;
+  background: #fff;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.demo-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+.demo-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.demo-icon { font-size: 1.5em; }
+.demo-title { font-size: 1.15em; font-weight: 700; color: #111; }
+.demo-desc { font-size: 0.9em; color: #666; margin-bottom: 14px; line-height: 1.4; }
+.demo-meta {
+  font-size: 0.82em;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 10px;
+}
+.demo-meta-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+}
+.meta-label { color: #999; font-weight: 500; }
+.meta-value { color: #333; text-align: right; max-width: 60%; }
+.demo-opportunity {
+  margin-top: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.82em;
+  font-weight: 600;
+  text-align: center;
+  background: #f3f4f6;
+  color: #666;
+}
+.opp-highest { background: #fef2f2; color: #dc2626; }
+.opp-very-high { background: #f0fdf4; color: #16a34a; }
+.opp-high { background: #eff6ff; color: #2563eb; }
+
+@media (max-width: 600px) {
+  .demo-grid { grid-template-columns: 1fr; }
+}
+</style>
