@@ -6,6 +6,7 @@
     </div>
 
     <div class="header-right">
+      <a href="/biz-plan" class="demos-btn" id="bizplan-btn">🎯 AI 商業計畫</a>
       <a href="/partner" class="partner-btn" id="partner-btn">🤝 共同創辦</a>
       <span class="lang-toggle" id="lang-toggle"></span>
       <span class="auth-nav-container" id="auth-nav">
@@ -30,6 +31,9 @@
   // Demos button
   var demosBtn = document.getElementById('demos-btn');
   if (demosBtn) demosBtn.textContent = lang === 'en' ? '🚀 Demos' : '🚀 Demo';
+  // Biz Plan button
+  var bizBtn = document.getElementById('bizplan-btn');
+  if (bizBtn) bizBtn.textContent = lang === 'en' ? '🎯 Biz Plans' : '🎯 AI 商業計畫';
   // Partner button
   var partnerBtn = document.getElementById('partner-btn');
   if (partnerBtn) partnerBtn.textContent = lang === 'en' ? '🤝 Co-Found' : '🤝 共同創辦';
