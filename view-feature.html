@@ -33,7 +33,7 @@ sitemap: false
 
   if (!slug) { window.location.href = '/'; return; }
 
-  var query = 'type=eq.feature&slug=eq.' + encodeURIComponent(slug) + '&select=*';
+  var query = 'type=in.(feature,deepdive)&slug=eq.' + encodeURIComponent(slug) + '&select=*';
 
   fetch(SB_URL + '/rest/v1/posts?' + query, {
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }

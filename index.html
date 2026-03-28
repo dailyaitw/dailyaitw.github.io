@@ -40,6 +40,12 @@ title: Daily AI Taiwan
     <h2 id="today-heading"></h2>
   </div>
 
+  <!-- Deep Dives -->
+  <div id="deepdive-section" style="display:none;">
+    <h2 id="deepdive-heading"></h2>
+    <div id="deepdive-list"></div>
+  </div>
+
   <!-- Feature Articles -->
   <div id="feature-section" style="display:none;">
     <h2 id="feature-heading"></h2>
@@ -86,6 +92,7 @@ title: Daily AI Taiwan
   <script>
   // Set bilingual headings
   document.getElementById('today-heading').textContent = t('📰 載入今日日報中...', '📰 Loading today\'s briefing...');
+  document.getElementById('deepdive-heading').textContent = t('🔬 深度解析', '🔬 Deep Dives');
   document.getElementById('feature-heading').textContent = t('🔥 本月精選專題', '🔥 Featured Articles');
   document.getElementById('daily-heading').textContent = t('📅 日報列表', '📅 Daily Briefings');
   document.getElementById('daily-loading').textContent = t('載入中...', 'Loading...');
@@ -280,6 +287,28 @@ title: Daily AI Taiwan
       '</div></a>';
   }
 
+  async function loadDeepDives() {
+    var posts = await apiFetch('type=eq.deepdive&select=date,type,title,summary,slug,is_free,title_en,summary_en&order=date.desc');
+    if (posts.length === 0) return;
+    document.getElementById('deepdive-section').style.display = 'block';
+    var html = '<div class="feature-grid">';
+    posts.forEach(function(p) {
+      var furl = featureUrl(p.slug);
+      return html += '<a href="' + furl + '" class="feature-card-link"><div class="feature-card">' +
+        '<div class="feature-tags">' +
+        '<div class="feature-tag deepdive-tag">' + t('深度解析','Deep Dive') + '</div>' +
+        (p.is_free ? '<div class="feature-tag-public">' + t('免費閱讀','Free') + '</div>' : '') +
+        '</div>' +
+        '<h3 class="feature-title">' + esc(pickField(p, 'title')) + '</h3>' +
+        '<p class="feature-summary">' + esc(pickField(p, 'summary')) + '</p>' +
+        '<div class="feature-footer"><span class="feature-date">' + fmt(p.date) + '</span>' +
+        '<span class="feature-link">' + t('閱讀全文 →','Read more →') + '</span></div>' +
+        '</div></a>';
+    });
+    html += '</div>';
+    document.getElementById('deepdive-list').innerHTML = html;
+  }
+
   async function loadFeatures() {
     var limit = FEATURE_INITIAL;
     var posts = await apiFetch('type=eq.feature&select=date,type,title,summary,slug,is_free,title_en,summary_en&order=date.desc&limit=' + limit);
@@ -318,6 +347,7 @@ title: Daily AI Taiwan
 
   // Load each section independently so one failure doesn't block others
   loadToday().catch(function(e) { console.error('loadToday error:', e); document.getElementById('today-post').innerHTML = '<p style="color:red;">載入失敗</p>'; });
+  loadDeepDives().catch(function(e) { console.error('loadDeepDives error:', e); });
   loadFeatures().catch(function(e) { console.error('loadFeatures error:', e); });
   loadDaily().catch(function(e) { console.error('loadDaily error:', e); document.getElementById('daily-list').innerHTML = '<p style="color:red;">載入失敗</p>'; });
   loadMonthly().catch(function(e) { console.error('loadMonthly error:', e); document.getElementById('monthly-list').innerHTML = '<p style="color:red;">載入失敗</p>'; });
@@ -360,6 +390,7 @@ title: Daily AI Taiwan
   font-size: 0.7em; padding: 2px 10px; border-radius: 12px;
   font-weight: 600; width: fit-content;
 }
+.deepdive-tag { background: #7c3aed; }
 .feature-title { font-size: 1.1em; margin: 0 0 8px; color: #333; line-height: 1.4; }
 .feature-summary { font-size: 0.85em; color: #666; line-height: 1.5; flex: 1; margin-bottom: 10px; }
 .feature-card-link { text-decoration: none !important; color: inherit; }
