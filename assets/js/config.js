@@ -20,5 +20,6 @@ window.DAILYAI_SHORT_LINKS = {
   '11': '2026-03-claude-code-opinion-leaders-automated-programming',
   '12': '2026-03-claude-code-addiction-phenomenon-developers',
   '13': '2026-google-notebooklm-technology-ecosystem',
-  '14': '2026-notebooklm-impact-ai-tools-market'
+  '14': '2026-notebooklm-impact-ai-tools-market',
+  '15': '2026-data-centers-in-space'
 };
