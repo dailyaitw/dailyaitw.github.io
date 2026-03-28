@@ -49,6 +49,8 @@ payload = {
 - Feature 文章日期是排程用的（不一定是寫作日期），要查最新 feature 日期 +1
 - **不要**用 `feature2` 等變通 type，永遠用 `feature`
 - 插入時要用 UTF-8 encoding：`open(file, encoding='utf-8')`
+- **Supabase content 欄位不可包含 Jekyll frontmatter**（`---\nlayout: default\n---`）和導航連結（`[← 回首頁](/)`）。本地 md 檔可保留，但 Supabase 內容直接從 `# 標題` 開始。
+- **所有 feature 預設 `is_free: true`**（公開），除非用戶明確指定
 
 ## Daily 日報發布 SOP
 
