@@ -26,6 +26,7 @@ title: AI 商業計畫 — Daily AI Taiwan
   </script>
 
   <!-- Featured Plan -->
+  <a href="/view-biz-plan?id=1" style="text-decoration:none;color:inherit;">
   <div class="biz-featured" id="featured-plan">
     <div class="biz-featured-badge" id="featured-badge"></div>
     <h2 id="featured-title"></h2>
@@ -69,6 +70,7 @@ title: AI 商業計畫 — Daily AI Taiwan
       </div>
     </div>
   </div>
+  </a>
 
   <script>
   (function() {
@@ -259,8 +261,9 @@ title: AI 商業計畫 — Daily AI Taiwan
       var grid = document.createElement('div');
       grid.className = 'biz-grid';
       tier.plans.forEach(function(p) {
-        var card = document.createElement('div');
-        card.className = 'biz-card';
+        var card = document.createElement('a');
+        card.href = '/view-biz-plan?id=' + p.num;
+        card.className = 'biz-card biz-card-link';
         card.innerHTML =
           '<div class="biz-card-header">' +
             '<span class="biz-icon">' + p.icon + '</span>' +
@@ -353,6 +356,7 @@ title: AI 商業計畫 — Daily AI Taiwan
   padding: 20px; transition: all 0.2s;
 }
 .biz-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #2a7ae2; transform: translateY(-2px); }
+.biz-card-link { text-decoration: none; color: inherit; display: block; }
 .biz-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .biz-icon { font-size: 1.4em; }
 .biz-num { font-size: 0.8em; font-weight: 700; color: #2a7ae2; }

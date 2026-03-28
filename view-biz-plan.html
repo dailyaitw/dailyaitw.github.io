@@ -1,0 +1,356 @@
+---
+layout: default
+title: AI Business Plan Detail — Daily AI Taiwan
+---
+
+<div id="bp-app">
+  <div id="bp-loading" style="text-align:center;padding:40px;">
+    <p id="bp-loading-text"></p>
+  </div>
+  <div id="bp-content" style="display:none;"></div>
+  <div id="bp-not-found" style="display:none;text-align:center;padding:40px;">
+    <p>Plan not found.</p>
+    <a href="/biz-plan">← Back to all plans</a>
+  </div>
+</div>
+
+<script>
+(function() {
+  var isEn = getLang() === 'en';
+  document.getElementById('bp-loading-text').textContent = isEn ? 'Loading plan...' : '載入中...';
+
+  var params = new URLSearchParams(window.location.search);
+  var id = parseInt(params.get('id'));
+  if (!id) { document.getElementById('bp-loading').style.display='none'; document.getElementById('bp-not-found').style.display='block'; return; }
+
+  var plans = {
+    1: {
+      icon: '🏥', tier: isEn ? '🔴 High Capital' : '🔴 高資本',
+      tierClass: 'high', capital: isEn ? '~NT$10M' : '~NT$1,000 萬',
+      title: isEn ? 'AI Clinical Copilot for Taiwan\'s 24,000 NHI Clinics' : '台灣 24,000 家健保診所的 AI 臨床副駕駛',
+      tagline: isEn
+        ? 'Turn 20 years of NHI medical records into an AI assistant that helps doctors document faster, code accurately, and never miss a reimbursement.'
+        : '將 20 年健保病歷資料轉化為 AI 助手，幫醫師更快記錄、更準編碼、不再漏申報。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$36B NHI admin spend':'健保行政支出 NT$360 億'},
+        {l:isEn?'Target':'目標', v: isEn?'24,000 NHI clinics':'24,000 家健保特約診所'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$3,000-8,000/mo SaaS':'月費 NT$3,000-8,000'},
+        {l:isEn?'Moat':'護城河', v: isEn?'NHI coding rules + clinic workflow data':'健保編碼規則 + 診所工作流數據'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>Doctors spend <strong>30-40%</strong> of their time on NHI documentation, not patients</li><li>Wrong diagnosis codes = rejected claims = lost revenue (avg NT$50K-200K/month per clinic)</li><li>NHI rule changes 3-4 times/year — clinics can\'t keep up</li><li>99.9% population coverage = every clinic MUST deal with NHI bureaucracy</li></ul>'
+          : '<ul><li>醫師 <strong>30-40%</strong> 時間花在健保文書，而非看診</li><li>診斷碼錯誤 = 申報被退 = 收入損失（每家診所平均月損 NT$5-20 萬）</li><li>健保規則每年修改 3-4 次，診所難以跟上</li><li>99.9% 人口覆蓋 = 每家診所都必須處理健保行政</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Real-time documentation AI</strong> — listens to doctor-patient conversation, auto-generates SOAP notes in NHI format</li><li><strong>Smart coding engine</strong> — suggests optimal NHI diagnosis/procedure codes, flags potential rejections before submission</li><li><strong>Rule update radar</strong> — monitors NHI rule changes, auto-alerts affected clinics</li><li><strong>Claim analytics dashboard</strong> — tracks approval rates, identifies rejection patterns, recommends fixes</li></ul>'
+          : '<ul><li><strong>即時文書 AI</strong> — 聆聽醫病對話，自動生成符合健保格式的 SOAP 病歷</li><li><strong>智慧編碼引擎</strong> — 建議最佳健保診斷/處置碼，提交前標記可能被退件項目</li><li><strong>規則變動雷達</strong> — 監控健保規則修訂，自動通知受影響診所</li><li><strong>申報分析儀表板</strong> — 追蹤核准率、識別退件模式、推薦改善方案</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>Unique data advantage</strong> — NHI has 23M+ patient records over 20 years</li><li><strong>Government push</strong> — MOEA 2026 SME AI plan subsidizes clinic digitization</li><li><strong>LLM maturity</strong> — Gemini 3 / Claude Opus handle Traditional Chinese medical terminology</li><li><strong>No AI-native incumbent</strong> — existing HIS vendors are legacy software companies</li><li><strong>Export potential</strong> — Taiwan NHI model studied by 40+ countries</li></ul>'
+          : '<ul><li><strong>獨特數據優勢</strong> — 健保署 2,300 萬人、20 年病歷資料庫</li><li><strong>政策推力</strong> — 經濟部 2026 年中小企業 AI 轉型計畫補助診所數位化</li><li><strong>LLM 成熟</strong> — Gemini 3 / Claude Opus 已能處理繁體中文醫學術語</li><li><strong>無 AI 原生競爭者</strong> — 現有 HIS 廠商是傳統軟體公司</li><li><strong>出口潛力</strong> — 台灣健保模式被 40+ 國家研究</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-3</td><td>Smart coding for top 5 specialties (family medicine, pediatrics, ENT, dermatology, ophthalmology)</td></tr><tr><td>Pilot</td><td>Month 4-6</td><td>10 clinics beta, measure claim approval rate improvement</td></tr><tr><td>Launch</td><td>Month 7-9</td><td>Add real-time documentation AI, expand to 100 clinics</td></tr><tr><td>Scale</td><td>Month 10-12</td><td>500 clinics, launch claim analytics, Series A ready</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-3 月</td><td>智慧編碼：前 5 大科別（家醫、兒科、耳鼻喉、皮膚、眼科）</td></tr><tr><td>試點</td><td>第 4-6 月</td><td>10 家診所 Beta，量化申報核准率提升</td></tr><tr><td>上線</td><td>第 7-9 月</td><td>加入即時文書 AI，擴展至 100 家</td></tr><tr><td>規模化</td><td>第 10-12 月</td><td>500 家診所、上線申報分析、準備 Series A</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$5,000/mo avg</li><li><strong>CAC</strong>: ~NT$15,000 (medical conferences + referral program)</li><li><strong>LTV</strong>: NT$5,000 × 36 months = NT$180,000</li><li><strong>LTV/CAC</strong>: 12x</li><li><strong>Gross margin</strong>: 85% (API costs ~15%)</li><li><strong>Break-even</strong>: ~400 clinics (Month 8-9)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月均 NT$5,000</li><li><strong>CAC</strong>：~NT$15,000（醫學研討會 + 轉介計畫）</li><li><strong>LTV</strong>：NT$5,000 × 36 個月 = NT$180,000</li><li><strong>LTV/CAC</strong>：12 倍</li><li><strong>毛利率</strong>：85%（API 成本約 15%）</li><li><strong>損益平衡</strong>：~400 家診所（第 8-9 月）</li></ul>' }
+      ]
+    },
+    2: {
+      icon: '📊', tier: isEn ? '🟢 Low Capital' : '🟢 低資本',
+      tierClass: 'low', capital: isEn ? '~NT$300K' : '~NT$30 萬',
+      title: isEn ? 'AI Tax & Audit Autopilot' : 'AI 稅務自動駕駛',
+      tagline: isEn
+        ? 'Automated tax filing, audit defense, and compliance for 1.71M Taiwan SMEs — the bookkeeper that never sleeps.'
+        : '為 171 萬家台灣中小企業自動報稅、稽核防禦、法規合規——永遠不睡覺的記帳士。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$80B accounting services':'會計服務市場 NT$800 億'},
+        {l:isEn?'Target':'目標', v: isEn?'1.71M Taiwan SMEs':'171 萬家中小企業'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$1,500-5,000/mo SaaS':'月費 NT$1,500-5,000'},
+        {l:isEn?'Moat':'護城河', v: isEn?'Taiwan tax code AI + e-invoice integration':'台灣稅法 AI + 電子發票串接'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>Taiwan SMEs spend avg <strong>NT$8,000-15,000/mo</strong> on bookkeeping/accounting fees</li><li>Tax code changes frequently — SME owners can\'t track</li><li>Audit preparation is manual, stressful, often results in penalties</li><li>E-invoice system generates massive data but no one analyzes it intelligently</li></ul>'
+          : '<ul><li>台灣中小企業平均每月花 <strong>NT$8,000-15,000</strong> 記帳/會計費</li><li>稅法頻繁修改，老闆無法追蹤</li><li>稽核準備是手動、壓力大、常被罰款</li><li>電子發票系統產生大量數據卻無人智慧分析</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Auto-categorization</strong> — AI reads e-invoices, bank statements, receipts, auto-categorizes into tax-optimal expense buckets</li><li><strong>Real-time tax estimation</strong> — shows estimated tax liability at any time, flags deduction opportunities</li><li><strong>Audit defense kit</strong> — auto-generates supporting documents, identifies high-risk items before auditors do</li><li><strong>Regulation radar</strong> — monitors tax code changes, auto-adjusts categorization rules</li></ul>'
+          : '<ul><li><strong>自動分類</strong> — AI 讀取電子發票、銀行對帳單、收據，自動分入最佳節稅費用類別</li><li><strong>即時稅務估算</strong> — 隨時顯示估計稅負，標記可用扣除額</li><li><strong>稽核防禦包</strong> — 自動生成佐證文件，在稽查員發現前識別高風險項目</li><li><strong>法規雷達</strong> — 監控稅法修訂，自動調整分類規則</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>E-invoice infrastructure</strong> — Taiwan\'s mandatory e-invoice system provides structured data that AI can directly ingest</li><li><strong>1.71M SMEs</strong> — government actively pushing AI adoption with subsidies</li><li><strong>High accounting costs</strong> — avg NT$10K/mo per SME, AI can undercut by 50-70%</li><li><strong>Low starting capital</strong> — API-based, no hardware needed</li></ul>'
+          : '<ul><li><strong>電子發票基礎設施</strong> — 台灣強制電子發票系統提供結構化數據，AI 可直接讀取</li><li><strong>171 萬中小企業</strong> — 政府積極補助 AI 導入</li><li><strong>高記帳成本</strong> — 平均每家月付 NT$1 萬，AI 可壓低 50-70%</li><li><strong>低啟動資本</strong> — API 架構，不需硬體</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-2</td><td>E-invoice auto-categorization + basic tax estimation</td></tr><tr><td>Pilot</td><td>Month 3-4</td><td>50 SMEs beta, partner with 3 accounting firms</td></tr><tr><td>Launch</td><td>Month 5-7</td><td>Add audit defense kit, expand to 500 SMEs</td></tr><tr><td>Scale</td><td>Month 8-12</td><td>2,000 SMEs, accounting firm white-label program</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-2 月</td><td>電子發票自動分類 + 基本稅務估算</td></tr><tr><td>試點</td><td>第 3-4 月</td><td>50 家中小企業 Beta，與 3 家會計事務所合作</td></tr><tr><td>上線</td><td>第 5-7 月</td><td>加入稽核防禦包，擴展至 500 家</td></tr><tr><td>規模化</td><td>第 8-12 月</td><td>2,000 家、會計事務所白牌計畫</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$3,000/mo</li><li><strong>CAC</strong>: ~NT$5,000 (online ads + accounting firm referrals)</li><li><strong>LTV</strong>: NT$3,000 × 24 = NT$72,000</li><li><strong>LTV/CAC</strong>: 14x</li><li><strong>Gross margin</strong>: 90%</li><li><strong>Break-even</strong>: ~200 SMEs (Month 5)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月均 NT$3,000</li><li><strong>CAC</strong>：~NT$5,000（線上廣告 + 會計事務所轉介）</li><li><strong>LTV</strong>：NT$3,000 × 24 = NT$72,000</li><li><strong>LTV/CAC</strong>：14 倍</li><li><strong>毛利率</strong>：90%</li><li><strong>損益平衡</strong>：~200 家（第 5 月）</li></ul>' }
+      ]
+    },
+    3: {
+      icon: '🏪', tier: isEn ? '🟢 Low Capital' : '🟢 低資本',
+      tierClass: 'low', capital: isEn ? '~NT$200K' : '~NT$20 萬',
+      title: isEn ? 'AI Commercial District Analyzer' : 'AI 商圈分析師',
+      tagline: isEn ? 'Score any address in Taiwan for retail potential — before signing the lease.' : '在簽約前，為台灣任何地址的零售潛力評分。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$30B retail consulting':'零售顧問 NT$300 億'},
+        {l:isEn?'Target':'目標', v: isEn?'120,000 F&B + retail':'12 萬家餐飲+零售'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$2K-10K/report + sub':'單次 NT$2K-10K + 訂閱'},
+        {l:isEn?'Moat':'護城河', v: isEn?'Taiwan open data + hyper-local AI':'台灣開放資料 + 在地 AI'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>60% of new F&B businesses in Taiwan close within 2 years — #1 reason: bad location</li><li>Commercial real estate agents provide gut-feel advice, not data</li><li>Government open data (demographics, business registrations, traffic) exists but nobody aggregates it</li><li>Franchise HQs need scalable site evaluation — currently done by expensive consultants</li></ul>'
+          : '<ul><li>台灣 60% 新餐飲業在 2 年內倒閉——第一原因：選址錯誤</li><li>商業房仲提供直覺建議，非數據分析</li><li>政府開放資料（人口、商業登記、交通）存在但無人整合</li><li>連鎖加盟總部需要可規模化的選址評估——目前靠昂貴顧問</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Address scoring</strong> — input any address, get 0-100 score for specific business type</li><li><strong>Foot traffic heatmap</strong> — telecom mobility data shows hourly/daily/weekly patterns</li><li><strong>Competitor radar</strong> — maps all similar businesses within radius, shows saturation level</li><li><strong>Revenue estimator</strong> — predicts monthly revenue range based on similar businesses in similar locations</li></ul>'
+          : '<ul><li><strong>地址評分</strong> — 輸入地址，獲得特定業種的 0-100 分</li><li><strong>人流熱力圖</strong> — 電信行動數據顯示時段/日/週模式</li><li><strong>競品雷達</strong> — 標示半徑內同類店家，顯示飽和度</li><li><strong>營收預估</strong> — 根據類似地點的類似店家預測月營收區間</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>Rich open data</strong> — Taiwan government publishes demographics, business registration, real estate transactions</li><li><strong>Compact geography</strong> — island nation with dense urban centers, AI models can be hyperlocal</li><li><strong>F&B culture</strong> — 120K+ F&B operators, world\'s densest restaurant market per capita</li><li><strong>Minimal capital needed</strong> — pure software, open data is free</li></ul>'
+          : '<ul><li><strong>豐富開放資料</strong> — 政府公開人口、商業登記、不動產交易資料</li><li><strong>緊湊地理</strong> — 島國+密集都會區，AI 模型可超在地化</li><li><strong>餐飲文化</strong> — 12 萬+餐飲業者，全球人均最密集餐廳市場</li><li><strong>最低資本需求</strong> — 純軟體，開放資料免費</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-2</td><td>Address scoring for F&B in Taipei (6 districts)</td></tr><tr><td>Pilot</td><td>Month 3-4</td><td>30 paying customers, validate with 2 franchise HQs</td></tr><tr><td>Launch</td><td>Month 5-7</td><td>Expand to all Taiwan cities, add foot traffic data</td></tr><tr><td>Scale</td><td>Month 8-12</td><td>Franchise white-label, real estate agent partnerships</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-2 月</td><td>台北 6 區餐飲業地址評分</td></tr><tr><td>試點</td><td>第 3-4 月</td><td>30 個付費客戶，與 2 家連鎖總部驗證</td></tr><tr><td>上線</td><td>第 5-7 月</td><td>擴展全台城市，加入人流數據</td></tr><tr><td>規模化</td><td>第 8-12 月</td><td>連鎖白牌、房仲合作</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$5,000/mo (subscription) or NT$8,000/report</li><li><strong>CAC</strong>: ~NT$3,000</li><li><strong>LTV</strong>: NT$5,000 × 12 = NT$60,000</li><li><strong>LTV/CAC</strong>: 20x</li><li><strong>Gross margin</strong>: 92%</li><li><strong>Break-even</strong>: ~50 subscribers (Month 3)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月訂閱 NT$5,000 或單次報告 NT$8,000</li><li><strong>CAC</strong>：~NT$3,000</li><li><strong>LTV</strong>：NT$5,000 × 12 = NT$60,000</li><li><strong>LTV/CAC</strong>：20 倍</li><li><strong>毛利率</strong>：92%</li><li><strong>損益平衡</strong>：~50 訂閱戶（第 3 月）</li></ul>' }
+      ]
+    },
+    4: {
+      icon: '🌐', tier: isEn ? '🟢 Low Capital' : '🟢 低資本',
+      tierClass: 'low', capital: isEn ? '~NT$400K' : '~NT$40 萬',
+      title: isEn ? 'AI Cross-Border E-Commerce Optimizer' : 'AI 跨境電商優化師',
+      tagline: isEn ? 'Tell Taiwan sellers what to sell, where, and at what price — powered by global demand intelligence.' : '告訴台灣賣家賣什麼、在哪賣、賣多少——全球需求情報驅動。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$480B cross-border e-com':'跨境電商 NT$4,800 億'},
+        {l:isEn?'Target':'目標', v: isEn?'50,000+ sellers':'5 萬+ 賣家'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$3K-15K/mo + rev share':'月費 NT$3K-15K + 分潤'},
+        {l:isEn?'Moat':'護城河', v: isEn?'Supply chain + multilingual AI':'供應鏈 + 多語 AI'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>Taiwan sellers guess which products to list on Amazon/Shopee — 70% of new listings fail</li><li>Listing quality is poor — machine-translated, no SEO optimization, wrong keywords</li><li>Pricing is reactive — sellers copy competitors instead of using demand data</li><li>Taiwan has world-class supply chain but sellers lack market intelligence</li></ul>'
+          : '<ul><li>台灣賣家靠猜選品上架 Amazon/Shopee——70% 新品失敗</li><li>商品頁品質差——機器翻譯、無 SEO 優化、關鍵詞錯誤</li><li>定價被動——抄競品而非用需求數據</li><li>台灣供應鏈世界級但賣家缺乏市場情報</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Demand scanner</strong> — analyzes search trends, reviews, BSR data across platforms to identify high-demand/low-competition products</li><li><strong>Listing generator</strong> — creates native-quality titles, bullets, descriptions in target language with SEO optimization</li><li><strong>Dynamic pricing</strong> — real-time competitive pricing with margin protection</li><li><strong>Supplier matcher</strong> — connects demand signals to Taiwan manufacturer databases</li></ul>'
+          : '<ul><li><strong>需求掃描器</strong> — 分析各平台搜索趨勢、評論、BSR 數據，識別高需求/低競爭商品</li><li><strong>Listing 生成器</strong> — 生成目標語言的母語級標題、賣點、描述，含 SEO 優化</li><li><strong>動態定價</strong> — 即時競價+毛利保護</li><li><strong>供應商媒合</strong> — 連接需求信號與台灣製造商資料庫</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>Export powerhouse</strong> — $640B exports in 2025, supply chain is unmatched</li><li><strong>Government e-commerce push</strong> — subsidies for cross-border seller training</li><li><strong>LLMs now generate native-quality copy</strong> in Japanese, English, Thai, Korean</li><li><strong>Shopee/Amazon both expanding</strong> Taiwan seller programs</li></ul>'
+          : '<ul><li><strong>出口強權</strong> — 2025 年出口 $6,400 億，供應鏈無可匹敵</li><li><strong>政府推動</strong> — 跨境電商培訓補助</li><li><strong>LLM 可生成母語級文案</strong>——日文、英文、泰文、韓文</li><li><strong>Shopee/Amazon 擴大</strong>台灣賣家計畫</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-2</td><td>Amazon JP listing generator for Taiwan sellers</td></tr><tr><td>Pilot</td><td>Month 3-5</td><td>100 sellers, measure listing conversion uplift</td></tr><tr><td>Launch</td><td>Month 6-8</td><td>Add demand scanner + Shopee support</td></tr><tr><td>Scale</td><td>Month 9-12</td><td>1,000 sellers, add dynamic pricing + rev share model</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-2 月</td><td>Amazon JP Listing 生成器</td></tr><tr><td>試點</td><td>第 3-5 月</td><td>100 賣家，量化 Listing 轉換率提升</td></tr><tr><td>上線</td><td>第 6-8 月</td><td>加入需求掃描器 + Shopee 支援</td></tr><tr><td>規模化</td><td>第 9-12 月</td><td>1,000 賣家、動態定價 + 分潤模式</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$8,000/mo (SaaS + rev share)</li><li><strong>CAC</strong>: ~NT$6,000</li><li><strong>LTV</strong>: NT$8,000 × 18 = NT$144,000</li><li><strong>LTV/CAC</strong>: 24x</li><li><strong>Gross margin</strong>: 88%</li><li><strong>Break-even</strong>: ~80 sellers (Month 5)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月均 NT$8,000（SaaS + 分潤）</li><li><strong>CAC</strong>：~NT$6,000</li><li><strong>LTV</strong>：NT$8,000 × 18 = NT$144,000</li><li><strong>LTV/CAC</strong>：24 倍</li><li><strong>毛利率</strong>：88%</li><li><strong>損益平衡</strong>：~80 賣家（第 5 月）</li></ul>' }
+      ]
+    },
+    5: {
+      icon: '🏭', tier: isEn ? '🟡 Medium Capital' : '🟡 中資本',
+      tierClass: 'mid', capital: isEn ? '~NT$1.5M' : '~NT$150 萬',
+      title: isEn ? 'Manufacturing Knowledge Brain' : '工廠知識大腦',
+      tagline: isEn ? 'NotebookLM for factories — turn decades of tribal knowledge into queryable AI.' : '工廠版 NotebookLM——將數十年師傅經驗轉為可查詢 AI。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$45B manufacturing IT':'製造業 IT NT$450 億'},
+        {l:isEn?'Target':'目標', v: isEn?'150,000 factories':'15 萬家工廠'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$5K-20K/mo SaaS':'月費 NT$5K-20K'},
+        {l:isEn?'Moat':'護城河', v: isEn?'Domain RAG + Chinese SOP corpus':'領域 RAG + 繁中 SOP 語料'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>Senior engineers retiring — taking decades of know-how with them</li><li>SOPs exist as unstructured PDFs, Word docs, or worse, in people\'s heads</li><li>New hires take 6-12 months to become productive</li><li>Quality issues repeat because troubleshooting knowledge isn\'t centralized</li></ul>'
+          : '<ul><li>資深工程師退休——數十年 know-how 隨之消失</li><li>SOP 散落在 PDF、Word 或更糟——在人腦裡</li><li>新人需 6-12 個月才能上手</li><li>品質問題重複發生，因排錯知識未集中管理</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>SOP Brain</strong> — upload all SOPs, manuals, specs → queryable AI knowledge base with citations</li><li><strong>Troubleshooting copilot</strong> — describe the problem, AI suggests solutions from historical cases</li><li><strong>New hire onboarding</strong> — AI-generated training paths from existing documentation</li><li><strong>Audio capture</strong> — record senior engineers\' verbal knowledge, auto-transcribe into searchable knowledge</li></ul>'
+          : '<ul><li><strong>SOP 大腦</strong> — 上傳所有 SOP、手冊、規格 → 可查詢 AI 知識庫（附引用）</li><li><strong>排錯副駕駛</strong> — 描述問題，AI 從歷史案例建議解法</li><li><strong>新人培訓</strong> — AI 從既有文件生成學習路徑</li><li><strong>語音採集</strong> — 錄製資深工程師口述知識，自動轉錄為可搜索知識</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>Aging workforce crisis</strong> — Taiwan manufacturing faces mass retirements in 2025-2030</li><li><strong>150K factories</strong> — massive addressable market, mostly under-digitized</li><li><strong>Government Industry 4.0 subsidies</strong> — up to 50% cost offset</li><li><strong>RAG technology mature</strong> — can handle Traditional Chinese technical documents accurately</li></ul>'
+          : '<ul><li><strong>人口老化危機</strong> — 台灣製造業 2025-2030 面臨大量退休潮</li><li><strong>15 萬家工廠</strong> — 龐大市場，多數數位化不足</li><li><strong>政府工業 4.0 補助</strong> — 最高補助 50% 成本</li><li><strong>RAG 技術成熟</strong> — 可準確處理繁體中文技術文件</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-3</td><td>SOP Brain for PCB/electronics manufacturing</td></tr><tr><td>Pilot</td><td>Month 4-6</td><td>5 factories beta, measure onboarding time reduction</td></tr><tr><td>Launch</td><td>Month 7-9</td><td>Add troubleshooting copilot, 30 factories</td></tr><tr><td>Scale</td><td>Month 10-12</td><td>100 factories, add audio capture, industry partnerships</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-3 月</td><td>PCB/電子製造業 SOP 大腦</td></tr><tr><td>試點</td><td>第 4-6 月</td><td>5 家工廠 Beta，量化新人上手時間縮短</td></tr><tr><td>上線</td><td>第 7-9 月</td><td>加入排錯副駕駛，30 家工廠</td></tr><tr><td>規模化</td><td>第 10-12 月</td><td>100 家、語音採集、產業合作</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$12,000/mo</li><li><strong>CAC</strong>: ~NT$20,000 (trade shows + industry associations)</li><li><strong>LTV</strong>: NT$12,000 × 36 = NT$432,000</li><li><strong>LTV/CAC</strong>: 21x</li><li><strong>Gross margin</strong>: 82%</li><li><strong>Break-even</strong>: ~30 factories (Month 7)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月均 NT$12,000</li><li><strong>CAC</strong>：~NT$20,000（展會 + 公會）</li><li><strong>LTV</strong>：NT$12,000 × 36 = NT$432,000</li><li><strong>LTV/CAC</strong>：21 倍</li><li><strong>毛利率</strong>：82%</li><li><strong>損益平衡</strong>：~30 家工廠（第 7 月）</li></ul>' }
+      ]
+    },
+    6: {
+      icon: '🎓', tier: isEn ? '🟡 Medium Capital' : '🟡 中資本',
+      tierClass: 'mid', capital: isEn ? '~NT$2M' : '~NT$200 萬',
+      title: isEn ? 'AI Tutor for Buxiban 2.0' : '補習班 AI 家教 2.0',
+      tagline: isEn ? 'Personalized AI tutoring for 17,700 cram schools — every student gets a private tutor.' : '17,700 家補習班的 AI 個人化教學——每個學生都有專屬家教。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$150B cram school market':'補教市場 NT$1,500 億'},
+        {l:isEn?'Target':'目標', v: isEn?'17,700 buxibans':'17,700 家補習班'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$200-500/student/mo':'每生月費 NT$200-500'},
+        {l:isEn?'Moat':'護城河', v: isEn?'Curriculum AI + exam database':'課綱 AI + 考題庫'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>One teacher, 30 students — impossible to personalize</li><li>Students don\'t know what they don\'t know — weak spots go undetected until exams</li><li>Practice test creation is manual and time-consuming for teachers</li><li>Parents pay NT$10K-30K/mo but can\'t see learning progress data</li></ul>'
+          : '<ul><li>一個老師 30 個學生——無法個人化</li><li>學生不知道自己不會什麼——弱點到考試才暴露</li><li>出練習題是老師最耗時的手動工作</li><li>家長月付 NT$1-3 萬卻看不到學習進度數據</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Adaptive practice engine</strong> — AI generates questions targeting each student\'s weak spots</li><li><strong>Knowledge gap detector</strong> — maps what each student has mastered vs. needs work</li><li><strong>Audio study guides</strong> — NotebookLM-style podcast summaries of each chapter</li><li><strong>Parent dashboard</strong> — weekly progress reports with actionable insights</li></ul>'
+          : '<ul><li><strong>自適應練習引擎</strong> — AI 針對每位學生弱點出題</li><li><strong>知識缺口偵測</strong> — 標出每位學生已掌握 vs 待加強的內容</li><li><strong>音訊學習指南</strong> — NotebookLM 風格的章節播客摘要</li><li><strong>家長儀表板</strong> — 每週進度報告+可執行建議</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>NT$150B market</strong> growing despite birthrate drop — parents spend more per child</li><li><strong>70% high schoolers</strong> attend cram schools — deeply embedded culture</li><li><strong>17,700 buxibans</strong> — massive B2B channel</li><li><strong>AI audio generation</strong> now supports Chinese — study podcasts are killer feature</li></ul>'
+          : '<ul><li><strong>NT$1,500 億市場</strong>——即使少子化，每個孩子的花費反增</li><li><strong>70% 高中生</strong>上補習班——深植文化</li><li><strong>17,700 家補習班</strong>——龐大 B2B 通路</li><li><strong>AI 音訊生成</strong>已支援中文——學習播客是殺手功能</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-3</td><td>Math adaptive practice for grades 7-9</td></tr><tr><td>Pilot</td><td>Month 4-6</td><td>10 buxibans, 500 students beta</td></tr><tr><td>Launch</td><td>Month 7-9</td><td>Add audio guides + parent dashboard, 50 buxibans</td></tr><tr><td>Scale</td><td>Month 10-12</td><td>200 buxibans, add English/Science subjects</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-3 月</td><td>國中數學自適應練習</td></tr><tr><td>試點</td><td>第 4-6 月</td><td>10 家補習班、500 學生 Beta</td></tr><tr><td>上線</td><td>第 7-9 月</td><td>加入音訊指南+家長儀表板，50 家</td></tr><tr><td>規模化</td><td>第 10-12 月</td><td>200 家、加入英文/自然科</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$300/student/mo (B2B2C)</li><li><strong>Students per buxiban</strong>: avg 80</li><li><strong>Revenue per buxiban</strong>: NT$24,000/mo</li><li><strong>CAC per buxiban</strong>: ~NT$30,000</li><li><strong>LTV</strong>: NT$24,000 × 24 = NT$576,000</li><li><strong>Break-even</strong>: ~20 buxibans (Month 6)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：每生月費 NT$300（B2B2C）</li><li><strong>每家學生數</strong>：平均 80 人</li><li><strong>每家月營收</strong>：NT$24,000</li><li><strong>每家 CAC</strong>：~NT$30,000</li><li><strong>LTV</strong>：NT$24,000 × 24 = NT$576,000</li><li><strong>損益平衡</strong>：~20 家（第 6 月）</li></ul>' }
+      ]
+    },
+    7: {
+      icon: '🌾', tier: isEn ? '🟡 Medium Capital' : '🟡 中資本',
+      tierClass: 'mid', capital: isEn ? '~NT$2.5M' : '~NT$250 萬',
+      title: isEn ? 'Precision Agriculture AI' : 'AI 精準農業顧問',
+      tagline: isEn ? 'AI-powered crop management for Taiwan\'s high-value orchids, tea, and tropical fruits.' : 'AI 驅動的高價值農作管理——蘭花、茶葉、熱帶水果。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$550B agriculture':'農業產值 NT$5,500 億'},
+        {l:isEn?'Target':'目標', v: isEn?'780,000 farm households':'78 萬農戶'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$500-3K/mo + subsidy':'月費 NT$500-3K + 補助'},
+        {l:isEn?'Moat':'護城河', v: isEn?'Microclimate + crop-specific AI':'微氣候 + 作物 AI'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>Climate change increasing pest/disease unpredictability</li><li>Aging farmers (avg age 62) — knowledge transfer failing</li><li>Orchid growers lose 15-20% yield to preventable issues</li><li>Tea quality inconsistent — affects premium pricing</li></ul>'
+          : '<ul><li>氣候變遷增加病蟲害不可預測性</li><li>農民老化（平均 62 歲）——知識傳承斷裂</li><li>蘭花農損失 15-20% 產量於可預防問題</li><li>茶葉品質不穩定——影響高價定位</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Pest/disease early warning</strong> — drone/phone camera AI detects issues 5-7 days before visible symptoms</li><li><strong>Climate-adjusted schedule</strong> — AI adjusts irrigation, fertilization, harvest timing based on microclimate data</li><li><strong>Yield predictor</strong> — estimates harvest volume 2-4 weeks ahead for better logistics planning</li><li><strong>Quality optimizer</strong> — for tea/orchids, AI recommends conditions to maximize premium grade %</li></ul>'
+          : '<ul><li><strong>病蟲害預警</strong> — 無人機/手機 AI 在可見症狀前 5-7 天偵測</li><li><strong>氣候調適排程</strong> — AI 根據微氣候調整灌溉、施肥、採收時機</li><li><strong>產量預測</strong> — 提前 2-4 週估算收成量，優化物流規劃</li><li><strong>品質優化</strong> — 茶葉/蘭花 AI 建議最佳環境條件以最大化高等級佔比</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>NT$17B orchid exports</strong> — world\'s largest, high-value crop perfect for AI optimization</li><li><strong>Government smart agriculture subsidies</strong> — Council of Agriculture actively funding</li><li><strong>Dense sensor/weather network</strong> — Taiwan has extremely granular weather data</li><li><strong>Small island advantage</strong> — can build microclimate models for entire country</li></ul>'
+          : '<ul><li><strong>蘭花出口 NT$170 億</strong> — 全球最大，高價值作物最適合 AI 優化</li><li><strong>政府智慧農業補助</strong> — 農委會積極補助</li><li><strong>密集氣象網</strong> — 台灣氣象資料極度精細</li><li><strong>小島優勢</strong> — 可建構全國微氣候模型</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-3</td><td>Orchid pest detection via phone camera AI</td></tr><tr><td>Pilot</td><td>Month 4-6</td><td>20 orchid farms, measure yield improvement</td></tr><tr><td>Launch</td><td>Month 7-9</td><td>Add tea module, climate-adjusted scheduling</td></tr><tr><td>Scale</td><td>Month 10-12</td><td>200 farms, government partnership, tropical fruit module</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-3 月</td><td>蘭花手機拍照 AI 病蟲害偵測</td></tr><tr><td>試點</td><td>第 4-6 月</td><td>20 家蘭花場，量化產量提升</td></tr><tr><td>上線</td><td>第 7-9 月</td><td>加入茶葉模組、氣候調適排程</td></tr><tr><td>規模化</td><td>第 10-12 月</td><td>200 家、政府合作、熱帶水果模組</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$2,000/mo (partially gov-subsidized)</li><li><strong>CAC</strong>: ~NT$8,000 (farmers\' associations + field demos)</li><li><strong>LTV</strong>: NT$2,000 × 36 = NT$72,000</li><li><strong>LTV/CAC</strong>: 9x</li><li><strong>Gross margin</strong>: 75%</li><li><strong>Break-even</strong>: ~150 farms (Month 9)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月均 NT$2,000（部分政府補助）</li><li><strong>CAC</strong>：~NT$8,000（農會 + 田間示範）</li><li><strong>LTV</strong>：NT$2,000 × 36 = NT$72,000</li><li><strong>LTV/CAC</strong>：9 倍</li><li><strong>毛利率</strong>：75%</li><li><strong>損益平衡</strong>：~150 家（第 9 月）</li></ul>' }
+      ]
+    },
+    8: {
+      icon: '⚖️', tier: isEn ? '🔴 High Capital' : '🔴 高資本',
+      tierClass: 'high', capital: isEn ? '~NT$5M' : '~NT$500 萬',
+      title: isEn ? 'RegTech AI for Financial Compliance' : '金融合規 AI',
+      tagline: isEn ? 'Automate compliance before regulators find the gaps.' : '在監管機關發現漏洞前自動合規。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$25B compliance spend':'合規支出 NT$250 億'},
+        {l:isEn?'Target':'目標', v: isEn?'400+ financial institutions':'400+ 家金融機構'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$50K-200K/mo enterprise':'月費 NT$5-20 萬'},
+        {l:isEn?'Moat':'護城河', v: isEn?'FSC regulation knowledge graph':'金管會法規知識圖譜'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>FSC issues 200+ regulatory updates per year — compliance teams can\'t keep up</li><li>Manual compliance checking costs NT$500K-2M/year per institution</li><li>Penalties for non-compliance: NT$1M-50M + reputational damage</li><li>36% of Taiwan financial institutions already use some AI — but compliance is still manual</li></ul>'
+          : '<ul><li>金管會每年發布 200+ 法規更新——合規團隊跟不上</li><li>人工合規檢查每家機構年花 NT$50-200 萬</li><li>違規罰款：NT$100-5,000 萬 + 聲譽損害</li><li>36% 台灣金融機構已用 AI——但合規仍是手動</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Regulation monitor</strong> — AI tracks all FSC/CBC updates, auto-identifies impact on your institution</li><li><strong>Gap analyzer</strong> — scans internal policies against current regulations, flags gaps</li><li><strong>Report generator</strong> — auto-creates compliance reports in FSC-required format</li><li><strong>AML/KYC enhancer</strong> — AI-powered suspicious transaction detection with explainable reasoning</li></ul>'
+          : '<ul><li><strong>法規監控</strong> — AI 追蹤所有金管會/央行更新，自動識別對你機構的影響</li><li><strong>缺口分析</strong> — 掃描內部政策 vs 現行法規，標記缺口</li><li><strong>報告生成</strong> — 自動產出金管會要求格式的合規報告</li><li><strong>AML/KYC 強化</strong> — AI 可疑交易偵測+可解釋推理</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>Regulatory intensity increasing</strong> — VASP rules, ESG reporting, data privacy all new in 2024-2026</li><li><strong>Fintech sandbox</strong> — government supports innovation in compliance tech</li><li><strong>High enterprise ARPU</strong> — banks pay premium for compliance automation</li><li><strong>APAC expansion</strong> — Taiwan compliance patterns similar to HK, Singapore, Korea</li></ul>'
+          : '<ul><li><strong>監管強度增加</strong> — VASP 規則、ESG 報告、個資保護都是 2024-2026 新增</li><li><strong>金融科技沙盒</strong> — 政府支持合規科技創新</li><li><strong>高企業 ARPU</strong> — 銀行願付高價購買合規自動化</li><li><strong>亞太擴展</strong> — 台灣合規模式類似港星韓</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-4</td><td>FSC regulation monitor + gap analyzer for banking sector</td></tr><tr><td>Pilot</td><td>Month 5-7</td><td>3 banks/fintechs POC, measure compliance time reduction</td></tr><tr><td>Launch</td><td>Month 8-10</td><td>Add report generator, 10 institutions</td></tr><tr><td>Scale</td><td>Month 11-12</td><td>Add insurance module, prepare APAC expansion</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-4 月</td><td>銀行業金管會法規監控 + 缺口分析</td></tr><tr><td>試點</td><td>第 5-7 月</td><td>3 家銀行/金融科技 POC，量化合規時間縮短</td></tr><tr><td>上線</td><td>第 8-10 月</td><td>加入報告生成，10 家機構</td></tr><tr><td>規模化</td><td>第 11-12 月</td><td>加入保險模組、準備亞太擴展</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$120,000/mo</li><li><strong>CAC</strong>: ~NT$200,000 (enterprise sales cycle 3-4 months)</li><li><strong>LTV</strong>: NT$120,000 × 36 = NT$4,320,000</li><li><strong>LTV/CAC</strong>: 21x</li><li><strong>Gross margin</strong>: 80%</li><li><strong>Break-even</strong>: ~8 institutions (Month 9)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月均 NT$120,000</li><li><strong>CAC</strong>：~NT$200,000（企業銷售週期 3-4 月）</li><li><strong>LTV</strong>：NT$120,000 × 36 = NT$4,320,000</li><li><strong>LTV/CAC</strong>：21 倍</li><li><strong>毛利率</strong>：80%</li><li><strong>損益平衡</strong>：~8 家機構（第 9 月）</li></ul>' }
+      ]
+    },
+    9: {
+      icon: '🔧', tier: isEn ? '🔴 High Capital' : '🔴 高資本',
+      tierClass: 'high', capital: isEn ? '~NT$8M' : '~NT$800 萬',
+      title: isEn ? 'AI Predictive Maintenance for Supply Chain' : '供應鏈 AI 預測性維護',
+      tagline: isEn ? 'Predict equipment failures before they cost millions in lost production.' : '在設備故障造成數百萬產能損失前預測它。',
+      metrics: [
+        {l:'TAM', v: isEn?'NT$120B industrial maintenance':'工業維護 NT$1,200 億'},
+        {l:isEn?'Target':'目標', v: isEn?'Top 500 electronics mfrs':'前 500 大電子廠'},
+        {l:isEn?'Revenue':'營收', v: isEn?'NT$100K-500K/mo':'月費 NT$10-50 萬'},
+        {l:isEn?'Moat':'護城河', v: isEn?'Sensor data + failure pattern AI':'感測數據 + 故障模式 AI'}
+      ],
+      sections: [
+        { h: isEn?'💊 The Problem':'💊 痛點', c: isEn
+          ? '<ul><li>Unplanned downtime costs Taiwan electronics manufacturers avg <strong>NT$2-5M per incident</strong></li><li>Current maintenance is calendar-based (replace every X months) — wasteful and still misses failures</li><li>Equipment sensor data exists but sits unused in SCADA systems</li><li>Skilled maintenance engineers retiring — knowledge gap widening</li></ul>'
+          : '<ul><li>非計畫停機讓台灣電子廠平均每次損失 <strong>NT$200-500 萬</strong></li><li>現有維護是日曆制（每 X 月更換）——浪費且仍漏掉故障</li><li>設備感測器數據存在但閒置在 SCADA 系統中</li><li>資深維護工程師退休——知識斷層加大</li></ul>' },
+        { h: isEn?'🤖 AI Solution':'🤖 AI 解決方案', c: isEn
+          ? '<ul><li><strong>Failure predictor</strong> — analyzes vibration, temperature, power consumption patterns to predict failures 2-4 weeks ahead</li><li><strong>Optimal maintenance scheduler</strong> — replaces calendar-based with condition-based scheduling</li><li><strong>Root cause analyzer</strong> — when failures occur, AI identifies root cause from sensor data</li><li><strong>Spare parts optimizer</strong> — predicts which parts will be needed when, reduces inventory costs</li></ul>'
+          : '<ul><li><strong>故障預測</strong> — 分析振動、溫度、功耗模式，提前 2-4 週預測故障</li><li><strong>最佳維護排程</strong> — 從日曆制改為狀態制排程</li><li><strong>根因分析</strong> — 故障發生時，AI 從感測數據識別根因</li><li><strong>備件優化</strong> — 預測何時需要什麼零件，降低庫存成本</li></ul>' },
+        { h: isEn?'🇹🇼 Why Taiwan, Why Now':'🇹🇼 為什麼是台灣、為什麼是現在', c: isEn
+          ? '<ul><li><strong>World\'s electronics supply chain hub</strong> — 90% AI server assembly, TSMC, ASE, Delta</li><li><strong>High cost of downtime</strong> — semiconductor fabs lose $1M+ per hour of unplanned downtime</li><li><strong>Industry 4.0 investment wave</strong> — factories upgrading sensors/IoT infrastructure</li><li><strong>Export dependency</strong> — any production disruption has global ripple effects</li></ul>'
+          : '<ul><li><strong>全球電子供應鏈樞紐</strong> — 90% AI 伺服器組裝、台積電、日月光、台達電</li><li><strong>停機成本極高</strong> — 半導體廠每小時非計畫停機損失 $100 萬+</li><li><strong>工業 4.0 投資潮</strong> — 工廠正在升級感測器/IoT 基礎設施</li><li><strong>出口依賴</strong> — 任何產能中斷都有全球連鎖效應</li></ul>' },
+        { h: isEn?'🗓️ 12-Month Roadmap':'🗓️ 12 個月路線圖', c: isEn
+          ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-4</td><td>Vibration-based failure prediction for CNC machines</td></tr><tr><td>Pilot</td><td>Month 5-7</td><td>3 factories POC, measure downtime reduction</td></tr><tr><td>Launch</td><td>Month 8-10</td><td>Add multi-sensor fusion, 10 factories</td></tr><tr><td>Scale</td><td>Month 11-12</td><td>30 factories, spare parts optimizer, Series A</td></tr></table>'
+          : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-4 月</td><td>CNC 機台振動式故障預測</td></tr><tr><td>試點</td><td>第 5-7 月</td><td>3 家工廠 POC，量化停機時間縮短</td></tr><tr><td>上線</td><td>第 8-10 月</td><td>加入多感測器融合，10 家工廠</td></tr><tr><td>規模化</td><td>第 11-12 月</td><td>30 家、備件優化、準備 Series A</td></tr></table>' },
+        { h: isEn?'💰 Unit Economics':'💰 單位經濟', c: isEn
+          ? '<ul><li><strong>ARPU</strong>: NT$250,000/mo</li><li><strong>CAC</strong>: ~NT$500,000 (6-month enterprise sales cycle)</li><li><strong>LTV</strong>: NT$250,000 × 36 = NT$9,000,000</li><li><strong>LTV/CAC</strong>: 18x</li><li><strong>Gross margin</strong>: 75%</li><li><strong>Break-even</strong>: ~5 factories (Month 8)</li></ul>'
+          : '<ul><li><strong>ARPU</strong>：月均 NT$250,000</li><li><strong>CAC</strong>：~NT$500,000（6 個月企業銷售週期）</li><li><strong>LTV</strong>：NT$250,000 × 36 = NT$9,000,000</li><li><strong>LTV/CAC</strong>：18 倍</li><li><strong>毛利率</strong>：75%</li><li><strong>損益平衡</strong>：~5 家工廠（第 8 月）</li></ul>' }
+      ]
+    }
+  };
+
+  var plan = plans[id];
+  if (!plan) { document.getElementById('bp-loading').style.display='none'; document.getElementById('bp-not-found').style.display='block'; return; }
+
+  var html = '<a href="/biz-plan" class="bp-back">' + (isEn ? '← Back to all plans' : '← 回到所有計畫') + '</a>';
+  html += '<div class="bp-header">';
+  html += '<span class="biz-capital capital-' + plan.tierClass + '">' + plan.tier + ' · ' + plan.capital + '</span>';
+  html += '<h1>' + plan.icon + ' #' + id + ' — ' + plan.title + '</h1>';
+  html += '<p class="bp-tagline">' + plan.tagline + '</p>';
+  html += '</div>';
+
+  html += '<div class="biz-metrics">';
+  plan.metrics.forEach(function(m) {
+    html += '<div class="biz-metric"><span class="metric-label">' + m.l + '</span><span class="metric-value">' + m.v + '</span></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="bp-sections">';
+  plan.sections.forEach(function(s) {
+    html += '<div class="bp-section"><h2>' + s.h + '</h2>' + s.c + '</div>';
+  });
+  html += '</div>';
+
+  html += '<div class="biz-cta" style="margin-top:32px;">';
+  html += '<p>' + (isEn ? 'Want to co-found this? You bring domain expertise, I bring AI + engineering + funding.' : '想共同創辦這個？你出領域專業，我出 AI 技術 + 工程 + 資金。') + '</p>';
+  html += '<a href="/partner" class="biz-cta-btn">' + (isEn ? 'Become a Co-Founder →' : '成為共同創辦人 →') + '</a>';
+  html += '</div>';
+
+  document.getElementById('bp-loading').style.display = 'none';
+  document.getElementById('bp-content').style.display = 'block';
+  document.getElementById('bp-content').innerHTML = html;
+})();
+</script>
+
+<style>
+.bp-back { display: inline-block; margin-bottom: 16px; color: #2a7ae2; text-decoration: none; font-size: 0.9em; }
+.bp-back:hover { text-decoration: underline; }
+.bp-header { margin-bottom: 24px; }
+.bp-header h1 { font-size: 1.5em; margin: 8px 0; }
+.bp-tagline { font-size: 1em; color: #555; line-height: 1.5; }
+.biz-metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 28px; }
+.biz-metric { background: #f8f9fa; border-radius: 10px; padding: 12px; text-align: center; }
+.metric-label { display: block; font-size: 0.7em; color: #888; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+.metric-value { display: block; font-size: 0.85em; font-weight: 700; color: #333; }
+.bp-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.bp-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; }
+.bp-section h2 { font-size: 1.05em; margin: 0 0 12px; color: #2a7ae2; }
+.bp-section ul { margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.7; color: #444; }
+.bp-section table { width: 100%; font-size: 0.82em; border-collapse: collapse; }
+.bp-section th, .bp-section td { padding: 8px; text-align: left; border-bottom: 1px solid #eee; }
+.bp-section th { color: #2a7ae2; font-weight: 600; }
+.biz-capital { display: inline-block; font-size: 0.8em; font-weight: 700; padding: 3px 12px; border-radius: 12px; }
+.capital-low { background: #dcfce7; color: #166534; }
+.capital-mid { background: #fef9c3; color: #854d0e; }
+.capital-high { background: #fee2e2; color: #991b1b; }
+.biz-cta { text-align: center; background: #f8f9fa; border-radius: 12px; padding: 28px; }
+.biz-cta p { font-size: 1em; color: #555; margin-bottom: 14px; }
+.biz-cta-btn { display: inline-block; background: #2a7ae2; color: #fff; padding: 10px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+.biz-cta-btn:hover { background: #1d5cbf; color: #fff; }
+@media (max-width: 768px) {
+  .biz-metrics { grid-template-columns: repeat(2,1fr); }
+  .bp-sections { grid-template-columns: 1fr; }
+}
+</style>
