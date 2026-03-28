@@ -9,399 +9,211 @@ title: AI 商業計畫 — Daily AI Taiwan
     <p id="biz-subtitle" class="biz-subtitle"></p>
     <p id="biz-criteria" class="biz-criteria"></p>
   </div>
-
-  <script>
-  (function() {
-    var isEn = getLang() === 'en';
-    document.getElementById('biz-title').textContent = isEn
-      ? '🎯 9 AI Business Plans for Taiwan'
-      : '🎯 9 個台灣 AI 創業計畫';
-    document.getElementById('biz-subtitle').textContent = isEn
-      ? 'Curated opportunities where AI meets Taiwan\'s unique market advantages'
-      : '精選 AI 與台灣獨特市場優勢的交會點';
-    document.getElementById('biz-criteria').innerHTML = isEn
-      ? '<strong>Selection criteria:</strong> AI-native · Taiwan market fit · Small team executable · High margin potential · Clear pain point'
-      : '<strong>篩選標準：</strong>AI 驅動 · 台灣市場適配 · 小團隊可執行 · 高毛利潛力 · 明確痛點';
-  })();
-  </script>
-
-  <!-- Featured Plan -->
-  <a href="/view-biz-plan?id=1" style="text-decoration:none;color:inherit;">
-  <div class="biz-featured" id="featured-plan">
-    <div class="biz-featured-badge" id="featured-badge"></div>
-    <h2 id="featured-title"></h2>
-    <p id="featured-tagline" class="biz-tagline"></p>
-
-    <div class="biz-metrics">
-      <div class="biz-metric">
-        <span class="metric-label">TAM</span>
-        <span class="metric-value" id="f-tam"></span>
-      </div>
-      <div class="biz-metric">
-        <span class="metric-label" id="f-target-label"></span>
-        <span class="metric-value" id="f-target"></span>
-      </div>
-      <div class="biz-metric">
-        <span class="metric-label" id="f-model-label"></span>
-        <span class="metric-value" id="f-model"></span>
-      </div>
-      <div class="biz-metric">
-        <span class="metric-label" id="f-edge-label"></span>
-        <span class="metric-value" id="f-edge"></span>
-      </div>
-    </div>
-
-    <div class="biz-detail-grid">
-      <div class="biz-detail-section">
-        <h3 id="f-problem-h"></h3>
-        <div id="f-problem"></div>
-      </div>
-      <div class="biz-detail-section">
-        <h3 id="f-solution-h"></h3>
-        <div id="f-solution"></div>
-      </div>
-      <div class="biz-detail-section">
-        <h3 id="f-why-h"></h3>
-        <div id="f-why"></div>
-      </div>
-      <div class="biz-detail-section">
-        <h3 id="f-roadmap-h"></h3>
-        <div id="f-roadmap"></div>
-      </div>
-    </div>
-  </div>
-  </a>
-
-  <script>
-  (function() {
-    var isEn = getLang() === 'en';
-    document.getElementById('featured-badge').textContent = isEn ? '⭐ FIRST EDITION — DETAILED PLAN' : '⭐ 第一版 — 完整計畫書';
-    document.getElementById('featured-title').textContent = isEn
-      ? '🏥 #1 — AI Clinical Copilot for Taiwan\'s 24,000 NHI Clinics'
-      : '🏥 #1 — 台灣 24,000 家健保診所的 AI 臨床副駕駛';
-    document.getElementById('featured-tagline').textContent = isEn
-      ? 'Turn 20 years of NHI medical records into an AI assistant that helps doctors document faster, code accurately, and never miss a reimbursement.'
-      : '將 20 年健保病歷資料轉化為 AI 助手，幫醫師更快記錄、更準編碼、不再漏申報。';
-    document.getElementById('f-tam').textContent = isEn ? 'NT$36B NHI admin spend' : '健保行政支出 NT$360 億';
-    document.getElementById('f-target-label').textContent = isEn ? 'Target' : '目標客群';
-    document.getElementById('f-target').textContent = isEn ? '24,000 NHI clinics' : '24,000 家健保特約診所';
-    document.getElementById('f-model-label').textContent = isEn ? 'Revenue' : '營收模式';
-    document.getElementById('f-model').textContent = isEn ? 'NT$3,000-8,000/mo SaaS' : '月費 NT$3,000-8,000 SaaS';
-    document.getElementById('f-edge-label').textContent = isEn ? 'Moat' : '護城河';
-    document.getElementById('f-edge').textContent = isEn ? 'NHI coding rules + clinic workflow data' : '健保編碼規則 + 診所工作流數據';
-
-    document.getElementById('f-problem-h').textContent = isEn ? '💊 The Problem' : '💊 痛點';
-    document.getElementById('f-problem').innerHTML = isEn
-      ? '<ul><li>Doctors spend <strong>30-40%</strong> of their time on NHI documentation, not patients</li><li>Wrong diagnosis codes = rejected claims = lost revenue (avg NT$50K-200K/month per clinic)</li><li>New NHI rule changes 3-4 times/year — clinics can\'t keep up</li><li>99.9% population coverage = every clinic MUST deal with NHI bureaucracy</li></ul>'
-      : '<ul><li>醫師 <strong>30-40%</strong> 時間花在健保文書，而非看診</li><li>診斷碼錯誤 = 申報被退 = 收入損失（每家診所平均月損 NT$5-20 萬）</li><li>健保規則每年修改 3-4 次，診所難以跟上</li><li>99.9% 人口覆蓋 = 每家診所都必須處理健保行政</li></ul>';
-
-    document.getElementById('f-solution-h').textContent = isEn ? '🤖 The AI Solution' : '🤖 AI 解決方案';
-    document.getElementById('f-solution').innerHTML = isEn
-      ? '<ul><li><strong>Real-time documentation AI</strong> — listens to doctor-patient conversation, auto-generates SOAP notes in NHI format</li><li><strong>Smart coding engine</strong> — suggests optimal NHI diagnosis/procedure codes based on clinical context, flags potential rejections before submission</li><li><strong>Rule update radar</strong> — monitors NHI rule changes, auto-alerts affected clinics, suggests coding adjustments</li><li><strong>Claim analytics dashboard</strong> — tracks approval rates, identifies patterns in rejected claims, recommends fixes</li></ul>'
-      : '<ul><li><strong>即時文書 AI</strong> — 聆聽醫病對話，自動生成符合健保格式的 SOAP 病歷</li><li><strong>智慧編碼引擎</strong> — 根據臨床情境建議最佳健保診斷/處置碼，提交前標記可能被退件的項目</li><li><strong>規則變動雷達</strong> — 監控健保規則修訂，自動通知受影響診所，建議編碼調整</li><li><strong>申報分析儀表板</strong> — 追蹤核准率、識別退件模式、推薦改善方案</li></ul>';
-
-    document.getElementById('f-why-h').textContent = isEn ? '🇹🇼 Why Taiwan, Why Now' : '🇹🇼 為什麼是台灣、為什麼是現在';
-    document.getElementById('f-why').innerHTML = isEn
-      ? '<ul><li><strong>Unique data advantage</strong> — NHI has 23M+ patient records over 20 years, the world\'s richest single-payer medical dataset</li><li><strong>Government push</strong> — MOEA\'s 2026 SME AI transformation plan actively subsidizes clinic digitization</li><li><strong>LLM maturity</strong> — Gemini 3 / Claude Opus now handle Traditional Chinese medical terminology accurately</li><li><strong>No incumbent</strong> — existing HIS (Hospital Information Systems) vendors are legacy software companies, not AI-native</li><li><strong>Export potential</strong> — Taiwan\'s NHI model is studied by 40+ countries; a proven solution here sells globally</li></ul>'
-      : '<ul><li><strong>獨特數據優勢</strong> — 健保署累積 2,300 萬人、20 年病歷，全球最豐富的單一支付者醫療數據庫</li><li><strong>政策推力</strong> — 經濟部 2026 年中小企業 AI 轉型計畫，積極補助診所數位化</li><li><strong>LLM 成熟</strong> — Gemini 3 / Claude Opus 已能準確處理繁體中文醫學術語</li><li><strong>無既有霸主</strong> — 現有 HIS（醫院資訊系統）廠商是傳統軟體公司，非 AI 原生</li><li><strong>出口潛力</strong> — 台灣健保模式被 40+ 國家研究，在台灣驗證的方案可全球複製</li></ul>';
-
-    document.getElementById('f-roadmap-h').textContent = isEn ? '🗓️ 12-Month Roadmap' : '🗓️ 12 個月路線圖';
-    document.getElementById('f-roadmap').innerHTML = isEn
-      ? '<table><tr><th>Phase</th><th>Timeline</th><th>Goal</th></tr><tr><td>MVP</td><td>Month 1-3</td><td>Smart coding engine for top 5 specialties (family medicine, pediatrics, ENT, dermatology, ophthalmology)</td></tr><tr><td>Pilot</td><td>Month 4-6</td><td>10 clinics beta, measure claim approval rate improvement</td></tr><tr><td>Launch</td><td>Month 7-9</td><td>Add real-time documentation AI, expand to 100 clinics</td></tr><tr><td>Scale</td><td>Month 10-12</td><td>500 clinics, launch claim analytics, Series A ready</td></tr></table>'
-      : '<table><tr><th>階段</th><th>時程</th><th>目標</th></tr><tr><td>MVP</td><td>第 1-3 月</td><td>智慧編碼引擎：先做前 5 大科別（家醫、兒科、耳鼻喉、皮膚、眼科）</td></tr><tr><td>試點</td><td>第 4-6 月</td><td>10 家診所 Beta 測試，量化申報核准率提升</td></tr><tr><td>上線</td><td>第 7-9 月</td><td>加入即時文書 AI，擴展至 100 家診所</td></tr><tr><td>規模化</td><td>第 10-12 月</td><td>500 家診所、上線申報分析、準備 Series A</td></tr></table>';
-  })();
-  </script>
-
-  <!-- Plans by Capital Tier -->
-  <div id="tiers-container" style="margin-top:48px;"></div>
-
-  <script>
-  (function() {
-    var isEn = getLang() === 'en';
-
-    var tiers = [
-      {
-        id: 'low',
-        label: isEn ? '🟢 Low Capital — Under NT$500K to start' : '🟢 低資本 — 50 萬以下即可啟動',
-        desc: isEn ? '1-2 person team, API costs + laptop, revenue in 3 months' : '1-2 人團隊、API 費用 + 筆電、3 個月內有營收',
-        plans: [
-          {
-            icon: '📊', num: 2,
-            title: isEn ? 'AI Tax & Audit Autopilot' : 'AI 稅務自動駕駛',
-            desc: isEn
-              ? 'Automated tax filing, audit defense, and regulatory compliance for Taiwan\'s 1.71M SMEs. AI reads receipts, categorizes expenses, files returns, prepares for audits.'
-              : '為台灣 171 萬家中小企業自動報稅、稅務稽核準備、法規合規。AI 讀取發票、分類支出、申報、準備查帳資料。',
-            tam: isEn ? 'NT$80B accounting services' : '會計服務市場 NT$800 億',
-            target: isEn ? '1.71M Taiwan SMEs' : '171 萬家台灣中小企業',
-            model: isEn ? 'NT$1,500-5,000/mo SaaS' : '月費 NT$1,500-5,000',
-            edge: isEn ? 'Taiwan tax code AI + e-invoice integration' : '台灣稅法 AI + 電子發票串接',
-            capital: isEn ? '~NT$300K' : '~NT$30 萬'
-          },
-          {
-            icon: '🏪', num: 3,
-            title: isEn ? 'AI Commercial District Analyzer' : 'AI 商圈分析師',
-            desc: isEn
-              ? 'AI site selection and foot traffic prediction for retail, F&B, franchises. Combines government open data, telecom mobility data, satellite imagery to score any address in Taiwan.'
-              : 'AI 開店選址與人流預測。結合政府開放資料、電信行動數據、衛星影像，為台灣任何地址評分。',
-            tam: isEn ? 'NT$30B retail consulting' : '零售顧問市場 NT$300 億',
-            target: isEn ? '120,000 F&B + retail operators' : '12 萬家餐飲+零售業者',
-            model: isEn ? 'NT$2,000-10,000/report + subscription' : '單次 NT$2,000-10,000 + 訂閱',
-            edge: isEn ? 'Taiwan open data integration + hyper-local AI' : '台灣開放資料整合 + 超在地 AI',
-            capital: isEn ? '~NT$200K' : '~NT$20 萬'
-          },
-          {
-            icon: '🌐', num: 4,
-            title: isEn ? 'AI Cross-Border E-Commerce Optimizer' : 'AI 跨境電商優化師',
-            desc: isEn
-              ? 'AI product selection, listing optimization, pricing intelligence for Taiwan sellers on Amazon, Shopee, Rakuten. Tells sellers what to sell, where, at what price.'
-              : 'AI 選品、Listing 優化、定價情報。告訴台灣賣家在 Amazon/Shopee/樂天 賣什麼、在哪賣、賣多少。',
-            tam: isEn ? 'NT$480B cross-border e-commerce' : '跨境電商市場 NT$4,800 億',
-            target: isEn ? '50,000+ cross-border sellers' : '5 萬+ 跨境賣家',
-            model: isEn ? 'NT$3,000-15,000/mo + rev share' : '月費 NT$3,000-15,000 + 分潤',
-            edge: isEn ? 'Supply chain proximity + multilingual AI listings' : '供應鏈近水樓台 + 多語 AI 文案',
-            capital: isEn ? '~NT$400K' : '~NT$40 萬'
-          }
-        ]
-      },
-      {
-        id: 'mid',
-        label: isEn ? '🟡 Medium Capital — NT$500K–3M' : '🟡 中資本 — 50 萬–300 萬',
-        desc: isEn ? '3-5 person team, domain expert + engineer, product-market fit in 6 months' : '3-5 人團隊、領域專家 + 工程師、6 個月內驗證 PMF',
-        plans: [
-          {
-            icon: '🏭', num: 5,
-            title: isEn ? 'Manufacturing Knowledge Brain' : '工廠知識大腦',
-            desc: isEn
-              ? 'Turn decades of tribal knowledge in Taiwan\'s 150,000+ factories into queryable AI — SOPs, troubleshooting, quality specs. NotebookLM for manufacturing.'
-              : '將台灣 15 萬+工廠數十年「師傅經驗」轉化為可查詢 AI——SOP、故障排除、品質規格。製造業版 NotebookLM。',
-            tam: isEn ? 'NT$45B manufacturing IT' : '製造業 IT 支出 NT$450 億',
-            target: isEn ? '150,000 factories' : '15 萬家工廠',
-            model: isEn ? 'NT$5,000-20,000/mo SaaS' : '月費 NT$5,000-20,000',
-            edge: isEn ? 'Domain-specific RAG + Traditional Chinese SOP corpus' : '領域專用 RAG + 繁中 SOP 語料庫',
-            capital: isEn ? '~NT$1.5M' : '~NT$150 萬'
-          },
-          {
-            icon: '🎓', num: 6,
-            title: isEn ? 'AI Tutor for Buxiban 2.0' : '補習班 AI 家教 2.0',
-            desc: isEn
-              ? 'AI personalized tutoring for Taiwan\'s 17,700 cram schools. Auto-generates practice tests, identifies weak spots, creates audio study guides via NotebookLM-style synthesis.'
-              : '為 17,700 家補習班打造 AI 個人化教學。自動出題、弱點分析、生成 NotebookLM 風格音訊學習材料。',
-            tam: isEn ? 'NT$150B cram school market' : '補教市場 NT$1,500 億',
-            target: isEn ? '17,700 buxibans' : '17,700 家補習班',
-            model: isEn ? 'NT$200-500/student/mo B2B2C' : '每生月費 NT$200-500 B2B2C',
-            edge: isEn ? 'Taiwan curriculum-aligned AI + exam database' : '對齊台灣課綱 AI + 歷屆考題庫',
-            capital: isEn ? '~NT$2M' : '~NT$200 萬'
-          },
-          {
-            icon: '🌾', num: 7,
-            title: isEn ? 'Precision Agriculture AI' : 'AI 精準農業顧問',
-            desc: isEn
-              ? 'AI crop management for Taiwan\'s high-value agriculture — orchids (NT$17B export), tea, tropical fruits. Drone + satellite analysis, pest prediction, yield optimization.'
-              : 'AI 高價值農作管理——蘭花（出口 NT$170 億）、茶葉、熱帶水果。無人機+衛星分析、病蟲害預測、產量最佳化。',
-            tam: isEn ? 'NT$550B agriculture output' : '農業產值 NT$5,500 億',
-            target: isEn ? '780,000 farm households' : '78 萬農戶',
-            model: isEn ? 'NT$500-3,000/mo + gov subsidy' : '月費 NT$500-3,000 + 政府補助',
-            edge: isEn ? 'Taiwan microclimate data + crop-specific AI' : '台灣微氣候數據 + 作物專用 AI',
-            capital: isEn ? '~NT$2.5M' : '~NT$250 萬'
-          }
-        ]
-      },
-      {
-        id: 'high',
-        label: isEn ? '🔴 High Capital — NT$3M+' : '🔴 高資本 — 300 萬以上',
-        desc: isEn ? '5-10 person team, regulatory/compliance expertise required, Series A potential' : '5-10 人團隊、需法規/合規專業、具 Series A 潛力',
-        plans: [
-          {
-            icon: '⚖️', num: 8,
-            title: isEn ? 'RegTech AI for Financial Compliance' : '金融合規 AI',
-            desc: isEn
-              ? 'AI regulatory compliance for Taiwan\'s banks, insurers, fintechs. Auto-monitors FSC rule changes, generates compliance reports, flags violations before regulators do.'
-              : 'AI 金融法規合規。自動監控金管會規則變動、生成合規報告、在監管機關發現前標記違規。',
-            tam: isEn ? 'NT$25B compliance spend' : '合規支出 NT$250 億',
-            target: isEn ? '400+ financial institutions' : '400+ 家金融機構',
-            model: isEn ? 'NT$50K-200K/mo enterprise' : '月費 NT$5-20 萬企業版',
-            edge: isEn ? 'FSC regulation knowledge graph + bilingual AI' : '金管會法規知識圖譜 + 雙語 AI',
-            capital: isEn ? '~NT$5M' : '~NT$500 萬'
-          },
-          {
-            icon: '🔧', num: 9,
-            title: isEn ? 'AI Predictive Maintenance for Supply Chain' : '供應鏈 AI 預測性維護',
-            desc: isEn
-              ? 'Predicts equipment failures for Taiwan\'s electronics/semiconductor supply chain. Reduce unplanned downtime 40-60%, save millions in lost production.'
-              : '為台灣電子/半導體供應鏈預測設備故障。減少 40-60% 非計畫停機，節省數百萬產能損失。',
-            tam: isEn ? 'NT$120B industrial maintenance' : '工業維護市場 NT$1,200 億',
-            target: isEn ? 'Top 500 electronics manufacturers' : '前 500 大電子製造商',
-            model: isEn ? 'NT$100K-500K/mo enterprise' : '月費 NT$10-50 萬企業版',
-            edge: isEn ? 'Supply chain sensor data + failure pattern AI' : '供應鏈感測數據 + 故障模式 AI',
-            capital: isEn ? '~NT$8M' : '~NT$800 萬'
-          },
-          {
-            icon: '🏥', num: 1,
-            title: isEn ? 'AI Clinical Copilot (see detailed plan above ↑)' : 'AI 臨床副駕駛（詳見上方完整計畫 ↑）',
-            desc: isEn
-              ? 'AI copilot for 24,000 NHI clinics — real-time SOAP notes, smart coding, claim analytics. The #1 pick with the deepest moat and largest addressable market.'
-              : '24,000 家健保診所 AI 副駕駛——即時 SOAP 病歷、智慧編碼、申報分析。第一名首選，護城河最深、市場最大。',
-            tam: isEn ? 'NT$36B NHI admin spend' : '健保行政支出 NT$360 億',
-            target: isEn ? '24,000 NHI clinics' : '24,000 家健保診所',
-            model: isEn ? 'NT$3,000-8,000/mo SaaS' : '月費 NT$3,000-8,000',
-            edge: isEn ? 'NHI coding rules + clinic workflow data' : '健保編碼規則 + 診所工作流數據',
-            capital: isEn ? '~NT$10M' : '~NT$1,000 萬'
-          }
-        ]
-      }
-    ];
-
-    var container = document.getElementById('tiers-container');
-    tiers.forEach(function(tier) {
-      var section = document.createElement('div');
-      section.className = 'biz-tier';
-      section.innerHTML = '<h2 class="tier-heading tier-' + tier.id + '">' + tier.label + '</h2>' +
-        '<p class="tier-desc">' + tier.desc + '</p>';
-
-      var grid = document.createElement('div');
-      grid.className = 'biz-grid';
-      tier.plans.forEach(function(p) {
-        var card = document.createElement('a');
-        card.href = '/view-biz-plan?id=' + p.num;
-        card.className = 'biz-card biz-card-link';
-        card.innerHTML =
-          '<div class="biz-card-header">' +
-            '<span class="biz-icon">' + p.icon + '</span>' +
-            '<span class="biz-num">#' + p.num + '</span>' +
-            '<span class="biz-capital capital-' + tier.id + '">' + p.capital + '</span>' +
-          '</div>' +
-          '<h3 class="biz-card-title">' + p.title + '</h3>' +
-          '<p class="biz-card-desc">' + p.desc + '</p>' +
-          '<div class="biz-card-metrics">' +
-            '<div class="biz-card-metric"><span class="bcm-label">TAM</span><span class="bcm-value">' + p.tam + '</span></div>' +
-            '<div class="biz-card-metric"><span class="bcm-label">' + (isEn ? 'Target' : '目標') + '</span><span class="bcm-value">' + p.target + '</span></div>' +
-            '<div class="biz-card-metric"><span class="bcm-label">' + (isEn ? 'Revenue' : '營收') + '</span><span class="bcm-value">' + p.model + '</span></div>' +
-            '<div class="biz-card-metric"><span class="bcm-label">' + (isEn ? 'Moat' : '護城河') + '</span><span class="bcm-value">' + p.edge + '</span></div>' +
-          '</div>';
-        grid.appendChild(card);
-      });
-      section.appendChild(grid);
-      container.appendChild(section);
-    });
-  })();
-  </script>
-
+  <div class="biz-grid" id="biz-grid"></div>
   <div class="biz-cta" id="biz-cta">
     <p id="biz-cta-text"></p>
     <a href="/partner" class="biz-cta-btn" id="biz-cta-btn"></a>
   </div>
-  <script>
-  (function() {
-    var isEn = getLang() === 'en';
-    document.getElementById('biz-cta-text').textContent = isEn
-      ? 'Interested in co-founding any of these? You bring domain expertise, I bring AI + engineering + funding.'
-      : '對其中任何一個有興趣共同創辦？你出領域專業，我出 AI 技術 + 工程 + 資金。';
-    document.getElementById('biz-cta-btn').textContent = isEn ? 'Become a Co-Founder →' : '成為共同創辦人 →';
-  })();
-  </script>
 </div>
+
+<script>
+(function() {
+  var isEn = getLang() === 'en';
+
+  document.getElementById('biz-title').textContent = isEn
+    ? '🎯 9 AI Business Plans for Taiwan'
+    : '🎯 9 個台灣 AI 創業計畫';
+  document.getElementById('biz-subtitle').textContent = isEn
+    ? 'Curated opportunities where AI meets Taiwan\'s unique market advantages'
+    : '精選 AI 與台灣獨特市場優勢的交會點';
+  document.getElementById('biz-criteria').innerHTML = isEn
+    ? '<strong>Selection criteria:</strong> AI-native · Taiwan market fit · Small team executable · High margin potential · Clear pain point'
+    : '<strong>篩選標準：</strong>AI 驅動 · 台灣市場適配 · 小團隊可執行 · 高毛利潛力 · 明確痛點';
+  document.getElementById('biz-cta-text').textContent = isEn
+    ? 'Interested in co-founding any of these? You bring domain expertise, I bring AI + engineering + funding.'
+    : '對其中任何一個有興趣共同創辦？你出領域專業，我出 AI 技術 + 工程 + 資金。';
+  document.getElementById('biz-cta-btn').textContent = isEn ? 'Become a Co-Founder →' : '成為共同創辦人 →';
+
+  var plans = [
+    { id:1, icon:'🏥', tier:'high',
+      tierLabel: isEn?'🔴 High':'🔴 高資本',
+      capital: isEn?'~NT$10M':'~NT$1,000萬',
+      title: isEn?'AI Clinical Copilot for NHI Clinics':'NHI 診所 AI 臨床副駕駛',
+      desc: isEn?'AI copilot for 24,000 NHI clinics — real-time SOAP notes, smart coding, claim analytics. Deepest moat and largest TAM.':'24,000 家健保診所 AI 副駕駛——即時 SOAP 病歷、智慧編碼、申報分析。護城河最深、市場最大。',
+      tam: isEn?'NT$36B NHI admin':'健保行政 NT$360億',
+      target: isEn?'24,000 clinics':'24,000 家診所',
+      model: isEn?'NT$3K-8K/mo':'月費 NT$3K-8K',
+      edge: isEn?'NHI coding rules + workflow data':'健保編碼 + 工作流數據'
+    },
+    { id:2, icon:'📊', tier:'low',
+      tierLabel: isEn?'🟢 Low':'🟢 低資本',
+      capital: isEn?'~NT$300K':'~NT$30萬',
+      title: isEn?'AI Tax & Audit Autopilot':'AI 稅務自動駕駛',
+      desc: isEn?'Automated tax filing, audit defense, compliance for 1.71M Taiwan SMEs. AI reads e-invoices, categorizes expenses, files returns.':'為 171 萬家中小企業自動報稅、稽核防禦、法規合規。AI 讀取電子發票、分類支出、申報。',
+      tam: isEn?'NT$80B accounting':'會計市場 NT$800億',
+      target: isEn?'1.71M SMEs':'171 萬家中小企業',
+      model: isEn?'NT$1.5K-5K/mo':'月費 NT$1.5K-5K',
+      edge: isEn?'Tax code AI + e-invoice':'稅法 AI + 電子發票'
+    },
+    { id:3, icon:'🏪', tier:'low',
+      tierLabel: isEn?'🟢 Low':'🟢 低資本',
+      capital: isEn?'~NT$200K':'~NT$20萬',
+      title: isEn?'AI Commercial District Analyzer':'AI 商圈分析師',
+      desc: isEn?'AI site selection and foot traffic prediction for 120K retail/F&B operators. Combines open data, telecom mobility, satellite imagery.':'AI 開店選址與人流預測。結合政府開放資料、電信行動數據、衛星影像，為任何地址評分。',
+      tam: isEn?'NT$30B retail consulting':'零售顧問 NT$300億',
+      target: isEn?'120K F&B + retail':'12 萬家餐飲+零售',
+      model: isEn?'NT$2K-10K/report':'單次 NT$2K-10K + 訂閱',
+      edge: isEn?'Open data + hyper-local AI':'開放資料 + 在地 AI'
+    },
+    { id:4, icon:'🌐', tier:'low',
+      tierLabel: isEn?'🟢 Low':'🟢 低資本',
+      capital: isEn?'~NT$400K':'~NT$40萬',
+      title: isEn?'AI Cross-Border E-Commerce Optimizer':'AI 跨境電商優化師',
+      desc: isEn?'AI product selection, listing optimization, pricing intelligence for 50K+ Taiwan sellers on Amazon, Shopee, Rakuten.':'AI 選品、Listing 優化、定價情報。告訴台灣賣家在 Amazon/Shopee/樂天 賣什麼、在哪賣、賣多少。',
+      tam: isEn?'NT$480B cross-border':'跨境電商 NT$4,800億',
+      target: isEn?'50K+ sellers':'5 萬+ 賣家',
+      model: isEn?'NT$3K-15K/mo + share':'月費 NT$3K-15K + 分潤',
+      edge: isEn?'Supply chain + multilingual AI':'供應鏈 + 多語 AI'
+    },
+    { id:5, icon:'🏭', tier:'mid',
+      tierLabel: isEn?'🟡 Mid':'🟡 中資本',
+      capital: isEn?'~NT$1.5M':'~NT$150萬',
+      title: isEn?'Manufacturing Knowledge Brain':'工廠知識大腦',
+      desc: isEn?'Turn decades of tribal knowledge in 150K+ factories into queryable AI — SOPs, troubleshooting, quality specs. NotebookLM for manufacturing.':'將 15 萬+工廠數十年「師傅經驗」轉化為可查詢 AI——SOP、故障排除、品質規格。',
+      tam: isEn?'NT$45B manufacturing IT':'製造業 IT NT$450億',
+      target: isEn?'150K factories':'15 萬家工廠',
+      model: isEn?'NT$5K-20K/mo':'月費 NT$5K-20K',
+      edge: isEn?'Domain RAG + Chinese SOP':'領域 RAG + 繁中 SOP'
+    },
+    { id:6, icon:'🎓', tier:'mid',
+      tierLabel: isEn?'🟡 Mid':'🟡 中資本',
+      capital: isEn?'~NT$2M':'~NT$200萬',
+      title: isEn?'AI Tutor for Buxiban 2.0':'補習班 AI 家教 2.0',
+      desc: isEn?'AI personalized tutoring for 17,700 cram schools. Adaptive practice, weak spot detection, NotebookLM-style audio study guides.':'為 17,700 家補習班打造 AI 個人化教學。自適應練習、弱點偵測、音訊學習指南。',
+      tam: isEn?'NT$150B cram school':'補教市場 NT$1,500億',
+      target: isEn?'17,700 buxibans':'17,700 家補習班',
+      model: isEn?'NT$200-500/student/mo':'每生月費 NT$200-500',
+      edge: isEn?'Curriculum AI + exam DB':'課綱 AI + 考題庫'
+    },
+    { id:7, icon:'🌾', tier:'mid',
+      tierLabel: isEn?'🟡 Mid':'🟡 中資本',
+      capital: isEn?'~NT$2.5M':'~NT$250萬',
+      title: isEn?'Precision Agriculture AI':'AI 精準農業顧問',
+      desc: isEn?'AI crop management for high-value orchids (NT$17B export), tea, tropical fruits. Drone analysis, pest prediction, yield optimization.':'AI 高價值農作管理——蘭花（出口 NT$170 億）、茶葉、水果。病蟲害預測、產量最佳化。',
+      tam: isEn?'NT$550B agriculture':'農業產值 NT$5,500億',
+      target: isEn?'780K farm households':'78 萬農戶',
+      model: isEn?'NT$500-3K/mo + subsidy':'月費 NT$500-3K + 補助',
+      edge: isEn?'Microclimate + crop AI':'微氣候 + 作物 AI'
+    },
+    { id:8, icon:'⚖️', tier:'high',
+      tierLabel: isEn?'🔴 High':'🔴 高資本',
+      capital: isEn?'~NT$5M':'~NT$500萬',
+      title: isEn?'RegTech AI for Financial Compliance':'金融合規 AI',
+      desc: isEn?'AI regulatory compliance for 400+ banks, insurers, fintechs. Auto-monitors FSC rules, generates reports, flags violations before regulators.':'AI 金融法規合規。自動監控金管會規則、生成合規報告、在監管機關發現前標記違規。',
+      tam: isEn?'NT$25B compliance':'合規支出 NT$250億',
+      target: isEn?'400+ financial inst.':'400+ 家金融機構',
+      model: isEn?'NT$50K-200K/mo':'月費 NT$5-20萬',
+      edge: isEn?'FSC knowledge graph':'金管會法規知識圖譜'
+    },
+    { id:9, icon:'🔧', tier:'high',
+      tierLabel: isEn?'🔴 High':'🔴 高資本',
+      capital: isEn?'~NT$8M':'~NT$800萬',
+      title: isEn?'AI Predictive Maintenance':'供應鏈 AI 預測性維護',
+      desc: isEn?'Predict equipment failures for Taiwan\'s electronics/semiconductor supply chain. Reduce unplanned downtime 40-60%.':'為台灣電子/半導體供應鏈預測設備故障。減少 40-60% 非計畫停機。',
+      tam: isEn?'NT$120B maintenance':'工業維護 NT$1,200億',
+      target: isEn?'Top 500 electronics mfrs':'前 500 大電子廠',
+      model: isEn?'NT$100K-500K/mo':'月費 NT$10-50萬',
+      edge: isEn?'Sensor data + failure AI':'感測數據 + 故障 AI'
+    }
+  ];
+
+  var grid = document.getElementById('biz-grid');
+  plans.forEach(function(p) {
+    var a = document.createElement('a');
+    a.href = '/view-biz-plan?id=' + p.id;
+    a.className = 'biz-card';
+    a.innerHTML =
+      '<div class="biz-card-top">' +
+        '<span class="biz-icon">' + p.icon + '</span>' +
+        '<span class="biz-num">#' + p.id + '</span>' +
+        '<span class="biz-capital capital-' + p.tier + '">' + p.capital + '</span>' +
+      '</div>' +
+      '<div class="biz-tier-badge tier-' + p.tier + '">' + p.tierLabel + '</div>' +
+      '<h3 class="biz-card-title">' + p.title + '</h3>' +
+      '<p class="biz-card-desc">' + p.desc + '</p>' +
+      '<div class="biz-card-metrics">' +
+        '<div class="bcm"><span class="bcm-label">TAM</span><span class="bcm-value">' + p.tam + '</span></div>' +
+        '<div class="bcm"><span class="bcm-label">' + (isEn?'Target':'目標') + '</span><span class="bcm-value">' + p.target + '</span></div>' +
+        '<div class="bcm"><span class="bcm-label">' + (isEn?'Revenue':'營收') + '</span><span class="bcm-value">' + p.model + '</span></div>' +
+        '<div class="bcm"><span class="bcm-label">' + (isEn?'Moat':'護城河') + '</span><span class="bcm-value">' + p.edge + '</span></div>' +
+      '</div>' +
+      '<div class="biz-card-cta">' + (isEn?'View Full Plan →':'查看完整計畫 →') + '</div>';
+    grid.appendChild(a);
+  });
+})();
+</script>
 
 <style>
 /* Full-width override */
-.page-content .wrapper, .post-content { max-width: 100% !important; padding: 0 24px !important; }
+.page-content > .wrapper { max-width: 100% !important; padding: 0 32px !important; }
 #biz-app { margin-top: -1em; }
-.biz-hero { text-align: center; margin-bottom: 36px; }
+
+.biz-hero { text-align: center; margin-bottom: 32px; }
 .biz-hero h1 { font-size: 1.8em; margin-bottom: 8px; }
 .biz-subtitle { font-size: 1.1em; color: #555; margin-bottom: 8px; }
 .biz-criteria { font-size: 0.85em; color: #888; background: #f8f9fa; padding: 8px 16px; border-radius: 8px; display: inline-block; }
 
-/* Featured Plan */
-.biz-featured {
-  background: linear-gradient(135deg, #f0f4ff 0%, #e8f5e9 100%);
-  border: 2px solid #2a7ae2;
-  border-radius: 16px;
-  padding: 32px;
-  margin-bottom: 36px;
-  position: relative;
-}
-.biz-featured-badge {
-  position: absolute; top: -14px; left: 24px;
-  background: #2a7ae2; color: #fff;
-  font-size: 0.75em; font-weight: 700;
-  padding: 4px 16px; border-radius: 20px;
-}
-.biz-featured h2 { font-size: 1.4em; margin: 8px 0 6px; }
-.biz-tagline { font-size: 0.95em; color: #555; margin-bottom: 20px; line-height: 1.5; }
-
-.biz-metrics {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;
-}
-.biz-metric {
-  background: #fff; border-radius: 10px; padding: 12px; text-align: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-.metric-label { display: block; font-size: 0.7em; color: #888; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
-.metric-value { display: block; font-size: 0.85em; font-weight: 700; color: #333; }
-
-.biz-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.biz-detail-section {
-  background: #fff; border-radius: 10px; padding: 16px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-.biz-detail-section h3 { font-size: 1em; margin: 0 0 10px; color: #2a7ae2; }
-.biz-detail-section ul { margin: 0; padding-left: 18px; font-size: 0.85em; line-height: 1.6; color: #444; }
-.biz-detail-section table { width: 100%; font-size: 0.82em; border-collapse: collapse; }
-.biz-detail-section th, .biz-detail-section td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #eee; }
-.biz-detail-section th { color: #2a7ae2; font-weight: 600; }
-
-/* Card Grid */
+/* 3x3 Grid */
 .biz-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 36px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 36px;
 }
+
+/* Card */
 .biz-card {
+  display: flex; flex-direction: column;
   background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
   padding: 20px; transition: all 0.2s;
+  text-decoration: none !important; color: inherit;
+  cursor: pointer;
 }
-.biz-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #2a7ae2; transform: translateY(-2px); }
-.biz-card-link { text-decoration: none; color: inherit; display: block; }
-.biz-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.biz-icon { font-size: 1.4em; }
-.biz-num { font-size: 0.8em; font-weight: 700; color: #2a7ae2; }
-.biz-score { margin-left: auto; font-size: 0.7em; }
-.biz-card-title { font-size: 1.05em; margin: 0 0 8px; color: #222; }
-.biz-card-desc { font-size: 0.82em; color: #666; line-height: 1.5; margin-bottom: 14px; }
-
-/* Tiers */
-.biz-tier { margin-bottom: 36px; }
-.tier-heading { font-size: 1.3em; margin-bottom: 4px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
-.tier-low { border-color: #22c55e; }
-.tier-mid { border-color: #eab308; }
-.tier-high { border-color: #ef4444; }
-.tier-desc { font-size: 0.85em; color: #888; margin-bottom: 16px; }
-.biz-capital { margin-left: auto; font-size: 0.75em; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.biz-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  border-color: #2a7ae2;
+  transform: translateY(-3px);
+}
+.biz-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.biz-icon { font-size: 1.5em; }
+.biz-num { font-size: 0.85em; font-weight: 800; color: #2a7ae2; }
+.biz-capital { margin-left: auto; font-size: 0.72em; font-weight: 700; padding: 2px 10px; border-radius: 10px; }
 .capital-low { background: #dcfce7; color: #166534; }
 .capital-mid { background: #fef9c3; color: #854d0e; }
 .capital-high { background: #fee2e2; color: #991b1b; }
-.biz-card-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.biz-card-metric { font-size: 0.75em; }
+.biz-tier-badge { font-size: 0.7em; font-weight: 600; margin-bottom: 8px; }
+.tier-low { color: #16a34a; }
+.tier-mid { color: #ca8a04; }
+.tier-high { color: #dc2626; }
+.biz-card-title { font-size: 1.05em; margin: 0 0 8px; color: #222; line-height: 1.3; }
+.biz-card-desc { font-size: 0.82em; color: #666; line-height: 1.5; margin-bottom: 14px; flex: 1; }
+.biz-card-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+.bcm { font-size: 0.73em; }
 .bcm-label { color: #888; font-weight: 600; }
-.bcm-value { color: #333; display: block; margin-top: 2px; }
+.bcm-value { color: #333; display: block; margin-top: 1px; }
+.biz-card-cta { font-size: 0.85em; color: #2a7ae2; font-weight: 600; text-align: right; margin-top: auto; }
 
 /* CTA */
-.biz-cta {
-  text-align: center; background: #f8f9fa; border-radius: 12px;
-  padding: 32px; margin-bottom: 24px;
-}
-.biz-cta p { font-size: 1em; color: #555; margin-bottom: 16px; }
+.biz-cta { text-align: center; background: #f8f9fa; border-radius: 12px; padding: 28px; }
+.biz-cta p { font-size: 1em; color: #555; margin-bottom: 14px; }
 .biz-cta-btn {
   display: inline-block; background: #2a7ae2; color: #fff;
-  padding: 12px 32px; border-radius: 8px; text-decoration: none;
-  font-weight: 600; font-size: 1em; transition: background 0.2s;
+  padding: 10px 28px; border-radius: 8px; text-decoration: none;
+  font-weight: 600; transition: background 0.2s;
 }
-.biz-cta-btn:hover { background: #1d5cbf; color: #fff; text-decoration: none; }
+.biz-cta-btn:hover { background: #1d5cbf; color: #fff; }
 
-@media (max-width: 1024px) {
-  .biz-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 768px) {
-  .biz-metrics { grid-template-columns: repeat(2, 1fr); }
-  .biz-detail-grid { grid-template-columns: 1fr; }
-  .biz-grid { grid-template-columns: 1fr; }
-  .biz-featured { padding: 20px; }
-}
+/* Responsive */
+@media (max-width: 1024px) { .biz-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .biz-grid { grid-template-columns: 1fr; } .page-content > .wrapper { padding: 0 16px !important; } }
 </style>
