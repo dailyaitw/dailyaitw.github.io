@@ -22,5 +22,6 @@ window.DAILYAI_SHORT_LINKS = {
   '13': '2026-google-notebooklm-technology-ecosystem',
   '14': '2026-notebooklm-impact-ai-tools-market',
   '15': '2026-data-centers-in-space',
-  '16': '2026-seth-early-sessions-jane-roberts'
+  '16': '2026-seth-early-sessions-jane-roberts',
+  '17': '2026-03-indonesia-coffee-cart-revolution'
 };
